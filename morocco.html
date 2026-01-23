@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>James Quazi & Rebecca Colvin Morocco - Arrival Booklet | Experience Morocco</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;1,400&family=Source+Sans+3:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:'Source Sans 3',sans-serif}
+    .font-serif{font-family:'Cormorant Garamond',Georgia,serif}
+    ::-webkit-scrollbar{width:8px;height:8px}
+    ::-webkit-scrollbar-track{background:#f5f5f4}
+    ::-webkit-scrollbar-thumb{background:#808040;border-radius:4px}
+    .hide-scrollbar::-webkit-scrollbar{display:none}
+    .hide-scrollbar{-ms-overflow-style:none;scrollbar-width:none}
+    .leaflet-container{font-family:'Source Sans 3',sans-serif}
+    .wa-panel{animation:slideUp 0.3s ease-out}
+    @keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+    .pulse-ring{animation:pulseRing 2s infinite}
+    @keyframes pulseRing{0%{box-shadow:0 0 0 0 rgba(37,211,102,0.4)}70%{box-shadow:0 0 0 15px rgba(37,211,102,0)}100%{box-shadow:0 0 0 0 rgba(37,211,102,0)}}
+    @media print{
+      .no-print{display:none!important}
+      body{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+      .min-h-screen{min-height:auto!important;page-break-inside:avoid}
+      section{page-break-after:auto;page-break-inside:avoid}
+      .fixed{position:static!important}
+      .lg\\:w-1\\/2{width:100%!important;margin-left:0!important}
+      .lg\\:block.fixed{display:none!important}
+      .bg-cover{background-size:cover!important}
+      h2{page-break-after:avoid}
+    }
+  </style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const{useState,useRef,useEffect}=React;
+const B={dg:'#808040',g:'#C4956A',cr:'#F5F2ED'};
+const H={
+  cover:'https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=1600&q=80',
+  brief:'https://images.unsplash.com/photo-1545159839-6f4c2e2ca0bb?auto=format&fit=crop&w=1600&q=80',
+  map:'https://images.unsplash.com/photo-1489749798305-4fea3ae63d43?auto=format&fit=crop&w=1600&q=80',
+  ess:'https://images.unsplash.com/photo-1519451241324-20b4ea2c4220?auto=format&fit=crop&w=1600&q=80',
+  emg:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=1600&q=80',
+  places:'https://images.unsplash.com/photo-1549140600-78c9b8275e9d?auto=format&fit=crop&w=1600&q=80',
+  faq:'https://images.unsplash.com/photo-1531219572328-a0171b4448a3?auto=format&fit=crop&w=1600&q=80',
+  mkh1:'https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=1600&q=80',
+  mkh2:'https://images.unsplash.com/photo-1545159839-6f4c2e2ca0bb?auto=format&fit=crop&w=1600&q=80',
+  atlas:'https://images.unsplash.com/photo-1493246318656-5bfd4cfb29b8?auto=format&fit=crop&w=1600&q=80',
+  agafay:'https://images.unsplash.com/photo-1531219572328-a0171b4448a3?auto=format&fit=crop&w=1600&q=80',
+  rabat:'https://images.unsplash.com/photo-1569383746724-6f1b882b8f46?auto=format&fit=crop&w=1600&q=80',
+  fes1:'https://images.unsplash.com/photo-1549140600-78c9b8275e9d?auto=format&fit=crop&w=1600&q=80',
+  fes2:'https://images.unsplash.com/photo-1548690596-f1722c190938?auto=format&fit=crop&w=1600&q=80',
+  fes3:'https://images.unsplash.com/photo-1560179406-1c6c60e0dc76?auto=format&fit=crop&w=1600&q=80',
+  casa:'https://images.unsplash.com/photo-1569383746724-6f1b882b8f46?auto=format&fit=crop&w=1600&q=80',
+  dep:'https://images.unsplash.com/photo-1489749798305-4fea3ae63d43?auto=format&fit=crop&w=1600&q=80'
+};
+const G={
+  amanjena:[
+    {u:'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=800&q=80',c:'Pavilion'},
+    {u:'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80',c:'Pool'},
+    {u:'https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=800&q=80',c:'Suite'},
+    {u:'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?auto=format&fit=crop&w=800&q=80',c:'Gardens'}
+  ],
+  fairmont:[
+    {u:'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80',c:'Lobby'},
+    {u:'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=800&q=80',c:'Room'},
+    {u:'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&w=800&q=80',c:'Marina View'}
+  ],
+  palaisfaraj:[
+    {u:'https://images.unsplash.com/photo-1549140600-78c9b8275e9d?auto=format&fit=crop&w=800&q=80',c:'Courtyard'},
+    {u:'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=800&q=80',c:'Suite'},
+    {u:'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?auto=format&fit=crop&w=800&q=80',c:'Terrace'},
+    {u:'https://images.unsplash.com/photo-1560448204-603b3fc33ddc?auto=format&fit=crop&w=800&q=80',c:'Restaurant'}
+  ],
+  royalmansour:[
+    {u:'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80',c:'Entrance'},
+    {u:'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=800&q=80',c:'Room'},
+    {u:'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&w=800&q=80',c:'Restaurant'}
+  ],
+  marrakech:[
+    {u:'https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=800&q=80',c:'Djemaa El-Fna'},
+    {u:'https://images.unsplash.com/photo-1545159839-6f4c2e2ca0bb?auto=format&fit=crop&w=800&q=80',c:'Souks'},
+    {u:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=800&q=80',c:'Medina'}
+  ],
+  sidecar:[
+    {u:'https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=800&q=80',c:'City Tour'},
+    {u:'https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=800&q=80',c:'Palm Grove'}
+  ],
+  atlas:[
+    {u:'https://images.unsplash.com/photo-1493246318656-5bfd4cfb29b8?auto=format&fit=crop&w=800&q=80',c:'Mountains'},
+    {u:'https://images.unsplash.com/photo-1489749798305-4fea3ae63d43?auto=format&fit=crop&w=800&q=80',c:'Berber Village'}
+  ],
+  majorelle:[
+    {u:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=800&q=80',c:'Gardens'},
+    {u:'https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=800&q=80',c:'YSL Museum'}
+  ],
+  agafay:[
+    {u:'https://images.unsplash.com/photo-1531219572328-a0171b4448a3?auto=format&fit=crop&w=800&q=80',c:'Desert Camp'},
+    {u:'https://images.unsplash.com/photo-1489749798305-4fea3ae63d43?auto=format&fit=crop&w=800&q=80',c:'Sunset Camel Ride'}
+  ],
+  rabat:[
+    {u:'https://images.unsplash.com/photo-1569383746724-6f1b882b8f46?auto=format&fit=crop&w=800&q=80',c:'Hassan Tower'},
+    {u:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=800&q=80',c:'Kasbah Oudayas'}
+  ],
+  volubilis:[
+    {u:'https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=800&q=80',c:'Roman Ruins'},
+    {u:'https://images.unsplash.com/photo-1489749798305-4fea3ae63d43?auto=format&fit=crop&w=800&q=80',c:'Mosaics'}
+  ],
+  fes:[
+    {u:'https://images.unsplash.com/photo-1549140600-78c9b8275e9d?auto=format&fit=crop&w=800&q=80',c:'Medina'},
+    {u:'https://images.unsplash.com/photo-1548690596-f1722c190938?auto=format&fit=crop&w=800&q=80',c:'Tanneries'},
+    {u:'https://images.unsplash.com/photo-1560179406-1c6c60e0dc76?auto=format&fit=crop&w=800&q=80',c:'Medersa'}
+  ],
+  casablanca:[
+    {u:'https://images.unsplash.com/photo-1569383746724-6f1b882b8f46?auto=format&fit=crop&w=800&q=80',c:'Hassan II Mosque'},
+    {u:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=800&q=80',c:'Art Deco'}
+  ]
+};
+const Logo=({className="",inv=false})=>(
+  <img 
+    src="https://cdn.prod.website-files.com/64fba653be6287d23f6f6bf1/685a9e3f5eba06dee7c16590_Logo%20Colored%20Centered.png" 
+    alt="Experience Morocco" 
+    className={className}
+    style={inv ? {filter:'brightness(0) invert(1)'} : {}}
+  />
+);
+const Ic={
+  Menu:({c})=><svg className={c} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M4 6h16M4 12h16M4 18h16"/></svg>,
+  X:({c})=><svg className={c} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M6 18L18 6M6 6l12 12"/></svg>,
+  ChD:({c,s})=><svg className={c} style={s} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M19 9l-7 7-7-7"/></svg>,
+  ChR:({c})=><svg className={c} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M9 5l7 7-7 7"/></svg>,
+  ChL:({c})=><svg className={c} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M15 19l-7-7 7-7"/></svg>,
+  Ph:({c})=><svg className={c} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>,
+  Wa:({c})=><svg className={c} fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>,
+  Mp:({c,s})=><svg className={c} style={s} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>,
+  Cl:({c})=><svg className={c} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>,
+  Ca:({c,s})=><svg className={c} style={s} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M8 17h.01M16 17h.01M9 11h6M5 11l1.5-4.5A2 2 0 018.39 5h7.22a2 2 0 011.89 1.5L19 11M5 11v6a1 1 0 001 1h1a1 1 0 001-1v-1h8v1a1 1 0 001 1h1a1 1 0 001-1v-6M5 11h14"/></svg>,
+  Pl:({c,s})=><svg className={c} style={s} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>,
+  Bd:({c,s})=><svg className={c} style={s} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>,
+  Cm:({c,s})=><svg className={c} style={s} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><path d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/></svg>,
+  Ut:({c,s})=><svg className={c} style={s} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>,
+  Wi:({c,s})=><svg className={c} style={s} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M9 3h6l1 7c0 2.5-2 4-4 4s-4-1.5-4-4l1-7zM12 14v7M8 21h8"/></svg>,
+  Co:({c,s})=><svg className={c} style={s} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M18 8h1a4 4 0 010 8h-1M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8zM6 1v3M10 1v3M14 1v3"/></svg>,
+  Cp:({c,s})=><svg className={c} style={s} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><circle cx="12" cy="12" r="9"/></svg>,
+  Ft:({c,s})=><svg className={c} style={s} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>,
+  Cal:({c,s})=><svg className={c} style={s} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>,
+  Us:({c,s})=><svg className={c} style={s} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>,
+  Sh:({c})=><svg className={c} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>,
+  Dl:({c})=><svg className={c} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>,
+  Ed:({c})=><svg className={c} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>,
+  Ck:({c})=><svg className={c} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M5 13l4 4L19 7"/></svg>,
+  Fs:({c})=><svg className={c} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg>,
+  Sn:({c})=><svg className={c} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>,
+  Im:({c,s})=><svg className={c} style={s} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>,
+  Hk:({c,s})=><svg className={c} style={s} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>,
+  Spa:({c,s})=><svg className={c} style={s} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>,
+  Fb:({c})=><svg className={c} fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>,
+  Ig:({c})=><svg className={c} fill="currentColor" viewBox="0 0 24 24"><path d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 015.45 2.525c.636-.247 1.363-.416 2.427-.465C8.901 2.013 9.256 2 11.685 2h.63zm-.081 1.802h-.468c-2.456 0-2.784.011-3.807.058-.975.045-1.504.207-1.857.344-.467.182-.8.398-1.15.748-.35.35-.566.683-.748 1.15-.137.353-.3.882-.344 1.857-.047 1.023-.058 1.351-.058 3.807v.468c0 2.456.011 2.784.058 3.807.045.975.207 1.504.344 1.857.182.466.399.8.748 1.15.35.35.683.566 1.15.748.353.137.882.3 1.857.344 1.054.048 1.37.058 4.041.058h.08c2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z"/></svg>,
+  Gl:({c})=><svg className={c} fill="currentColor" viewBox="0 0 24 24"><path d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"/></svg>,
+  Ext:({c})=><svg className={c} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+};
+const Gal=({imgs,name,isExp=false})=>{
+  const ref=useRef(null);
+  const[cL,setCL]=useState(false);
+  const[cR,setCR]=useState(true);
+  const chk=()=>{if(ref.current){const{scrollLeft:l,scrollWidth:w,clientWidth:c}=ref.current;setCL(l>0);setCR(l<w-c-10);}};
+  const scr=(d)=>{if(ref.current){ref.current.scrollBy({left:d==='l'?-280:280,behavior:'smooth'});setTimeout(chk,300);}};
+  useEffect(()=>{chk();},[]);
+  return(
+    <div className="mt-4">
+      <div className="flex items-center justify-between mb-2">
+        <h4 className="text-sm font-medium text-stone-600 flex items-center gap-2"><Ic.Im c="w-4 h-4" s={{color:B.dg}}/>{isExp?'Experience Gallery':'Property Gallery'}</h4>
+        <div className="flex gap-1">
+          <button onClick={()=>scr('l')} disabled={!cL} className={`p-1 rounded-full ${cL?'bg-stone-100 hover:bg-stone-200':'opacity-30'}`}><Ic.ChL c="w-4 h-4 text-stone-600"/></button>
+          <button onClick={()=>scr('r')} disabled={!cR} className={`p-1 rounded-full ${cR?'bg-stone-100 hover:bg-stone-200':'opacity-30'}`}><Ic.ChR c="w-4 h-4 text-stone-600"/></button>
+        </div>
+      </div>
+      <div ref={ref} onScroll={chk} className="flex gap-3 overflow-x-auto hide-scrollbar pb-2">
+        {imgs.map((i,x)=>(
+          <div key={x} className="flex-shrink-0 w-64 group cursor-pointer">
+            <div className="relative h-40 rounded-lg overflow-hidden bg-stone-100">
+              <img src={i.u} alt={i.c} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" loading="lazy"/>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"/>
+              <span className="absolute bottom-2 left-2 text-white text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity">{i.c}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+const TripMap=({locs,onSelect,fullscreen=false,onToggleFs})=>{
+  const mapRef=useRef(null);
+  const mapInstance=useRef(null);
+  const[selectedLoc,setSelectedLoc]=useState(null);
+  useEffect(()=>{
+    if(!mapRef.current)return;
+    if(mapInstance.current){mapInstance.current.remove();mapInstance.current=null;}
+    const map=L.map(mapRef.current,{scrollWheelZoom:fullscreen,zoomControl:fullscreen}).setView([32.5,-6],6);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{
+      attribution:'©OpenStreetMap, ©CartoDB',maxZoom:19
+    }).addTo(map);
+    const mainLocs=locs.filter(l=>!l.dt);
+    const dayTrips=locs.filter(l=>l.dt);
+    if(mainLocs.length>1){
+      const coords=mainLocs.map(l=>[l.lat,l.lng]);
+      L.polyline(coords,{color:B.dg,weight:3,opacity:0.6,dashArray:'10,10'}).addTo(map);
+    }
+    locs.forEach((loc,i)=>{
+      const mainIdx=mainLocs.indexOf(loc);
+      const icon=L.divIcon({
+        className:'custom-marker',
+        html:`<div style="background:${loc.c};color:#fff;width:${loc.dt?'24px':'32px'};height:${loc.dt?'24px':'32px'};border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:${loc.dt?'10px':'12px'};box-shadow:0 2px 8px rgba(0,0,0,0.3);border:2px solid #fff;cursor:pointer;transition:transform 0.2s;">${loc.dt?'•':mainIdx+1}</div>`,
+        iconSize:[loc.dt?24:32,loc.dt?24:32],iconAnchor:[loc.dt?12:16,loc.dt?12:16]
+      });
+      const marker=L.marker([loc.lat,loc.lng],{icon}).addTo(map);
+      marker.bindPopup(`<div style="font-family:Source Sans 3,sans-serif;min-width:160px;"><b style="color:${B.dg};font-size:14px;">${loc.n}</b><br/><span style="color:#666;font-size:12px;">${loc.dt?'Day Trip':'Days '+loc.days}</span><br/><span style="font-size:11px;color:#888;">${loc.h}</span></div>`);
+      marker.on('click',()=>{setSelectedLoc(loc);onSelect&&onSelect(loc.id);});
+    });
+    const bounds=L.latLngBounds(locs.map(l=>[l.lat,l.lng]));
+    map.fitBounds(bounds.pad(0.15));
+    mapInstance.current=map;
+    setTimeout(()=>map.invalidateSize(),100);
+    return()=>{if(mapInstance.current){mapInstance.current.remove();mapInstance.current=null;}};
+  },[locs,fullscreen]);
+  return(
+    <div className={`relative ${fullscreen?'fixed inset-0 z-50 bg-white':''}`}>
+      {fullscreen&&(
+        <div className="absolute top-0 left-0 right-0 z-[1001] bg-white/95 backdrop-blur-sm border-b border-stone-200 px-4 py-3 flex items-center justify-between">
+          <h3 className="font-serif text-xl italic" style={{color:B.dg}}>Your Journey Map</h3>
+          <button onClick={onToggleFs} className="p-2 hover:bg-stone-100 rounded-full"><Ic.X c="w-6 h-6 text-stone-600"/></button>
+        </div>
+      )}
+      <div ref={mapRef} className={`w-full rounded-xl overflow-hidden shadow-inner ${fullscreen?'h-full pt-14':'h-80 md:h-96'}`} style={{background:'#f5f5f4'}}/>
+      {!fullscreen&&<button onClick={onToggleFs} className="absolute top-3 right-3 p-2 bg-white/90 hover:bg-white rounded-lg shadow-md z-[1000]" title="Fullscreen map"><Ic.Fs c="w-5 h-5 text-stone-600"/></button>}
+      {fullscreen&&selectedLoc&&(
+        <div className="absolute bottom-6 left-6 right-6 md:left-auto md:right-6 md:w-80 bg-white rounded-xl shadow-xl p-4 z-[1001]">
+          <div className="flex items-start gap-3">
+            <span className="w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold shrink-0" style={{background:selectedLoc.c}}>{selectedLoc.dt?'•':locs.filter(l=>!l.dt).indexOf(selectedLoc)+1}</span>
+            <div className="flex-1">
+              <h4 className="font-medium text-stone-800">{selectedLoc.n}</h4>
+              <p className="text-sm text-stone-500">{selectedLoc.dt?'Day Trip':'Days '+selectedLoc.days}</p>
+              <p className="text-sm mt-1" style={{color:B.dg}}>{selectedLoc.h}</p>
+              <a href={`https://www.google.com/maps/search/?api=1&query=${selectedLoc.lat},${selectedLoc.lng}`} target="_blank" rel="noopener noreferrer" className="text-xs text-stone-400 hover:text-stone-600 mt-2 inline-flex items-center gap-1">Open in Google Maps <Ic.ChR c="w-3 h-3"/></a>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+const WhatsAppPanel=({onClose,wa,name})=>{
+  const msgs=[
+    {l:'👋 Say Hello',m:`Hello! I am ${name} and I'm on my Morocco trip. Just saying hi!`},
+    {l:'🚗 Transfer Help',m:`Hello! I am ${name} on the Morocco trip. I need assistance with a transfer.`},
+    {l:'🍽️ Restaurant recommendations',m:`Hello! I am ${name}. Could you recommend a restaurant for tonight?`},
+    {l:'🎫 Tickets/Tours questions',m:`Hello! I am ${name}. I have a question about one of my tours.`},
+    {l:'🆘 Urgent Help',m:`Hello! I am ${name} on the Morocco trip and I need urgent assistance.`}
+  ];
+  return(
+    <div className="fixed bottom-20 right-5 z-40 wa-panel no-print">
+      <div className="bg-white rounded-2xl shadow-2xl w-80 overflow-hidden border border-stone-200">
+        <div className="p-4" style={{backgroundColor:'#25D366'}}>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center"><Ic.Wa c="w-6 h-6 text-white"/></div>
+              <div><h3 className="text-white font-medium">Experience Morocco</h3><p className="text-white/80 text-xs">Typically replies instantly</p></div>
+            </div>
+            <button onClick={onClose} className="p-1 hover:bg-white/20 rounded-full"><Ic.X c="w-5 h-5 text-white"/></button>
+          </div>
+        </div>
+        <div className="p-4">
+          <p className="text-sm text-stone-600 mb-3">Select a quick message or start a custom chat:</p>
+          <div className="space-y-2">
+            {msgs.map((m,i)=>(
+              <a key={i} href={`https://wa.me/${wa}?text=${encodeURIComponent(m.m)}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-3 rounded-lg bg-stone-50 hover:bg-stone-100 transition-colors">
+                <span className="text-sm text-stone-700">{m.l}</span>
+                <Ic.ChR c="w-4 h-4 text-stone-400 ml-auto"/>
+              </a>
+            ))}
+          </div>
+          <a href={`https://wa.me/${wa}`} target="_blank" rel="noopener noreferrer" className="mt-3 w-full py-2.5 rounded-lg text-white text-sm font-medium flex items-center justify-center gap-2" style={{backgroundColor:'#25D366'}}>
+            <Ic.Sn c="w-4 h-4"/>Open Chat
+          </a>
+        </div>
+      </div>
+    </div>
+  );
+};
+const D={
+  name:"James Quazi & Rebecca Colvin",dest:"Morocco",sub:"Prepared for You",dates:"December 23rd - 31st, 2025",
+  em:{tm:"Hassan",tmPh:"+212 661 380 240",ge:"Saida",gePh:"+212 666 265 112",ep:"+212 667 910 910",wa:"212661380240"},
+  intro:"Thank you for entrusting us with your journey! Within this booklet, you'll find essential details about your trip, along with answers to the most common questions travelers have about Morocco. Our hope is that it serves as both a helpful guide and a delightful companion along the way. Should you ever wonder about something not covered here, please don't hesitate to reach out. We'll be more than happy to provide you with the answers you need, always with care and without delay.",
+  flights:{
+    arr:{date:"Mon, Dec 22",time:"11:20 AM",port:"RAK - Marrakech",flight:"UA 628",travelers:["Rajeev James Quazi","Rebecca Elizabeth Colvin"]},
+    dep:{date:"Wed, Dec 31",time:"12:15 PM",port:"CMN - Casablanca",flight:"AC73",travelers:["Rajeev James Quazi","Rebecca Elizabeth Colvin"]}
+  },
+  weather:{
+    1:{hi:18,lo:8,icon:'☀️',cond:'Sunny'},
+    2:{hi:19,lo:9,icon:'☀️',cond:'Sunny'},
+    3:{hi:17,lo:7,icon:'🌤️',cond:'Partly Cloudy'},
+    4:{hi:18,lo:8,icon:'☀️',cond:'Sunny'},
+    5:{hi:16,lo:6,icon:'🌥️',cond:'Mostly Cloudy'},
+    6:{hi:15,lo:5,icon:'🌧️',cond:'Light Rain'},
+    7:{hi:14,lo:4,icon:'🌤️',cond:'Partly Cloudy'},
+    8:{hi:15,lo:5,icon:'☀️',cond:'Sunny'},
+    9:{hi:16,lo:6,icon:'☀️',cond:'Sunny'}
+  },
+  places:[
+    {id:'marrakech',name:'Marrakech',img:'https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=800&q=80',desc:"The beautiful Ochre City, whose name comes from the Berber words meaning 'Land of God', is home to a host of beautiful traditional schools and palaces: don't miss the Saadian Tombs and The Bahia Palace with their lush courtyards and intricate tilework. Djema El Fna square is the highlight of the night - with snake charmers, musical performances, and henna artists combining for a circus of activity. Once you make it through the chaos of stalls and stages made of carpets, enter the Marrakech souk-system where one can spend hours browsing through Moroccan handcrafts, snacks, and natural products. Global fashion icon Yves Saint Laurent made his home in Marrakech for many decades, and his vision drove every detail behind the lush Majorelle Gardens, accompanied by a small but must-see Berber Museum."},
+    {id:'rabat',name:'Rabat',img:'https://images.unsplash.com/photo-1569383746724-6f1b882b8f46?auto=format&fit=crop&w=800&q=80',desc:"Morocco's capital city is home to an Almohad fortress built in 1150AD. From the Kasbah des Oudayas, where you can take a stroll through the winding blue streets, enjoy the look-out over the Bou Regreg River and enjoy the peaceful adjacent gardens. The Yacoub al-Mansour Esplanade is home to two must-see monuments: First, the King's Mausoleum, which was built in 1971 and which houses the remains of the late king Hassan II, Prince Abdallah, and their father King Mohamed V. In front of the Mausoleum, you will find the Hassan Tower, an incomplete red sandstone minaret which began construction in 1195AD. If time allows, you'll head to the Chellah necropolis, featuring remnants of Roman settlements from the 2nd century."},
+    {id:'fes',name:'Fes',img:'https://images.unsplash.com/photo-1549140600-78c9b8275e9d?auto=format&fit=crop&w=800&q=80',desc:"Welcome to Morocco's cultural capital! Founded in 781AD, this medieval city is now considered the world's largest car-free urban zone. Beware of mule-drawn carriages that speed through the alleyways, and don't forget to check out a local pharmacy with its mysterious canisters of roots, flowers and powders. Fes is well known for its tanneries, where ancient techniques are still used to prepare Moroccan leather which is then used in a variety of goods from clothing to bags and other handicrafts. Fun fact! Fes is home to the world's oldest and longest operating learning institution, the University of Al Quaraouiyine, founded in 859AD."},
+    {id:'casablanca',name:'Casablanca',img:'https://images.unsplash.com/photo-1577147443647-81856d5751ba?auto=format&fit=crop&w=800&q=80',desc:"With an estimated 6M inhabitants, Casablanca is by far Morocco's largest city, and it gained international renown from its namesake film starring Humphrey Bogart and Ingrid Bergman. Step into the movie's magic when you visit Rick's Café, which was designed true to the spirit of the Hollywood classic. The site to see in Casablanca is undisputedly the Hassan II Mosque - the largest in Morocco, completed in 1993 by over 10,000 of the Kingdom's finest craftsmen. Take a stroll on the coastal esplanade or, if time allows, take a guided tour for a deeper look at the intricate work and history of this incredible structure. Home to the Art Deco movement in Morocco, Casablanca also has some incredible and unexpected architecture from the French Colonial period."}
+  ],
+  faq:[
+    {cat:'Internet & Connectivity',icon:'📶',items:[
+      {q:'Is internet access available?',a:'Internet access is readily available across Morocco, and online activity is not censored or limited in any way. All hotels offer internet access, with strongest signals typically in lobby and common areas. You can also enable tethering from your cell phone if you install a local SIM card with a data plan.'},
+      {q:'Can I get a local SIM card?',a:'If you have an unlocked cell phone and would like to obtain a local SIM, please let your trip manager know and we will happily procure one for you.'}
+    ]},
+    {cat:'Power & Electricity',icon:'🔌',items:[
+      {q:'What type of adapter do I need?',a:"We've provided you with an adapter to use for your US appliances plugging into local outlets. Please let us know if you require further adapters and we'll be happy to assist. Morocco uses Type C and Type E plugs at 220V."}
+    ]},
+    {cat:'Currency & Money',icon:'💰',items:[
+      {q:'What currency is used?',a:'The Moroccan currency is called the Dirham (MAD). The current exchange rate is approximately 10 dirhams per $1 USD.'},
+      {q:'How should I get cash?',a:'The best way to obtain cash is to use your Debit Card at local ATMs that are readily available in each city. You can also convert cash from USD or Euros at local cash points, but the conversion rate tends to be 10-15% higher than at an ATM.'},
+      {q:'What are typical prices?',a:'Reference prices: Moroccan Slippers (typical souvenir): 150-400 dirhams ($15-$40), Water bottle: 6 dirhams (60¢).'}
+    ]},
+    {cat:'Tipping & Etiquette',icon:'🤝',items:[
+      {q:'What is the tipping culture?',a:'Tips for your guides and driver are left at your discretion. A customary range would be $30-$40 USD per day for your driver and $40-$60 USD per day for your guide. For bellboys, tipping between $2 to $5 USD per interaction is considered respectful.'}
+    ]},
+    {cat:'Safety',icon:'🛡️',items:[
+      {q:'Is Morocco safe for tourists?',a:'With over 10 million visitors per year, tourism is essential to Morocco\'s economy. Local authorities are very serious about tourist safety. We liaise with the Moroccan tourism police to ensure the safety of our groups at all times.'},
+      {q:'Any safety tips?',a:'Travel in groups of 3 or more when possible. Keep valuables in a safety wallet or hotel safety deposit box. If accosted by someone offering directions, tips, henna tattoos, etc., politely but firmly refuse and keep walking.'}
+    ]},
+    {cat:'What to Pack',icon:'🧳',items:[
+      {q:'What clothes should I bring?',a:'Plan a good mix of comfortable clothes suitable for mild winter weather (highs around 18°C/64°F). Bring light jackets for evenings, especially in the desert, as well as comfortable shoes for daytime activities.'},
+      {q:'Dress code for women?',a:'Please bring clothes that are comfortable to walk in but aren\'t overly tight or revealing. Sleeveless tops are ok as long as cleavage isn\'t exposed, and shorts should be at least knee-length. Long skirts & loose-fitting blouses are great. There\'s no expectation to wear a headscarf.'},
+      {q:'Dress code for men?',a:'Shorts and flip flops are acceptable when weather permits. However, certain upscale hotels and restaurants require full-length pants and closed shoes. Pack a blazer or sports jacket for fancier restaurants.'},
+      {q:'What medicine should I bring?',a:'We recommend packing light medications for common cold, headaches, car sickness, and traveler\'s diarrhea. Bring epipens (not available in Morocco) if you have serious allergies.'}
+    ]}
+  ],
+  locs:[
+    {id:'marrakech',n:'Marrakech',lat:31.6295,lng:-7.9811,days:'1-3',h:'Amanjena',c:B.dg},
+    {id:'rabat',n:'Rabat',lat:34.0209,lng:-6.8416,days:'4',h:'Fairmont La Marina',c:B.g},
+    {id:'fes',n:'Fes',lat:34.0331,lng:-5.0003,days:'5-7',h:'Palais Faraj',c:B.dg},
+    {id:'casablanca',n:'Casablanca',lat:33.5731,lng:-7.5898,days:'8',h:'Royal Mansour',c:B.g},
+    {id:'atlas',n:'Atlas Mountains',lat:31.0500,lng:-7.8833,days:'2',h:'Day Trip',c:'#A0A060',dt:true},
+    {id:'agafay',n:'Agafay Desert',lat:31.4500,lng:-8.2000,days:'3',h:'Day Trip',c:'#A0A060',dt:true},
+    {id:'volubilis',n:'Volubilis',lat:34.0733,lng:-5.5544,days:'5',h:'Day Trip',c:'#A0A060',dt:true}
+  ],
+  acc:[
+    {d:"Day 1-3",n:"Amanjena",l:"Marrakech",dt:"Luxury Resort",ni:3,g:'amanjena',ds:"A peaceful oasis just outside the Red City, Amanjena is set amidst ancient olive groves with rose-tinted walls and columns reminiscent of a Moroccan palace. The resort features a large bassin (pool) surrounded by gardens, and offers exquisite dining, a world-class spa, and serene pavilions and maisons.",note:"Booked separately"},
+    {d:"Day 4",n:"Fairmont La Marina",l:"Rabat",dt:"Luxury Hotel",ni:1,g:'fairmont',rm:"Chambre Deluxe, King",ph:"+212 537 820 800",ds:"Overlooking the stunning Marina of Rabat-Salé and the Bouregreg River, this contemporary luxury hotel offers elegant accommodations with modern Moroccan design. Enjoy panoramic views, exceptional dining, and easy access to the capital's historic sites."},
+    {d:"Day 5-7",n:"Palais Faraj",l:"Fes",dt:"Boutique Riad",ni:3,g:'palaisfaraj',rm:"Suite Ambassadeur, King",ph:"+212 661 074 699",ds:"Perched on the hills overlooking the Fes medina, this restored 19th-century palace offers breathtaking views of the ancient city. Features traditional Moroccan architecture, a rooftop terrace restaurant, hammam spa, and impeccable service."},
+    {d:"Day 8",n:"Royal Mansour Casablanca",l:"Casablanca",dt:"Luxury Hotel",ni:1,g:'royalmansour',rm:"Corner Room, King",ph:"+212 529 900 300",ds:"The epitome of Moroccan elegance and craftsmanship, Royal Mansour Casablanca combines contemporary luxury with traditional artistry. Experience world-class dining, a serene spa, and sophisticated rooms in the heart of Morocco's vibrant economic capital."}
+  ],
+  itin:[
+    {dy:1,dt:"Tue, Dec 23",loc:"Marrakech",hk:'mkh1',act:[
+      {t:"act",i:"compass",ti:"Guided Monument Tour",tm:"9:00 AM",dur:"3 hrs",ds:"Koutubia, Palaces, Spice Market & Jewish Quarter",pr:"Experience Morocco",ct:"+212 661 380 240",eds:"Explore Marrakech's most iconic monuments with an expert local guide. Visit the towering Koutoubia Mosque, the ornate Bahia Palace, the aromatic spice markets, and the historic Jewish Quarter (Mellah) with its unique architecture.",g:'marrakech'},
+      {t:"meal",i:"utensils",ti:"Lunch at Le Jardin",tm:"12:00 PM",ds:"Included",loc:"Le Jardin Restaurant"},
+      {t:"act",i:"camera",ti:"Sidecar City Tour",tm:"2:00 PM",dur:"90 mins",ds:"2 Sidecars through city & palm grove",pr:"Experience Morocco",eds:"Experience Marrakech from a unique perspective aboard vintage sidecars. Cruise through the bustling medina, explore the serene palm groves, and discover hidden gems inaccessible to larger vehicles.",g:'sidecar'},
+      {t:"act",i:"compass",ti:"Medina & Souks Tour",ds:"Medersa Ben Youssef, Artisans quarter, Djemaa El-Fna",eds:"Dive into the heart of the medina, visiting the stunning Ben Youssef Medersa, browsing artisan workshops, and ending at the legendary Djemaa El-Fna square as it comes alive at dusk.",g:'marrakech'},
+      {t:"meal",i:"utensils",ti:"Dinner at La Grande Brasserie",tm:"7:30 PM",ds:"Not included"},
+      {t:"acc",i:"hotel",ti:"Accommodation",loc:"Amanjena",ad:"Route de Ouarzazate, Km 12, Marrakech",g:'amanjena',note:"Booked separately"}
+    ]},
+    {dy:2,dt:"Wed, Dec 24",loc:"Atlas Mountains",hk:'atlas',act:[
+      {t:"tr",i:"car",ti:"Drive to Atlas Mountains",ds:"Scenic drive through the foothills (~1.5 hours per way)",pr:"Experience Morocco"},
+      {t:"act",i:"compass",ti:"Mountain Hike & Tea",ds:"Morning hike/walk & tea break with a local Berber family",eds:"Trek through beautiful mountain trails and experience genuine Berber hospitality. Enjoy traditional mint tea in a local family home while learning about their centuries-old way of life.",g:'atlas'},
+      {t:"meal",i:"utensils",ti:"Lunch",ds:"At a local restaurant (included)"},
+      {t:"act",i:"camera",ti:"Explore Berber Villages",ds:"Drive back to Marrakech around 3PM",eds:"Discover the authentic villages of the Atlas Mountains where Berber traditions have remained unchanged for generations."},
+      {t:"act",i:"spa",ti:"Massage at Amanjena",tm:"4:45 PM",ds:"Spa treatment at the resort"},
+      {t:"meal",i:"utensils",ti:"Dinner at Sahbi Sahbi",tm:"8:00 PM",ds:"Not included"},
+      {t:"acc",i:"hotel",ti:"Accommodation",loc:"Amanjena",g:'amanjena'}
+    ]},
+    {dy:3,dt:"Thu, Dec 25",loc:"Agafay Excursion",hk:'agafay',act:[
+      {t:"act",i:"camera",ti:"Majorelle Gardens & YSL Museum",tm:"11:00 AM",ds:"Visit the stunning gardens and museum",eds:"Discover the vibrant blue world of Majorelle Gardens, lovingly restored by Yves Saint Laurent. Explore the adjacent YSL Museum showcasing the designer's legendary creations and his deep connection to Morocco.",g:'majorelle'},
+      {t:"lei",i:"coffee",ti:"Lunch at Leisure",ds:"Not included"},
+      {t:"tr",i:"car",ti:"Drive to Agafay Desert",ds:"Late afternoon departure (~40 min per way)"},
+      {t:"act",i:"camera",ti:"ATVs & Sunset Camel Ride",ds:"Adventure in the rocky desert",eds:"Feel the thrill of ATV riding through the dramatic Agafay landscape, then switch to a more traditional mode of transport for a magical sunset camel ride as the desert glows golden.",g:'agafay'},
+      {t:"meal",i:"utensils",ti:"Dinner at Desert Camp",ds:"Included"},
+      {t:"tr",i:"car",ti:"Return to Marrakech",ds:"Evening drive back"},
+      {t:"acc",i:"hotel",ti:"Accommodation",loc:"Amanjena",g:'amanjena'}
+    ]},
+    {dy:4,dt:"Fri, Dec 26",loc:"Rabat",hk:'rabat',act:[
+      {t:"tr",i:"car",ti:"Drive to Rabat",ds:"~3.5 hours drive to Morocco's capital"},
+      {t:"lei",i:"coffee",ti:"Lunch at Leisure",ds:"Not included"},
+      {t:"act",i:"compass",ti:"Guided City Tour",ds:"Kasbah Oudayas, Hassan Tower, Mausoleum",pr:"Experience Morocco",eds:"Explore Morocco's elegant capital city. Wander through the blue-and-white streets of Kasbah Oudayas, admire the imposing Hassan Tower, and visit the beautiful Mausoleum of Mohammed V.",g:'rabat'},
+      {t:"meal",i:"utensils",ti:"Dinner at Dar Naji",tm:"8:00 PM",ds:"Not included"},
+      {t:"acc",i:"hotel",ti:"Accommodation",loc:"Fairmont La Marina",ad:"Rabat Marina",g:'fairmont',ph:"+212 537 820 800",rm:"Chambre Deluxe, King"}
+    ]},
+    {dy:5,dt:"Sat, Dec 27",loc:"Fes",hk:'fes1',act:[
+      {t:"tr",i:"car",ti:"Drive to Fes via Volubilis",ds:"~3 hours with stop at Roman ruins",pr:"Experience Morocco"},
+      {t:"act",i:"camera",ti:"Roman Ruins of Volubilis",ds:"UNESCO World Heritage Site",eds:"Step back in time at Morocco's best-preserved Roman ruins. Marvel at intricate mosaics, grand arches, and columns that have stood for nearly 2,000 years in this remarkable archaeological site.",g:'volubilis'},
+      {t:"act",i:"wine",ti:"Lunch & Wine Tasting",tm:"1:00 PM",ds:"At a local vineyard (included)",eds:"Enjoy a delicious lunch paired with local Moroccan wines at a picturesque vineyard, learning about the country's growing wine culture."},
+      {t:"acc",i:"hotel",ti:"Check-in",loc:"Palais Faraj",ad:"Bab Ziat, Quartier Ziat, Fes",g:'palaisfaraj'},
+      {t:"act",i:"spa",ti:"Hammam & Massage at Palais Amani",tm:"5:00 PM",ds:"Not included"},
+      {t:"meal",i:"utensils",ti:"Dinner at L'Amandier",tm:"7:00 PM",ds:"Not included"},
+      {t:"acc",i:"hotel",ti:"Accommodation",loc:"Palais Faraj",g:'palaisfaraj',ph:"+212 661 074 699",rm:"Suite Ambassadeur, King"}
+    ]},
+    {dy:6,dt:"Sun, Dec 28",loc:"Fes",hk:'fes2',act:[
+      {t:"act",i:"compass",ti:"Historical Monuments Tour",ds:"Al Qarawiyyin, Medersa, Royal Palace, Jewish Quarter",pr:"Experience Morocco",eds:"Discover the world's oldest university at Al Qarawiyyin, admire the intricate Bou Inania Medersa, see the golden gates of the Royal Palace, and explore the historic Jewish Quarter (Mellah).",g:'fes'},
+      {t:"meal",i:"utensils",ti:"Lunch in the Medina",ds:"Not included"},
+      {t:"act",i:"compass",ti:"Artisans Quarter & Tanneries",ds:"Continued guided tour of leather tanneries, medina & souq",eds:"Witness the famous Chouara Tannery where leather has been dyed using traditional methods for centuries. Browse through artisan workshops and navigate the labyrinthine souks of the world's largest car-free zone.",g:'fes'},
+      {t:"meal",i:"utensils",ti:"Dinner at Dar Hatim",tm:"8:00 PM",ds:"Not included"},
+      {t:"acc",i:"hotel",ti:"Accommodation",loc:"Palais Faraj",g:'palaisfaraj'}
+    ]},
+    {dy:7,dt:"Mon, Dec 29",loc:"Fes",hk:'fes3',act:[
+      {t:"act",i:"compass",ti:"Hike Mount Zalagh",ds:"25 min drive from hotel, 2-3 hours duration",pr:"Local mountain guide",eds:"Escape the medina for a refreshing hike up Mount Zalagh with a local guide. Enjoy panoramic views of Fes and the surrounding countryside, breathing in the fresh mountain air."},
+      {t:"meal",i:"utensils",ti:"Lunch with Local Family",ds:"Included"},
+      {t:"lei",i:"coffee",ti:"Return to Hotel",ds:"Around 3PM"},
+      {t:"act",i:"utensils",ti:"Street Food Tasting Tour",tm:"6:00 PM",ds:"In lieu of dinner (included)",eds:"Experience Fes like a local on this culinary adventure through the medina. Sample traditional street foods, from savory msemen to sweet chebakia, guided by a local food expert."},
+      {t:"acc",i:"hotel",ti:"Accommodation",loc:"Palais Faraj",g:'palaisfaraj'}
+    ]},
+    {dy:8,dt:"Tue, Dec 30",loc:"Casablanca",hk:'casa',act:[
+      {t:"tr",i:"car",ti:"Drive to Casablanca",ds:"~4 hours drive to Morocco's largest city"},
+      {t:"lei",i:"coffee",ti:"Lunch at Leisure",ds:"Not included"},
+      {t:"act",i:"compass",ti:"City Tour",ds:"Hassan II Mosque, Habous Medina & Art Deco district",pr:"Experience Morocco",eds:"Visit the magnificent Hassan II Mosque, one of the world's largest mosques with its stunning oceanside location. Explore the French-built Habous Quarter and admire the Art Deco architecture of the downtown district.",g:'casablanca'},
+      {t:"meal",i:"utensils",ti:"Dinner at Dar Dada",tm:"8:00 PM",ds:"Not included"},
+      {t:"acc",i:"hotel",ti:"Accommodation",loc:"Royal Mansour Casablanca",ad:"Boulevard de Corniche, Casablanca",g:'royalmansour',ph:"+212 529 900 300",rm:"Corner Room, King"}
+    ]},
+    {dy:9,dt:"Wed, Dec 31",loc:"Departure",hk:'dep',act:[
+      {t:"tr",i:"car",ti:"Transfer to CMN Airport",tm:"8:45 AM",ds:"~30 min drive to Mohammed V International Airport",pr:"Experience Morocco"},
+      {t:"tr",i:"plane",ti:"Departure Flight",tm:"12:15 PM",ds:"Flight AC73 from Casablanca",pr:"Safe travels!"},
+      {t:"info",i:"info",ti:"Marhaba!",ds:"Thank you for traveling with Experience Morocco! We hope to see you again soon.",nt:true}
+    ]}
+  ]
+};
+const getIc=(t,c,s)=>{
+  const m={car:Ic.Ca,plane:Ic.Pl,hotel:Ic.Bd,camera:Ic.Cm,utensils:Ic.Ut,wine:Ic.Wi,coffee:Ic.Co,compass:Ic.Cp,info:Ic.Ft,spa:Ic.Spa};
+  const I=m[t]||Ic.Cal;
+  return <I c={`w-5 h-5 ${c}`} s={s}/>;
+};
+function App(){
+  const[menu,setMenu]=useState(false);
+  const[sec,setSec]=useState('cover');
+  const[exp,setExp]=useState({});
+  const[edit,setEdit]=useState(false);
+  const[notes,setNotes]=useState({});
+  const[tab,setTab]=useState('ov');
+  const[hero,setHero]=useState(H.cover);
+  const[pdfLoading,setPdfLoading]=useState(false);
+  const[showWaPanel,setShowWaPanel]=useState(false);
+  const[fullscreenMap,setFullscreenMap]=useState(false);
+  const[tempUnit,setTempUnit]=useState('F');
+  const[faqOpen,setFaqOpen]=useState({});
+  const[placesOpen,setPlacesOpen]=useState({});
+  const refs=useRef({});
+  const toF=(c)=>Math.round(c*9/5+32);
+  const getTemp=(c)=>tempUnit==='F'?toF(c):c;
+  const toc=[{id:'cover',l:'Cover'},{id:'brief',l:'Travel Brief'},{id:'map',l:'Journey'},{id:'ess',l:'Essentials'},...D.itin.map(d=>({id:`d${d.dy}`,l:`Day ${d.dy}`,s:d.loc})),{id:'emg',l:'Emergency'},{id:'places',l:'Places'},{id:'faq',l:'FAQ'}];
+  const goTo=(id)=>{setMenu(false);setSec(id);updH(id);refs.current[id]?.scrollIntoView({behavior:'smooth'});};
+  const updH=(id)=>{
+    if(id==='cover')setHero(H.cover);
+    else if(id==='brief')setHero(H.brief);
+    else if(id==='map')setHero(H.map);
+    else if(id==='ess')setHero(H.ess);
+    else if(id==='emg')setHero(H.emg);
+    else if(id==='places')setHero(H.places);
+    else if(id==='faq')setHero(H.faq);
+    else{const d=D.itin.find(x=>`d${x.dy}`===id);if(d?.hk)setHero(H[d.hk]);}
+  };
+  const tog=(di,ai)=>setExp(p=>({...p,[`${di}-${ai}`]:!p[`${di}-${ai}`]}));
+  const togFaq=(cat,idx)=>setFaqOpen(p=>({...p,[`${cat}-${idx}`]:!p[`${cat}-${idx}`]}));
+  const togPlace=(id)=>setPlacesOpen(p=>({...p,[id]:!p[id]}));
+  useEffect(()=>{
+    const obs=new IntersectionObserver((e)=>{e.forEach(x=>{if(x.isIntersecting){const id=x.target.getAttribute('data-s');if(id){setSec(id);updH(id);}}});},{threshold:0.3});
+    Object.entries(refs.current).forEach(([id,el])=>{if(el){el.setAttribute('data-s',id);obs.observe(el);}});
+    return()=>obs.disconnect();
+  },[]);
+  return(
+    <div className="min-h-screen bg-stone-50">
+      <header className="fixed top-0 right-0 left-0 lg:left-1/2 z-50 bg-stone-50/95 backdrop-blur-sm border-b border-stone-200">
+        <div className="flex items-center justify-between px-4 py-3">
+          <button onClick={()=>setMenu(!menu)} className="p-2 hover:bg-stone-100 rounded-full">{menu?<Ic.X c="w-6 h-6 text-stone-700"/>:<Ic.Menu c="w-6 h-6 text-stone-700"/>}</button>
+          <Logo className="h-10 w-auto"/>
+          <div className="flex items-center gap-2">
+            <button onClick={()=>setEdit(!edit)} className={`p-2 rounded-full no-print transition-colors ${edit?'bg-amber-100':'hover:bg-stone-100'}`} title={edit?"Exit Edit Mode":"Edit Notes"}>
+              <Ic.Ed c={`w-5 h-5 ${edit?'text-amber-700':'text-stone-600'}`}/>
+            </button>
+            <button onClick={async()=>{
+              const url=window.location.href;
+              const title=`${D.name} - Morocco Itinerary`;
+              if(navigator.share){
+                try{await navigator.share({title,url});}catch(e){}
+              }else{
+                await navigator.clipboard.writeText(url);
+                alert('Link copied to clipboard!');
+              }
+            }} className="p-2 hover:bg-stone-100 rounded-full no-print" title="Share Itinerary">
+              <Ic.Sh c="w-5 h-5 text-stone-600"/>
+            </button>
+            <button onClick={()=>{
+              setPdfLoading(true);
+              const el=document.getElementById('booklet-content');
+              html2pdf().set({
+                margin:8,pagebreak:{mode:['avoid-all','css','legacy']},filename:`QuaziColvin-Morocco-Booklet-${new Date().toISOString().split('T')[0]}.pdf`,
+                image:{type:'jpeg',quality:0.95},html2canvas:{scale:2,useCORS:true},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}
+              }).from(el).save().then(()=>setPdfLoading(false)).catch(()=>setPdfLoading(false));
+            }} disabled={pdfLoading} className="p-2 hover:bg-stone-100 rounded-full no-print" title="Download PDF">
+              {pdfLoading?<div className="w-5 h-5 border-2 border-stone-300 border-t-stone-600 rounded-full animate-spin"/>:<Ic.Dl c="w-5 h-5 text-stone-600"/>}
+            </button>
+            <button onClick={()=>setShowWaPanel(!showWaPanel)} className="p-2 hover:bg-stone-100 rounded-full no-print" title="Chat with Concierge">
+              <Ic.Wa c="w-5 h-5" style={{color:'#25D366'}}/>
+            </button>
+          </div>
+        </div>
+        {menu&&(
+          <nav className="absolute top-full left-0 right-0 bg-white border-b border-stone-200 shadow-lg max-h-[70vh] overflow-y-auto">
+            {toc.map(t=>(
+              <button key={t.id} onClick={()=>goTo(t.id)} className={`w-full px-6 py-3 text-left hover:bg-stone-50 flex items-center justify-between ${sec===t.id?'bg-stone-50':''}`}>
+                <span className="font-medium" style={sec===t.id?{color:B.dg}:{}}>{t.l}</span>
+                {t.s&&<span className="text-xs text-stone-400">{t.s}</span>}
+              </button>
+            ))}
+          </nav>
+        )}
+      </header>
+      {edit&&(
+        <div className="fixed top-[57px] right-0 left-0 lg:left-1/2 z-40 bg-amber-50 border-b border-amber-200 px-4 py-2 flex items-center justify-between no-print">
+          <div className="flex items-center gap-2">
+            <Ic.Ed c="w-4 h-4 text-amber-700"/>
+            <span className="text-sm font-medium text-amber-700">Edit Mode</span>
+            <span className="text-sm text-amber-600">— Level III notes only</span>
+          </div>
+          <button onClick={()=>setEdit(false)} className="text-sm font-medium flex items-center gap-1" style={{color:B.dg}}>
+            <Ic.Ck c="w-4 h-4"/>Save
+          </button>
+        </div>
+      )}
+      <div className="hidden lg:block fixed top-0 left-0 w-1/2 h-screen">
+        <div className="relative w-full h-full">
+          <img src={hero} alt="" className="w-full h-full object-cover transition-all duration-700"/>
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent to-black/20"/>
+        </div>
+      </div>
+      <div id="booklet-content" className="lg:w-1/2 lg:ml-[50%]">
+        <div className="pt-16">
+          <section ref={el=>refs.current['cover']=el} className="min-h-screen flex flex-col items-center justify-center px-6 py-24 relative" style={{backgroundColor:B.cr}}>
+            <div className="text-center max-w-md">
+              <Logo className="h-20 w-auto mx-auto mb-8"/>
+              <p className="text-sm tracking-widest uppercase mb-2" style={{color:B.dg}}>Arrival Booklet</p>
+              <h1 className="font-serif text-4xl md:text-5xl italic mb-4" style={{color:B.dg}}>{D.name}</h1>
+              <p className="text-xl mb-2" style={{color:B.g}}>{D.dest}</p>
+              <p className="text-stone-500">{D.dates}</p>
+              <div className="mt-12">
+                <button onClick={()=>goTo('brief')} className="px-8 py-3 rounded-full text-white font-medium shadow-lg hover:shadow-xl transition-all" style={{backgroundColor:B.dg}}>
+                  Explore Your Journey
+                </button>
+              </div>
+            </div>
+          </section>
+          <section ref={el=>refs.current['brief']=el} className="min-h-screen px-6 py-20 bg-white">
+            <h2 className="font-serif text-3xl text-center mb-3 italic" style={{color:B.dg}}>Travel Brief</h2>
+            <p className="text-center text-stone-500 mb-8">Your trip at a glance</p>
+            <div className="flex justify-center gap-2 mb-8 border-b border-stone-200">
+              {[{id:'ov',l:'Overview',I:Ic.Cal},{id:'ac',l:'Accommodation',I:Ic.Bd},{id:'fl',l:'Flights',I:Ic.Pl}].map(t=>(
+                <button key={t.id} onClick={()=>setTab(t.id)} className={`flex items-center gap-2 pb-3 px-3 border-b-2 ${tab===t.id?'text-stone-800':'border-transparent text-stone-400'}`} style={tab===t.id?{borderColor:B.g}:{}}>
+                  <t.I c="w-4 h-4"/><span className="text-sm">{t.l}</span>
+                </button>
+              ))}
+            </div>
+            {tab==='ov'&&(
+              <div className="max-w-3xl mx-auto overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead><tr className="border-b border-stone-200">
+                    <th className="py-3 text-left text-stone-500 font-normal">Day</th>
+                    <th className="py-3 text-left text-stone-500 font-normal">Activities</th>
+                    <th className="py-3 text-center text-stone-500 font-normal w-28">
+                      <div className="flex items-center justify-center gap-2">
+                        <span>Weather</span>
+                        <div className="inline-flex rounded-full border border-stone-300 overflow-hidden text-xs">
+                          <button onClick={()=>setTempUnit('F')} className={`px-2 py-0.5 transition-colors ${tempUnit==='F'?'text-white':'text-stone-500 hover:bg-stone-100'}`} style={tempUnit==='F'?{backgroundColor:B.dg}:{}}>°F</button>
+                          <button onClick={()=>setTempUnit('C')} className={`px-2 py-0.5 transition-colors ${tempUnit==='C'?'text-white':'text-stone-500 hover:bg-stone-100'}`} style={tempUnit==='C'?{backgroundColor:B.dg}:{}}>°C</button>
+                        </div>
+                      </div>
+                    </th>
+                  </tr></thead>
+                  <tbody>{D.itin.map((d,i)=>{
+                    const w=D.weather[d.dy];
+                    return(
+                    <tr key={i} className="border-b border-stone-100">
+                      <td className="py-3 pr-4 align-top whitespace-nowrap"><span className="text-stone-800">Day {d.dy}</span><br/><span className="text-xs text-stone-400">{d.loc}</span></td>
+                      <td className="py-3"><div className="space-y-1.5">
+                        {d.act.filter(a=>!['acc','lei','info','meal'].includes(a.t)).slice(0,2).map((a,j)=>(
+                          <div key={j} className="flex items-start gap-2">{getIc(a.i,'mt-0.5',{color:B.dg})}<span className="text-stone-700">{a.ti}</span></div>
+                        ))}
+                        {d.act.find(a=>a.t==='acc')&&<div className="flex items-start gap-2"><Ic.Bd c="w-5 h-5 mt-0.5" s={{color:B.dg}}/><span className="text-stone-700">{d.act.find(a=>a.t==='acc')?.loc}</span></div>}
+                      </div></td>
+                      <td className="py-3 text-center align-top">
+                        <div className="inline-flex flex-col items-center">
+                          <span className="text-2xl">{w?.icon}</span>
+                          <span className="text-xs text-stone-600 font-medium">{getTemp(w?.hi)}° / {getTemp(w?.lo)}°</span>
+                          <span className="text-xs text-stone-400">{w?.cond}</span>
+                        </div>
+                      </td>
+                    </tr>
+                  );})}</tbody>
+                </table>
+                <p className="text-xs text-stone-400 text-center mt-4 italic">Weather forecast is approximate and will be updated closer to your travel date.</p>
+              </div>
+            )}
+            {tab==='ac'&&(
+              <div className="max-w-3xl mx-auto space-y-6">{D.acc.map((a,i)=>(
+                <div key={i} className="bg-stone-50 rounded-xl p-5 border border-stone-200">
+                  <div className="flex flex-wrap items-start justify-between gap-4 mb-3">
+                    <div><h3 className="font-medium text-stone-800">{a.n}</h3><p className="text-sm" style={{color:B.g}}>{a.l}</p></div>
+                    <div className="text-right"><span className="text-sm text-stone-600">{a.d}</span><span className="block text-xs text-stone-400">{a.ni} night{a.ni>1?'s':''}</span></div>
+                  </div>
+                  {a.rm&&<p className="text-sm text-stone-600 mb-1"><strong>Room:</strong> {a.rm}</p>}
+                  {a.ph&&<p className="text-sm text-stone-600 mb-1"><strong>Phone:</strong> <a href={`tel:${a.ph}`} className="hover:underline" style={{color:B.dg}}>{a.ph}</a></p>}
+                  {a.note&&<p className="text-sm text-amber-600 mb-2 italic">{a.note}</p>}
+                  <p className="text-sm text-stone-600 mb-3">{a.ds}</p>
+                  {a.g&&<Gal imgs={G[a.g]} name={a.n}/>}
+                </div>
+              ))}</div>
+            )}
+            {tab==='fl'&&(
+              <div className="max-w-2xl mx-auto space-y-6">
+                <div className="bg-stone-50 rounded-xl p-5 border border-stone-200">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{backgroundColor:B.dg}}><Ic.Pl c="w-5 h-5 text-white" s={{transform:'rotate(-45deg)'}}/></div>
+                    <div><h3 className="font-medium text-stone-800">Arrival</h3><p className="text-sm text-stone-500">{D.flights.arr.date}</p></div>
+                  </div>
+                  <div className="grid grid-cols-3 gap-4 text-sm mb-4">
+                    <div><span className="text-stone-400 block">Time</span><span className="font-medium">{D.flights.arr.time}</span></div>
+                    <div><span className="text-stone-400 block">Airport</span><span className="font-medium">{D.flights.arr.port}</span></div>
+                    <div><span className="text-stone-400 block">Flight</span><span className="font-medium">{D.flights.arr.flight}</span></div>
+                  </div>
+                  <div className="text-sm"><span className="text-stone-400">Travelers:</span><span className="ml-2">{D.flights.arr.travelers.join(', ')}</span></div>
+                </div>
+                <div className="bg-stone-50 rounded-xl p-5 border border-stone-200">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{backgroundColor:B.g}}><Ic.Pl c="w-5 h-5 text-white" s={{transform:'rotate(45deg)'}}/></div>
+                    <div><h3 className="font-medium text-stone-800">Departure</h3><p className="text-sm text-stone-500">{D.flights.dep.date}</p></div>
+                  </div>
+                  <div className="grid grid-cols-3 gap-4 text-sm mb-4">
+                    <div><span className="text-stone-400 block">Time</span><span className="font-medium">{D.flights.dep.time}</span></div>
+                    <div><span className="text-stone-400 block">Airport</span><span className="font-medium">{D.flights.dep.port}</span></div>
+                    <div><span className="text-stone-400 block">Flight</span><span className="font-medium">{D.flights.dep.flight}</span></div>
+                  </div>
+                  <div className="text-sm"><span className="text-stone-400">Travelers:</span><span className="ml-2">{D.flights.dep.travelers.join(', ')}</span></div>
+                </div>
+              </div>
+            )}
+          </section>
+          <section ref={el=>refs.current['map']=el} className="min-h-screen px-6 py-20 bg-stone-50">
+            <h2 className="font-serif text-3xl text-center mb-3 italic" style={{color:B.dg}}>Your Journey</h2>
+            <p className="text-center text-stone-500 mb-8">Marrakech → Rabat → Fes → Casablanca</p>
+            <div className="max-w-3xl mx-auto">
+              <TripMap locs={D.locs} fullscreen={fullscreenMap} onToggleFs={()=>setFullscreenMap(!fullscreenMap)} onSelect={(id)=>{const loc=D.locs.find(l=>l.id===id);if(loc&&!loc.dt&&!fullscreenMap){const dayNum=parseInt(loc.days.split('-')[0]);goTo(`d${dayNum}`);}}}/>
+              {!fullscreenMap&&(
+              <div className="mt-8 bg-white rounded-xl p-5 shadow-sm">
+                <h3 className="text-sm font-medium text-stone-700 mb-4">Accommodations</h3>
+                <div className="space-y-3">
+                  {D.acc.map((a,i)=>(
+                    <div key={i} className="flex items-start gap-3 p-3 rounded-lg hover:bg-stone-50 transition-colors">
+                      <span className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-semibold shrink-0" style={{background:D.locs[i]?.c||B.g}}>{i+1}</span>
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-medium text-stone-800 text-sm">{a.n}</h4>
+                        <p className="text-xs text-stone-500">{a.l} • {a.d}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              )}
+            </div>
+          </section>
+          <section ref={el=>refs.current['ess']=el} className="min-h-screen px-6 py-20 bg-white">
+            <h2 className="font-serif text-3xl text-center mb-3 italic" style={{color:B.dg}}>Travel Essentials</h2>
+            <p className="text-center text-stone-500 mb-8">Important information for your trip</p>
+            <div className="max-w-2xl mx-auto">
+              <div className="bg-stone-50 rounded-xl p-6 border border-stone-200">
+                <h3 className="font-medium text-stone-800 mb-3">Welcome to Morocco!</h3>
+                <p className="text-stone-600 leading-relaxed">{D.intro}</p>
+              </div>
+            </div>
+          </section>
+          {D.itin.map((day,di)=>(
+            <section key={day.dy} ref={el=>refs.current[`d${day.dy}`]=el} className={`min-h-screen px-6 py-20 ${di%2===0?'bg-white':'bg-stone-50'}`}>
+              <div className="lg:hidden -mx-6 -mt-20 mb-6 h-48 bg-cover bg-center relative" style={{backgroundImage:`url(${H[day.hk]})`}}><div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent"/></div>
+              <div className="max-w-2xl mx-auto">
+                <div className="text-center mb-10">
+                  <p className="text-xs text-stone-400 tracking-widest uppercase mb-1">{day.dt}</p>
+                  <h2 className="font-serif text-3xl italic" style={{color:B.dg}}>Day {day.dy}</h2>
+                  <p className="mt-1" style={{color:B.dg}}>{day.loc}</p>
+                </div>
+                <div className="space-y-4">{day.act.map((a,ai)=>{
+                  const isExp=exp[`${di}-${ai}`];
+                  const nk=`${di}-${ai}`;
+                  const isExperience=a.t==='act';
+                  const accInfo=a.t==='acc'&&a.g?D.acc.find(x=>x.g===a.g):null;
+                  return(
+                    <div key={ai} className={`rounded-xl border transition-all ${isExperience?'bg-gradient-to-br from-white to-stone-50 shadow-sm':a.nt?'bg-amber-50':'bg-white'}`} style={isExperience?{borderColor:B.dg,borderWidth:'1.5px'}:a.nt?{borderColor:B.g}:{borderColor:'#e7e5e4'}}>
+                      <div className={`p-4 ${a.t!=='info'?'cursor-pointer':''}`} onClick={()=>a.t!=='info'&&tog(di,ai)}>
+                        <div className="flex items-start gap-3">
+                          <div className={`p-2 rounded-lg ${isExperience?'':'shrink-0'}`} style={{backgroundColor:isExperience?B.dg:a.nt?'#FEF3C7':'#f5f5f4'}}>{getIc(a.i,isExperience?'text-white':'',{color:isExperience?'#fff':a.nt?B.g:B.dg})}</div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-start justify-between gap-2">
+                              <div>
+                                {isExperience&&<span className="inline-block text-xs font-medium tracking-wide uppercase px-2 py-0.5 rounded mb-1.5" style={{backgroundColor:B.g,color:'#fff'}}>Experience</span>}
+                                <h3 className={`font-medium text-stone-800 ${isExperience?'text-base':'text-sm'}`}>{a.ti}</h3>
+                                {a.tm&&<p className={`${isExperience?'text-sm font-medium':'text-sm'} mt-0.5`} style={{color:B.dg}}>{a.tm}</p>}
+                                {a.loc&&<p className="text-sm text-stone-500 mt-0.5">{a.loc}</p>}
+                              </div>
+                              {a.t!=='info'&&<Ic.ChR c={`w-5 h-5 text-stone-400 transition-transform ${isExp?'rotate-90':''}`}/>}
+                            </div>
+                            {a.nt&&<p className="text-sm mt-2 italic" style={{color:'#92700C'}}>{a.ds}</p>}
+                            {a.t==='acc'&&a.ad&&<a href={`https://maps.google.com/search/${encodeURIComponent(a.ad)}`} target="_blank" rel="noopener noreferrer" className="text-sm mt-1 flex items-center gap-1 hover:opacity-70" style={{color:B.dg}}><Ic.Mp c="w-4 h-4" s={{color:B.dg}}/><span className="truncate">{a.ad}</span></a>}
+                          </div>
+                        </div>
+                      </div>
+                      {isExp&&a.t!=='info'&&(
+                        <div className="px-4 pb-4 border-t border-stone-100 pt-3">
+                          <div className="ml-11 space-y-3 text-sm">
+                            {isExperience&&a.eds&&<p className="text-stone-600 leading-relaxed">{a.eds}</p>}
+                            {!isExperience&&a.ds&&<p className="text-stone-600">{a.ds}</p>}
+                            {a.dur&&<div className="flex items-center gap-2 text-stone-500"><Ic.Cl c="w-4 h-4"/>Duration: {a.dur}</div>}
+                            {a.mp&&<div><span className="text-stone-500">Meeting: </span><span style={{color:B.dg}}>{a.mp}</span></div>}
+                            {a.pr&&<div><span className="text-stone-500">Provider: </span><span className="text-stone-700">{a.pr}</span></div>}
+                            {a.ct&&<div><span className="text-stone-500">Contact: </span><a href={`tel:${a.ct.replace(/[^0-9+]/g,'')}`} className="hover:underline" style={{color:B.dg}}>{a.ct}</a></div>}
+                            {a.rm&&<div><span className="text-stone-500">Room: </span><span className="text-stone-700">{a.rm}</span></div>}
+                            {a.ph&&<div><span className="text-stone-500">Hotel Phone: </span><a href={`tel:${a.ph}`} className="hover:underline" style={{color:B.dg}}>{a.ph}</a></div>}
+                            {a.note&&<div className="bg-amber-50 border border-amber-200 rounded-lg p-2.5 text-amber-800"><b>Note:</b> {a.note}</div>}
+                            {accInfo&&<div className="bg-stone-50 rounded-lg p-3 mt-2"><h4 className="text-sm font-medium text-stone-700 mb-1.5">About {accInfo.n}</h4><p className="text-stone-600 text-sm leading-relaxed">{accInfo.ds}</p></div>}
+                            {a.g&&G[a.g]&&<Gal imgs={G[a.g]} name={isExperience?a.ti:a.loc} isExp={isExperience}/>}
+                          </div>
+                        </div>
+                      )}
+                      {!edit&&notes[nk]&&(
+                        <div className="mx-4 mb-4 bg-amber-50 border-l-4 border-amber-400 rounded-r-lg px-4 py-2.5">
+                          <span className="text-sm text-amber-800"><span className="font-medium" style={{color:B.g}}>Note:</span> {notes[nk]}</span>
+                        </div>
+                      )}
+                      {edit&&(
+                        <div className="mx-4 mb-4 border-2 border-dashed rounded-lg p-3" style={{borderColor:B.g}}>
+                          <label className="text-xs font-medium block mb-2" style={{color:B.g}}>Ops Note (Level III)</label>
+                          <textarea
+                            value={notes[nk]||''}
+                            onChange={(e)=>setNotes(p=>({...p,[nk]:e.target.value.slice(0,200)}))}
+                            placeholder="Add note..."
+                            className="w-full text-sm border border-stone-200 rounded-lg p-2 resize-none focus:outline-none focus:border-stone-400"
+                            rows={2}
+                          />
+                          <div className="text-right text-xs text-stone-400 mt-1">{(notes[nk]||'').length}/200</div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}</div>
+              </div>
+            </section>
+          ))}
+          <section ref={el=>refs.current['emg']=el} className="min-h-screen px-6 py-20" style={{backgroundColor:'#4A5D23'}}>
+            <h2 className="font-serif text-3xl text-white text-center mb-10 italic">Emergency Contacts</h2>
+            <div className="max-w-2xl mx-auto">
+              <div className="bg-white/15 backdrop-blur-sm rounded-xl p-6 space-y-5">
+                <div>
+                  <h3 className="text-sm tracking-wide uppercase mb-3 text-amber-300">Trip Manager</h3>
+                  <p className="text-white mb-2">Your primary contact: <span className="font-semibold">{D.em.tm}</span></p>
+                  <a href={`tel:${D.em.tmPh}`} className="inline-flex items-center gap-2 bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg transition-colors text-white"><Ic.Ph c="w-5 h-5"/><span>{D.em.tmPh}</span></a>
+                </div>
+                <div className="border-t border-white/30 pt-5">
+                  <h3 className="text-sm tracking-wide uppercase mb-3 text-amber-300">Guest Experience Agent</h3>
+                  <p className="text-white mb-2"><span className="font-semibold">{D.em.ge}</span></p>
+                  <a href={`tel:${D.em.gePh}`} className="inline-flex items-center gap-2 bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg transition-colors text-white"><Ic.Ph c="w-5 h-5"/><span>{D.em.gePh}</span></a>
+                </div>
+                <div className="border-t border-white/30 pt-5">
+                  <h3 className="text-sm tracking-wide uppercase mb-3 text-red-300">Emergency Contact (24/7)</h3>
+                  <a href={`tel:${D.em.ep}`} className="inline-flex items-center gap-2 bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg transition-colors text-white font-medium"><Ic.Ph c="w-5 h-5"/>{D.em.ep}</a>
+                  <p className="text-white/80 text-sm mt-3">On business days: 7 PM to 8 AM (local time)<br/>On weekends and holidays: 24/7</p>
+                </div>
+                <div className="border-t border-white/30 pt-5">
+                  <a href={`https://wa.me/${D.em.wa}?text=${encodeURIComponent('Hello! I am a guest on the Quazi/Colvin Morocco trip and need assistance.')}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg transition-colors text-white"><Ic.Wa c="w-5 h-5"/><span>WhatsApp</span></a>
+                </div>
+              </div>
+              <div className="text-center mt-10">
+                <p className="text-white/80 text-sm">Welcome to Morocco!</p>
+                <p className="font-medium mt-1 text-amber-300">Experience Morocco Team</p>
+              </div>
+            </div>
+          </section>
+          <section ref={el=>refs.current['places']=el} className="min-h-screen px-6 py-20" style={{background:'linear-gradient(180deg, #F5F2ED 0%, #E8E4DD 100%)'}}>
+            <h2 className="font-serif text-3xl text-center mb-3 italic" style={{color:B.dg}}>The Places You'll Go</h2>
+            <p className="text-center text-stone-500 mb-10">Discover the magic of Morocco</p>
+            <div className="max-w-3xl mx-auto space-y-4">
+              {D.places.map((place,i)=>{
+                const isOpen=placesOpen[place.id];
+                return(
+                  <div key={i} className="bg-white rounded-2xl shadow-sm border border-stone-200 overflow-hidden">
+                    <button onClick={()=>togPlace(place.id)} className="w-full text-left">
+                      <div className="flex items-center gap-4 p-4">
+                        <span className="w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-semibold shrink-0" style={{background:B.dg}}>{i+1}</span>
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-serif text-xl italic" style={{color:B.dg}}>Experience {place.name}</h3>
+                        </div>
+                        <Ic.ChD c={`w-5 h-5 text-stone-400 shrink-0 transition-transform ${isOpen?'rotate-180':''}`}/>
+                      </div>
+                    </button>
+                    {isOpen&&(
+                      <div className="px-4 pb-4">
+                        <div className="w-full h-48 md:h-64 rounded-xl overflow-hidden mb-4">
+                          <img src={place.img} alt={place.name} className="w-full h-full object-cover"/>
+                        </div>
+                        <p className="text-stone-600 leading-relaxed">{place.desc}</p>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+          <section ref={el=>refs.current['faq']=el} className="min-h-screen px-6 py-20" style={{background:'linear-gradient(180deg, #FDF8F3 0%, #F5EDE4 100%)'}}>
+            <h2 className="font-serif text-3xl text-center mb-3 italic" style={{color:'#8B4513'}}>Destination FAQ</h2>
+            <p className="text-center text-stone-500 mb-10">Everything you need to know about traveling in Morocco</p>
+            <div className="max-w-3xl mx-auto space-y-6">
+              {D.faq.map((cat,ci)=>(
+                <div key={ci} className="bg-white rounded-2xl shadow-sm border border-stone-200 overflow-hidden">
+                  <div className="px-6 py-4 border-b border-stone-100" style={{background:'linear-gradient(90deg, #FAF5F0 0%, #FFFFFF 100%)'}}>
+                    <h3 className="font-medium text-lg flex items-center gap-3" style={{color:'#8B4513'}}>
+                      <span className="text-2xl">{cat.icon}</span>
+                      {cat.cat}
+                    </h3>
+                  </div>
+                  <div className="divide-y divide-stone-100">
+                    {cat.items.map((item,qi)=>{
+                      const isOpen=faqOpen[`${ci}-${qi}`];
+                      return(
+                        <div key={qi} className="transition-colors hover:bg-stone-50">
+                          <button onClick={()=>togFaq(ci,qi)} className="w-full px-6 py-4 text-left flex items-start justify-between gap-4">
+                            <span className="font-medium text-stone-700">{item.q}</span>
+                            <Ic.ChD c={`w-5 h-5 text-stone-400 shrink-0 transition-transform ${isOpen?'rotate-180':''}`}/>
+                          </button>
+                          {isOpen&&(
+                            <div className="px-6 pb-4 -mt-2">
+                              <p className="text-stone-600 text-sm leading-relaxed pl-4 border-l-2" style={{borderColor:B.g}}>{item.a}</p>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+              <div className="text-center pt-6">
+                <p className="text-stone-500 text-sm mb-3">Have more questions?</p>
+                <a href={`https://wa.me/${D.em.wa}?text=${encodeURIComponent('Hello! I have a question about my upcoming Morocco trip.')}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-white font-medium shadow-lg hover:shadow-xl transition-all" style={{backgroundColor:'#25D366'}}>
+                  <Ic.Wa c="w-5 h-5"/>Ask Your Concierge
+                </a>
+              </div>
+            </div>
+          </section>
+          <footer className="py-12 px-6 text-center" style={{backgroundColor:B.dg}}>
+            <Logo className="h-14 w-auto mx-auto mb-4 opacity-80" inv/>
+            <p className="text-white text-lg font-serif italic mb-2">Share Your Experience</p>
+            <p className="text-white/80 text-sm mb-4">We love seeing Morocco from your perspective!<br/>Tag us in your social media and photos.</p>
+            <div className="flex justify-center gap-4 mb-4">
+              <a href="https://www.instagram.com/experiencemorocco/" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors"><Ic.Ig c="w-5 h-5 text-white"/></a>
+              <a href="https://www.facebook.com/experiencemorocco/" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors"><Ic.Fb c="w-5 h-5 text-white"/></a>
+              <a href="https://g.page/experiencemorocco" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors"><Ic.Gl c="w-5 h-5 text-white"/></a>
+            </div>
+            <p className="text-white/70 text-sm">contact@experiencemorocco.com</p>
+            <p className="text-white/80 text-sm mt-4">© 2025 Experience Morocco</p>
+            <p className="text-white/60 text-xs mt-1">Last updated: Jan 23, 2026</p>
+          </footer>
+        </div>
+      </div>
+      {showWaPanel&&<WhatsAppPanel onClose={()=>setShowWaPanel(false)} wa={D.em.wa} name={D.name}/>}
+      {fullscreenMap&&<TripMap locs={D.locs} fullscreen={true} onToggleFs={()=>setFullscreenMap(false)} onSelect={()=>{}}/>}
+      <button onClick={()=>setShowWaPanel(!showWaPanel)} className={`fixed bottom-5 right-5 text-white px-5 py-2.5 rounded-full shadow-lg hover:scale-105 transition-all flex items-center gap-2 z-30 no-print ${showWaPanel?'':'pulse-ring'}`} style={{backgroundColor:'#25D366'}}>
+        <Ic.Wa c="w-5 h-5"/><span className="font-medium">{showWaPanel?'Close':'Chat with Concierge'}</span>
+      </button>
+    </div>
+  );
+}
+ReactDOM.render(<App/>,document.getElementById('root'));
+</script>
+</body>
+</html>
