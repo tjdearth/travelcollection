@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kendall & Craig France Trip - Arrival Booklet | Essentially French</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;1,400&family=Source+Sans+3:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:'Source Sans 3',sans-serif}
+    .font-serif{font-family:'Cormorant Garamond',Georgia,serif}
+    ::-webkit-scrollbar{width:8px;height:8px}
+    ::-webkit-scrollbar-track{background:#f5f5f4}
+    ::-webkit-scrollbar-thumb{background:#5C4033;border-radius:4px}
+    .hide-scrollbar::-webkit-scrollbar{display:none}
+    .hide-scrollbar{-ms-overflow-style:none;scrollbar-width:none}
+    .leaflet-container{font-family:'Source Sans 3',sans-serif}
+    .wa-panel{animation:slideUp 0.3s ease-out}
+    @keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+    .pulse-ring{animation:pulseRing 2s infinite}
+    @keyframes pulseRing{0%{box-shadow:0 0 0 0 rgba(37,211,102,0.4)}70%{box-shadow:0 0 0 15px rgba(37,211,102,0)}100%{box-shadow:0 0 0 0 rgba(37,211,102,0)}}
+    @media print{
+      .no-print{display:none!important}
+      body{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+      .min-h-screen{min-height:auto!important;page-break-inside:avoid}
+      section{page-break-after:auto;page-break-inside:avoid}
+      .fixed{position:static!important}
+      .lg\\:w-1\\/2{width:100%!important;margin-left:0!important}
+      .lg\\:block.fixed{display:none!important}
+      .bg-cover{background-size:cover!important}
+      h2{page-break-after:avoid}
+    }
+  </style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const{useState,useRef,useEffect}=React;
+const B={dg:'#5C4033',g:'#C4956A',cr:'#F5F0EB'};
+const H={
+  cover:'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=1600&q=80',
+  brief:'https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&w=1600&q=80',
+  map:'https://images.unsplash.com/photo-1551632436-cbf8dd35adfa?auto=format&fit=crop&w=1600&q=80',
+  ess:'https://images.unsplash.com/photo-1549144511-f099e773c147?auto=format&fit=crop&w=1600&q=80',
+  emg:'https://images.unsplash.com/photo-1478391679764-b2d8b3cd1e94?auto=format&fit=crop&w=1600&q=80',
+  places:'https://images.unsplash.com/photo-1431274172761-fca41d930114?auto=format&fit=crop&w=1600&q=80',
+  faq:'https://images.unsplash.com/photo-1520939817895-060bdaf4fe1b?auto=format&fit=crop&w=1600&q=80',
+  vi1:'https://images.unsplash.com/photo-1548777123-e216912df7d8?auto=format&fit=crop&w=1600&q=80',
+  vi2:'https://images.unsplash.com/photo-1551524559-8af4e6624178?auto=format&fit=crop&w=1600&q=80',
+  vi3:'https://images.unsplash.com/photo-1605540436563-5bca919ae766?auto=format&fit=crop&w=1600&q=80',
+  co1:'https://images.unsplash.com/photo-1605540436563-5bca919ae766?auto=format&fit=crop&w=1600&q=80',
+  co2:'https://images.unsplash.com/photo-1551524559-8af4e6624178?auto=format&fit=crop&w=1600&q=80',
+  mer:'https://images.unsplash.com/photo-1520367445093-50dc08a59d9d?auto=format&fit=crop&w=1600&q=80',
+  co3:'https://images.unsplash.com/photo-1605540436563-5bca919ae766?auto=format&fit=crop&w=1600&q=80',
+  ly1:'https://images.unsplash.com/photo-1524484485831-a92ffc0de03f?auto=format&fit=crop&w=1600&q=80',
+  ly2:'https://images.unsplash.com/photo-1524484485831-a92ffc0de03f?auto=format&fit=crop&w=1600&q=80',
+  pa1:'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=1600&q=80',
+  pa2:'https://images.unsplash.com/photo-1549144511-f099e773c147?auto=format&fit=crop&w=1600&q=80',
+  pa3:'https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&w=1600&q=80',
+  pa4:'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=1600&q=80',
+  dep:'https://images.unsplash.com/photo-1436491865332-7a4b6ad7a6c3?auto=format&fit=crop&w=1600&q=80'
+};
+const G={
+  airelles:[
+    {u:'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80',c:'Lobby'},
+    {u:'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=800&q=80',c:'Suite'},
+    {u:'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?auto=format&fit=crop&w=800&q=80',c:'Spa'}
+  ],
+  k2:[
+    {u:'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?auto=format&fit=crop&w=800&q=80',c:'Exterior'},
+    {u:'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=800&q=80',c:'Room'},
+    {u:'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80',c:'Restaurant'}
+  ],
+  villamaia:[
+    {u:'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80',c:'View'},
+    {u:'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&w=800&q=80',c:'Terrace'},
+    {u:'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=800&q=80',c:'Suite'}
+  ],
+  plaza:[
+    {u:'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80',c:'Facade'},
+    {u:'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&w=800&q=80',c:'Room'},
+    {u:'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?auto=format&fit=crop&w=800&q=80',c:'Restaurant'}
+  ],
+  wine:[
+    {u:'https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?auto=format&fit=crop&w=800&q=80',c:'Wine Cellar'},
+    {u:'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?auto=format&fit=crop&w=800&q=80',c:'Tasting'},
+    {u:'https://images.unsplash.com/photo-1474722883778-792e7990302f?auto=format&fit=crop&w=800&q=80',c:'Selection'}
+  ],
+  foodlyon:[
+    {u:'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=800&q=80',c:'Local Cuisine'},
+    {u:'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=80',c:'Market'},
+    {u:'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=80',c:'Specialties'}
+  ],
+  versailles:[
+    {u:'https://images.unsplash.com/photo-1549144511-f099e773c147?auto=format&fit=crop&w=800&q=80',c:'Palace'},
+    {u:'https://images.unsplash.com/photo-1587896155780-da69093c5d28?auto=format&fit=crop&w=800&q=80',c:'Gardens'},
+    {u:'https://images.unsplash.com/photo-1543785734-4b6e564642f8?auto=format&fit=crop&w=800&q=80',c:'Hall of Mirrors'}
+  ],
+  foodparis:[
+    {u:'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?auto=format&fit=crop&w=800&q=80',c:'Pastries'},
+    {u:'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=800&q=80',c:'Boulangerie'},
+    {u:'https://images.unsplash.com/photo-1481931098730-318b6f776db0?auto=format&fit=crop&w=800&q=80',c:'Cheese'}
+  ],
+  lyon:[
+    {u:'https://images.unsplash.com/photo-1524484485831-a92ffc0de03f?auto=format&fit=crop&w=800&q=80',c:'Old Town'},
+    {u:'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=80',c:'Traboules'},
+    {u:'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=80',c:'Fourviere'}
+  ]
+};
+const Ic={
+  Menu:({c})=><svg className={c} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M4 6h16M4 12h16M4 18h16"/></svg>,
+  X:({c})=><svg className={c} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M6 18L18 6M6 6l12 12"/></svg>,
+  ChD:({c,s})=><svg className={c} style={s} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M19 9l-7 7-7-7"/></svg>,
+  ChR:({c})=><svg className={c} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M9 5l7 7-7 7"/></svg>,
+  ChL:({c})=><svg className={c} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M15 19l-7-7 7-7"/></svg>,
+  Ph:({c})=><svg className={c} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>,
+  Wa:({c})=><svg className={c} fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>,
+  Mp:({c,s})=><svg className={c} style={s} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>,
+  Cl:({c})=><svg className={c} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>,
+  Ca:({c,s})=><svg className={c} style={s} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M8 17h.01M16 17h.01M9 11h6M5 11l1.5-4.5A2 2 0 018.39 5h7.22a2 2 0 011.89 1.5L19 11M5 11v6a1 1 0 001 1h1a1 1 0 001-1v-1h8v1a1 1 0 001 1h1a1 1 0 001-1v-6M5 11h14"/></svg>,
+  Pl:({c,s})=><svg className={c} style={s} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>,
+  Bd:({c,s})=><svg className={c} style={s} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>,
+  Cm:({c,s})=><svg className={c} style={s} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><path d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/></svg>,
+  Ut:({c,s})=><svg className={c} style={s} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>,
+  Wi:({c,s})=><svg className={c} style={s} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M9 3h6l1 7c0 2.5-2 4-4 4s-4-1.5-4-4l1-7zM12 14v7M8 21h8"/></svg>,
+  Co:({c,s})=><svg className={c} style={s} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M18 8h1a4 4 0 010 8h-1M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8zM6 1v3M10 1v3M14 1v3"/></svg>,
+  Cp:({c,s})=><svg className={c} style={s} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><circle cx="12" cy="12" r="9"/></svg>,
+  Ft:({c,s})=><svg className={c} style={s} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>,
+  Cal:({c,s})=><svg className={c} style={s} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>,
+  Us:({c,s})=><svg className={c} style={s} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>,
+  Sh:({c})=><svg className={c} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>,
+  Dl:({c})=><svg className={c} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>,
+  Ed:({c})=><svg className={c} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>,
+  Ck:({c})=><svg className={c} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M5 13l4 4L19 7"/></svg>,
+  Fs:({c})=><svg className={c} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg>,
+  Sn:({c})=><svg className={c} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>,
+  Im:({c,s})=><svg className={c} style={s} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>,
+  Hk:({c,s})=><svg className={c} style={s} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>,
+  Ms:({c,s})=><svg className={c} style={s} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"/></svg>,
+  Tr:({c,s})=><svg className={c} style={s} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M9 17h6l2-7H7l2 7zM9 17l-1 4m6-4l1 4M5 10h14M7.5 7h9l-.5-3h-8l-.5 3z"/></svg>,
+  Tc:({c,s})=><svg className={c} style={s} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"/></svg>,
+  Fb:({c})=><svg className={c} fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>,
+  Ig:({c})=><svg className={c} fill="currentColor" viewBox="0 0 24 24"><path d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 015.45 2.525c.636-.247 1.363-.416 2.427-.465C8.901 2.013 9.256 2 11.685 2h.63zm-.081 1.802h-.468c-2.456 0-2.784.011-3.807.058-.975.045-1.504.207-1.857.344-.467.182-.8.398-1.15.748-.35.35-.566.683-.748 1.15-.137.353-.3.882-.344 1.857-.047 1.023-.058 1.351-.058 3.807v.468c0 2.456.011 2.784.058 3.807.045.975.207 1.504.344 1.857.182.466.399.8.748 1.15.35.35.683.566 1.15.748.353.137.882.3 1.857.344 1.054.048 1.37.058 4.041.058h.08c2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z"/></svg>,
+  Gl:({c})=><svg className={c} fill="currentColor" viewBox="0 0 24 24"><path d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"/></svg>
+};
+const Gal=({imgs,name,isExp=false})=>{
+  const ref=useRef(null);
+  const[cL,setCL]=useState(false);
+  const[cR,setCR]=useState(true);
+  const chk=()=>{if(ref.current){const{scrollLeft:l,scrollWidth:w,clientWidth:c}=ref.current;setCL(l>0);setCR(l<w-c-10);}};
+  useEffect(()=>{chk();const el=ref.current;if(el){el.addEventListener('scroll',chk);return()=>el.removeEventListener('scroll',chk);}},[]);
+  const scr=(d)=>{if(ref.current)ref.current.scrollBy({left:d*200,behavior:'smooth'});};
+  return(
+    <div className="mt-4">
+      <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center gap-2"><Ic.Im c="w-4 h-4" style={{color:B.dg}}/><h4 className="text-sm font-medium text-stone-600">{isExp?'Experience Gallery':'Property Gallery'}</h4></div>
+        <div className="flex gap-1">
+          <button onClick={()=>scr(-1)} disabled={!cL} className={`p-1 rounded-full transition-colors ${cL?'hover:bg-stone-100 text-stone-500':'text-stone-300 cursor-not-allowed'}`}><Ic.ChL c="w-4 h-4"/></button>
+          <button onClick={()=>scr(1)} disabled={!cR} className={`p-1 rounded-full transition-colors ${cR?'hover:bg-stone-100 text-stone-500':'text-stone-300 cursor-not-allowed'}`}><Ic.ChR c="w-4 h-4"/></button>
+        </div>
+      </div>
+      <div ref={ref} className="flex gap-3 overflow-x-auto pb-2 hide-scrollbar">
+        {imgs.map((i,x)=>(
+          <div key={x} className="flex-shrink-0 w-48 group cursor-pointer">
+            <div className="relative h-32 rounded-lg overflow-hidden bg-stone-100">
+              <img src={i.u} alt={i.c} className="w-full h-full object-cover" loading="lazy"/>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"/>
+              <span className="absolute bottom-2 left-2 text-white text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity">{i.c}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+const TripMap=({locs,fullscreen=false,onToggleFs,onSelect})=>{
+  const mapRef=useRef(null);
+  const mapInst=useRef(null);
+  const[selectedLoc,setSelectedLoc]=useState(null);
+  useEffect(()=>{
+    if(!mapRef.current||mapInst.current)return;
+    const map=L.map(mapRef.current,{scrollWheelZoom:!fullscreen,zoomControl:fullscreen}).setView([46.5,3.0],5);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{attribution:'©OpenStreetMap ©CARTO',maxZoom:19}).addTo(map);
+    const mainLocs=locs.filter(l=>!l.dt);
+    mainLocs.forEach((loc,i)=>{
+      const icon=L.divIcon({className:'custom-marker',html:`<div style="background:${loc.c};color:white;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:14px;box-shadow:0 2px 8px rgba(0,0,0,0.3);border:2px solid white;">${i+1}</div>`,iconSize:[32,32],iconAnchor:[16,16]});
+      L.marker([loc.lat,loc.lng],{icon}).addTo(map).on('click',()=>{setSelectedLoc(loc);onSelect&&onSelect(loc.id);});
+    });
+    if(mainLocs.length>1){
+      const coords=mainLocs.map(l=>[l.lat,l.lng]);
+      L.polyline(coords,{color:B.dg,weight:2,opacity:0.6,dashArray:'5,10'}).addTo(map);
+    }
+    const bounds=L.latLngBounds(locs.map(l=>[l.lat,l.lng]));
+    map.fitBounds(bounds,{padding:[30,30]});
+    mapInst.current=map;
+    return()=>{map.remove();mapInst.current=null;};
+  },[fullscreen]);
+  return(
+    <div className={`relative ${fullscreen?'fixed inset-0 z-50 bg-white':''}`}>
+      {fullscreen&&(
+        <div className="absolute top-0 left-0 right-0 z-[1001] bg-white/95 backdrop-blur-sm border-b border-stone-200 px-4 py-3 flex items-center justify-between">
+          <h3 className="font-serif text-xl italic" style={{color:B.dg}}>Your Journey Map</h3>
+          <button onClick={onToggleFs} className="p-2 hover:bg-stone-100 rounded-full"><Ic.X c="w-6 h-6 text-stone-600"/></button>
+        </div>
+      )}
+      <div ref={mapRef} className={`w-full rounded-xl overflow-hidden shadow-inner ${fullscreen?'h-full pt-14':'h-80 md:h-96'}`} style={{background:'#f5f5f4'}}/>
+      {!fullscreen&&<button onClick={onToggleFs} className="absolute top-3 right-3 p-2 bg-white/90 hover:bg-white rounded-lg shadow-md z-[1000]" title="Fullscreen map"><Ic.Fs c="w-5 h-5 text-stone-600"/></button>}
+      {fullscreen&&selectedLoc&&(
+        <div className="absolute bottom-6 left-6 right-6 md:left-auto md:right-6 md:w-80 bg-white rounded-xl shadow-xl p-4 z-[1001]">
+          <div className="flex items-start gap-3">
+            <span className="w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold shrink-0" style={{background:selectedLoc.c}}>{locs.filter(l=>!l.dt).indexOf(selectedLoc)+1}</span>
+            <div className="flex-1">
+              <h4 className="font-medium text-stone-800">{selectedLoc.n}</h4>
+              <p className="text-sm text-stone-500">Days {selectedLoc.days}</p>
+              <p className="text-sm mt-1" style={{color:B.dg}}>{selectedLoc.h}</p>
+              <a href={`https://www.google.com/maps/search/?api=1&query=${selectedLoc.lat},${selectedLoc.lng}`} target="_blank" rel="noopener noreferrer" className="text-xs text-stone-400 hover:text-stone-600 mt-2 inline-flex items-center gap-1">Open in Google Maps <Ic.ChR c="w-3 h-3"/></a>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+const WhatsAppPanel=({onClose,wa,name})=>{
+  const msgs=[
+    {l:'👋 Say Hello',m:`Hello! I am ${name} and I'm on my France trip. Just saying hi!`},
+    {l:'🚗 Transfer Help',m:`Hello! I am ${name} on the France trip. I need assistance with a transfer.`},
+    {l:'🍽️ Restaurant recommendations',m:`Hello! I am ${name}. Could you recommend a restaurant for tonight?`},
+    {l:'🎫 Tickets/Tours questions',m:`Hello! I am ${name}. I have a question about one of my tours.`},
+    {l:'🆘 Urgent Help',m:`Hello! I am ${name} on the France trip and I need urgent assistance.`}
+  ];
+  return(
+    <div className="fixed bottom-20 right-5 z-40 wa-panel no-print">
+      <div className="bg-white rounded-2xl shadow-2xl w-80 overflow-hidden border border-stone-200">
+        <div className="p-4" style={{backgroundColor:'#25D366'}}>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center"><Ic.Wa c="w-6 h-6 text-white"/></div>
+              <div><h3 className="text-white font-medium">Essentially French</h3><p className="text-white/80 text-xs">Typically replies instantly</p></div>
+            </div>
+            <button onClick={onClose} className="p-1 hover:bg-white/20 rounded-full"><Ic.X c="w-5 h-5 text-white"/></button>
+          </div>
+        </div>
+        <div className="p-4">
+          <p className="text-sm text-stone-600 mb-3">Select a quick message or start a custom chat:</p>
+          <div className="space-y-2">
+            {msgs.map((m,i)=>(
+              <a key={i} href={`https://wa.me/${wa}?text=${encodeURIComponent(m.m)}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-3 rounded-lg bg-stone-50 hover:bg-stone-100 transition-colors">
+                <span className="text-sm text-stone-700">{m.l}</span>
+                <Ic.ChR c="w-4 h-4 text-stone-400 ml-auto"/>
+              </a>
+            ))}
+          </div>
+          <a href={`https://wa.me/${wa}`} target="_blank" rel="noopener noreferrer" className="mt-3 w-full py-2.5 rounded-lg text-white text-sm font-medium flex items-center justify-center gap-2" style={{backgroundColor:'#25D366'}}>
+            <Ic.Sn c="w-4 h-4"/>Open Chat
+          </a>
+        </div>
+      </div>
+    </div>
+  );
+};
+const D={
+  name:"Kendall & Craig",dest:"France",sub:"March 2026",dates:"March 23rd - April 5th, 2026",
+  intro:"We are delighted to welcome you on this carefully curated journey through the beauty, culture, and elegance of France. From timeless landscapes and iconic landmarks to hidden gems and refined experiences, your itinerary has been designed with the utmost care to reflect your interests and expectations. Throughout your stay, you will discover the richness of French art de vivre — through its cuisine, heritage, people, and unique sense of style. We wish you a beautiful stay, filled with discovery, connection, and joy. Bon voyage!",
+  flights:{
+    arr:{date:"Mon, Mar 23",time:"12:36 PM",port:"Chambery (LFLB)",flight:"Private",travelers:["Kendall Clark","Craig Clark"]},
+    dep:{date:"Sun, Apr 5",time:"9:30 AM",port:"Paris CDG",flight:"AA0049",travelers:["Kendall Clark","Craig Clark"]}
+  },
+  weather:{
+    1:{icon:'⛷️',hi:5,lo:-3,cond:'Ski Season'},
+    2:{icon:'⛷️',hi:6,lo:-2,cond:'Ski Season'},
+    3:{icon:'⛷️',hi:5,lo:-4,cond:'Ski Season'},
+    4:{icon:'⛷️',hi:7,lo:-1,cond:'Ski Season'},
+    5:{icon:'⛷️',hi:6,lo:-2,cond:'Ski Season'},
+    6:{icon:'⛷️',hi:5,lo:-3,cond:'Ski Season'},
+    7:{icon:'⛷️',hi:6,lo:-2,cond:'Ski Season'},
+    8:{icon:'☁️',hi:12,lo:5,cond:'Lyon'},
+    9:{icon:'☁️',hi:13,lo:6,cond:'Lyon'},
+    10:{icon:'⛅',hi:14,lo:7,cond:'Paris'},
+    11:{icon:'⛅',hi:15,lo:8,cond:'Paris'},
+    12:{icon:'☀️',hi:14,lo:7,cond:'Paris'},
+    13:{icon:'☀️',hi:15,lo:8,cond:'Paris'},
+    14:{icon:'⛅',hi:14,lo:7,cond:'Paris'}
+  },
+  em:{
+    tm:"Merewyne",tmPh:"+33 6 87 51 31 03",
+    ge:"Trip Manager",gePh:"+33 6 87 51 31 03",
+    ep:"+33 6 30 38 17 14",
+    wa:"33687513103"
+  },
+  places:[
+    {id:'valdisere',name:"Val d'Isere",img:'https://images.unsplash.com/photo-1548777123-e216912df7d8?auto=format&fit=crop&w=800&q=80',desc:"Val d'Isere is one of the most famous ski resorts in the French Alps, known for its reliable snow conditions and vast ski area connected to Tignes. The charming village combines traditional Savoyard architecture with world-class skiing, fine dining, and a vibrant apres-ski scene."},
+    {id:'courchevel',name:'Courchevel',img:'https://images.unsplash.com/photo-1605540436563-5bca919ae766?auto=format&fit=crop&w=800&q=80',desc:"Courchevel is the crown jewel of the Three Valleys, the world's largest ski area. Renowned for its glamorous atmosphere, exceptional skiing, and Michelin-starred restaurants, Courchevel attracts discerning travelers from around the world."},
+    {id:'lyon',name:'Lyon',img:'https://images.unsplash.com/photo-1524484485831-a92ffc0de03f?auto=format&fit=crop&w=800&q=80',desc:"Lyon, France's gastronomic capital, sits at the confluence of the Rhone and Saone rivers. This UNESCO World Heritage city boasts Renaissance architecture, charming traboules (hidden passageways), and an unparalleled culinary scene."},
+    {id:'paris',name:'Paris',img:'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=800&q=80',desc:"Paris, the City of Light, needs no introduction. From the iconic Eiffel Tower to the treasures of the Louvre, from charming Montmartre to elegant Avenue Montaigne, Paris captivates at every turn."},
+    {id:'versailles',name:'Versailles',img:'https://images.unsplash.com/photo-1549144511-f099e773c147?auto=format&fit=crop&w=800&q=80',desc:"The Palace of Versailles stands as the ultimate symbol of French royal grandeur. Built by Louis XIV, the Sun King, this magnificent chateau features the dazzling Hall of Mirrors, opulent royal apartments, and spectacular gardens."}
+  ],
+  faq:[
+    {cat:'Currency & Money',icon:'💶',items:[
+      {q:'What currency is used?',a:'Euro is the official and only currency used in France. Most payments can be done by Credit Card and/or contactless, but we recommend having some change just in case.'},
+      {q:'What are typical prices?',a:'Reference prices: Intra-city taxi ride: €15-€30, Bottle of water: €2, Coffee: €3-€5.'}
+    ]},
+    {cat:'Tipping & Etiquette',icon:'🤝',items:[
+      {q:'What is the tipping culture?',a:"Tipping is not mandatory in France but it is appreciated. The amount of tips is always at the client's discretion. In restaurants, service is usually included but rounding up or leaving a few euros for exceptional service is customary."},
+      {q:'Cultural tips?',a:'It is customary to greet anyone by "Bonjour". Cashiers, shop tenants, or waiters may be less helpful if you do not start your conversation with "Bonjour".'}
+    ]},
+    {cat:'Dining',icon:'🍽️',items:[
+      {q:'Restaurant hours?',a:'Restaurants tend to close between lunch and dinner service. Dinner service does not start before 6:30 PM in France and ends around 9:30 PM.'}
+    ]},
+    {cat:'Power & Electricity',icon:'🔌',items:[
+      {q:'What type of adapter do I need?',a:"We've provided you with an adapter to use for your US appliances plugging into local outlets. France uses Type C and Type E plugs at 220V."}
+    ]}
+  ],
+  locs:[
+    {id:'valdisere',n:"Val d'Isere",lat:45.4485,lng:6.9807,days:'1-3',h:'Les Airelles',c:B.dg},
+    {id:'courchevel',n:'Courchevel',lat:45.4153,lng:6.6346,days:'4-7',h:'Le K2 Palace',c:B.dg},
+    {id:'lyon',n:'Lyon',lat:45.7640,lng:4.8357,days:'8-9',h:'Villa Maia',c:B.dg},
+    {id:'paris',n:'Paris',lat:48.8566,lng:2.3522,days:'10-14',h:'Plaza Athenee',c:B.dg}
+  ],
+  acc:[
+    {d:"Days 1-3",n:"Les Airelles",l:"Val d'Isere",dt:"Palace Hotel",ni:3,g:'airelles',ds:"Les Airelles Val d'Isere is a magical palace nestled in the heart of this legendary ski resort. Combining Savoyard charm with refined luxury, the hotel offers an extraordinary ski-in ski-out experience."},
+    {d:"Days 4-7",n:"Le K2 Palace",l:"Courchevel",dt:"Palace Hotel",ni:4,g:'k2',ds:"Le K2 Palace is an exceptional alpine retreat featuring stunning mountain views, a renowned spa, and Michelin-starred dining. This ski-in ski-out palace embodies the finest in French mountain hospitality."},
+    {d:"Days 8-9",n:"Villa Maia",l:"Lyon",dt:"Luxury Hotel",ni:2,g:'villamaia',ds:"Perched on Fourviere hill with panoramic views over Lyon, Villa Maia is an intimate luxury hotel designed by architect Jacques Vergely."},
+    {d:"Days 10-14",n:"Plaza Athenee",l:"Paris",dt:"Palace Hotel",ni:5,g:'plaza',ds:"The iconic Hotel Plaza Athenee on Avenue Montaigne is the epitome of Parisian elegance. With its signature red geraniums and views of the Eiffel Tower, it offers an unforgettable Paris experience."}
+  ],
+  itin:[
+    {dy:1,dt:"Mon, Mar 23",loc:"Val d'Isere",hk:'vi1',act:[
+      {t:"tr",i:"plane",ti:"Arrival in Chambery",tm:"12:36 PM",ds:"Private arrival at Chambery Airport (LFLB)"},
+      {t:"tr",i:"car",ti:"Transfer to Val d'Isere",tm:"12:45 PM",ds:"Driver contact will be provided 48h before",dur:"~2 hrs"},
+      {t:"lei",i:"coffee",ti:"Lunch at Leisure",ds:"Open"},
+      {t:"lei",i:"coffee",ti:"Afternoon at Leisure",ds:"Settle in and explore the village"},
+      {t:"lei",i:"coffee",ti:"Dinner at Leisure",ds:"Open"},
+      {t:"acc",i:"hotel",ti:"Accommodation",loc:"Les Airelles",g:'airelles'}
+    ]},
+    {dy:2,dt:"Tue, Mar 24",loc:"Val d'Isere",hk:'vi2',act:[
+      {t:"info",i:"info",ti:"Ski & Clothing Delivery",ds:"Equipment delivered to the hotel",nt:true},
+      {t:"lei",i:"coffee",ti:"Morning Skiing",ds:"At leisure on the slopes"},
+      {t:"lei",i:"coffee",ti:"Lunch at Leisure",ds:"Open"},
+      {t:"lei",i:"coffee",ti:"Afternoon Skiing",ds:"At leisure on the slopes"},
+      {t:"lei",i:"coffee",ti:"Dinner at Leisure",ds:"Open"},
+      {t:"acc",i:"hotel",ti:"Accommodation",loc:"Les Airelles",g:'airelles'}
+    ]},
+    {dy:3,dt:"Wed, Mar 25",loc:"Val d'Isere",hk:'vi3',act:[
+      {t:"lei",i:"coffee",ti:"Morning Skiing",ds:"At leisure on the slopes"},
+      {t:"lei",i:"coffee",ti:"Lunch at Leisure",ds:"Open"},
+      {t:"act",i:"wine",ti:"Wine Tasting",tm:"2:20 PM",ds:"Afternoon wine tasting experience (TBC)",eds:"Discover exceptional wines from the French Alps region in an intimate tasting session.",g:'wine'},
+      {t:"lei",i:"coffee",ti:"Dinner at Leisure",ds:"Open"},
+      {t:"acc",i:"hotel",ti:"Accommodation",loc:"Les Airelles",g:'airelles'}
+    ]},
+    {dy:4,dt:"Thu, Mar 26",loc:"Courchevel",hk:'co1',act:[
+      {t:"tr",i:"car",ti:"Transfer to Courchevel",tm:"10:00 AM",ds:"Driver contact will be provided 48h before",dur:"~1.5 hrs"},
+      {t:"lei",i:"coffee",ti:"Lunch at Leisure",ds:"Open"},
+      {t:"lei",i:"coffee",ti:"Afternoon at Leisure",ds:"Explore Courchevel or ski"},
+      {t:"lei",i:"coffee",ti:"Dinner at Leisure",ds:"Open"},
+      {t:"acc",i:"hotel",ti:"Accommodation",loc:"Le K2 Palace",g:'k2'}
+    ]},
+    {dy:5,dt:"Fri, Mar 27",loc:"Courchevel",hk:'co2',act:[
+      {t:"lei",i:"coffee",ti:"Morning Skiing",ds:"At leisure on the slopes"},
+      {t:"lei",i:"coffee",ti:"Lunch at Leisure",ds:"Open"},
+      {t:"lei",i:"coffee",ti:"Afternoon Skiing",ds:"At leisure on the slopes"},
+      {t:"lei",i:"coffee",ti:"Dinner at Leisure",ds:"Open"},
+      {t:"acc",i:"hotel",ti:"Accommodation",loc:"Le K2 Palace",g:'k2'}
+    ]},
+    {dy:6,dt:"Sat, Mar 28",loc:"Courchevel & Meribel",hk:'mer',act:[
+      {t:"tr",i:"car",ti:"Transfer to Meribel",tm:"10:30 AM",ds:"Driver contact will be provided 48h before",dur:"~15 min"},
+      {t:"act",i:"compass",ti:"Stroll in Meribel",tm:"11:00 AM",ds:"Explore the charming village of Meribel"},
+      {t:"lei",i:"coffee",ti:"Lunch at Leisure",ds:"Open"},
+      {t:"act",i:"wine",ti:"Wine Tasting at La Cave de Chaudanne",tm:"2:00 PM",dur:"2 hrs",ds:"Private wine tasting hosted in the cellar of a beautiful and authentic hotel in Meribel (TBC)",eds:"Experience the art of French winemaking in an historic alpine setting.",g:'wine'},
+      {t:"tr",i:"car",ti:"Transfer to Hotel",tm:"5:10 PM",ds:"Return to Le K2 Palace",dur:"~15 min"},
+      {t:"lei",i:"coffee",ti:"Dinner at Leisure",ds:"Open"},
+      {t:"acc",i:"hotel",ti:"Accommodation",loc:"Le K2 Palace",g:'k2'}
+    ]},
+    {dy:7,dt:"Sun, Mar 29",loc:"Courchevel",hk:'co3',act:[
+      {t:"lei",i:"coffee",ti:"Morning Skiing",ds:"At leisure on the slopes"},
+      {t:"lei",i:"coffee",ti:"Lunch at Leisure",ds:"Open"},
+      {t:"lei",i:"coffee",ti:"Afternoon Skiing",ds:"At leisure on the slopes"},
+      {t:"lei",i:"coffee",ti:"Dinner at Leisure",ds:"Open"},
+      {t:"acc",i:"hotel",ti:"Accommodation",loc:"Le K2 Palace",g:'k2'}
+    ]},
+    {dy:8,dt:"Mon, Mar 30",loc:"Lyon",hk:'ly1',act:[
+      {t:"tr",i:"car",ti:"Transfer to Lyon",tm:"9:00 AM",ds:"Driver contact will be provided 48h before",dur:"~2.5 hrs"},
+      {t:"act",i:"utensils",ti:"Food Tour in Lyon",tm:"12:00 PM",dur:"2 hrs",ds:"Discover Lyon's culinary heritage on a private food tour",eds:"Lyon is France's gastronomic capital. Sample local charcuterie, praline tarts, and regional cheeses while exploring Les Halles de Lyon Paul Bocuse.",g:'foodlyon'},
+      {t:"lei",i:"coffee",ti:"Dinner at Leisure",ds:"Open"},
+      {t:"acc",i:"hotel",ti:"Accommodation",loc:"Villa Maia",g:'villamaia'}
+    ]},
+    {dy:9,dt:"Tue, Mar 31",loc:"Lyon",hk:'ly2',act:[
+      {t:"lei",i:"coffee",ti:"Morning at Leisure",ds:"Explore Lyon at your own pace"},
+      {t:"lei",i:"coffee",ti:"Lunch at Leisure",ds:"Open"},
+      {t:"act",i:"compass",ti:"Highlights of Lyon",tm:"2:00 PM",dur:"2 hrs",ds:"Explore the highlights of Lyon with an expert guide",eds:"Discover the UNESCO-listed Old Town (Vieux Lyon), explore the famous traboules (secret passageways), admire the Basilica of Notre-Dame de Fourviere.",g:'lyon'},
+      {t:"lei",i:"coffee",ti:"Dinner at Leisure",ds:"Open"},
+      {t:"acc",i:"hotel",ti:"Accommodation",loc:"Villa Maia",g:'villamaia'}
+    ]},
+    {dy:10,dt:"Wed, Apr 1",loc:"Paris",hk:'pa1',act:[
+      {t:"tr",i:"car",ti:"Transfer to Airport",tm:"11:00 AM",ds:"Driver contact will be provided 48h before",dur:"~15 min"},
+      {t:"tr",i:"plane",ti:"Flight to Paris",tm:"1:00 PM",ds:"Departure from Bron (LFLY) - Arrival at Le Bourget (LFPB) at 2:00 PM"},
+      {t:"tr",i:"car",ti:"Transfer to Hotel",tm:"2:00 PM",ds:"Driver contact will be provided 48h before",dur:"~15 min"},
+      {t:"lei",i:"coffee",ti:"Dinner at Leisure",ds:"Open"},
+      {t:"acc",i:"hotel",ti:"Accommodation",loc:"Plaza Athenee",g:'plaza'}
+    ]},
+    {dy:11,dt:"Thu, Apr 2",loc:"Paris",hk:'pa2',act:[
+      {t:"lei",i:"coffee",ti:"Morning at Leisure",ds:"Explore Paris at your own pace"},
+      {t:"lei",i:"coffee",ti:"Lunch at Leisure",ds:"Open"},
+      {t:"act",i:"compass",ti:"Private Guided Tour of Versailles",tm:"2:00 PM",dur:"2 hrs",ds:"Private guided tour of the Palace of Versailles",eds:"Skip the lines and discover the grandeur of Versailles. Explore the magnificent Hall of Mirrors, the King's and Queen's Grand Apartments, and the breathtaking gardens.",g:'versailles'},
+      {t:"lei",i:"coffee",ti:"Dinner at Leisure",ds:"Open"},
+      {t:"acc",i:"hotel",ti:"Accommodation",loc:"Plaza Athenee",g:'plaza'}
+    ]},
+    {dy:12,dt:"Fri, Apr 3",loc:"Paris",hk:'pa3',act:[
+      {t:"act",i:"utensils",ti:"Food Tour in Paris",tm:"11:00 AM",dur:"2 hrs",ds:"Discover Parisian culinary delights on a private food tour",eds:"Sample artisan cheeses, freshly baked baguettes, delicate pastries, and carefully cured charcuterie.",g:'foodparis'},
+      {t:"lei",i:"coffee",ti:"Afternoon at Leisure",ds:"Shopping or exploring"},
+      {t:"lei",i:"coffee",ti:"Dinner at Leisure",ds:"Open"},
+      {t:"acc",i:"hotel",ti:"Accommodation",loc:"Plaza Athenee",g:'plaza'}
+    ]},
+    {dy:13,dt:"Sat, Apr 4",loc:"Paris",hk:'pa4',act:[
+      {t:"lei",i:"coffee",ti:"Morning at Leisure",ds:"Final day to explore Paris"},
+      {t:"lei",i:"coffee",ti:"Lunch at Leisure",ds:"Open"},
+      {t:"lei",i:"coffee",ti:"Afternoon at Leisure",ds:"Last chance for shopping or sightseeing"},
+      {t:"lei",i:"coffee",ti:"Dinner at Leisure",ds:"Open"},
+      {t:"acc",i:"hotel",ti:"Accommodation",loc:"Plaza Athenee",g:'plaza'}
+    ]},
+    {dy:14,dt:"Sun, Apr 5",loc:"Departure",hk:'dep',act:[
+      {t:"tr",i:"car",ti:"Transfer to Airport",tm:"7:00 AM",ds:"Driver contact will be provided 48h before",dur:"~1 hr"},
+      {t:"tr",i:"plane",ti:"Departure Flight",tm:"9:30 AM",ds:"Flight AA0049 from Paris CDG"},
+      {t:"info",i:"info",ti:"Au Revoir!",ds:"Thank you for traveling with Essentially French! We hope to see you again soon. Bon voyage!",nt:true}
+    ]}
+  ]
+};
+
+const getIc=(t,c,s)=>{
+  const m={car:Ic.Ca,plane:Ic.Pl,hotel:Ic.Bd,camera:Ic.Cm,utensils:Ic.Ut,wine:Ic.Wi,coffee:Ic.Co,compass:Ic.Cp,info:Ic.Ft,music:Ic.Ms,train:Ic.Tr,ticket:Ic.Tc};
+  const I=m[t]||Ic.Cal;
+  return <I c={`w-5 h-5 ${c}`} s={s}/>;
+};
+function App(){
+  const[menu,setMenu]=useState(false);
+  const[sec,setSec]=useState('cover');
+  const[exp,setExp]=useState({});
+  const[edit,setEdit]=useState(false);
+  const[notes,setNotes]=useState({});
+  const[tab,setTab]=useState('ov');
+  const[hero,setHero]=useState(H.cover);
+  const[pdfLoading,setPdfLoading]=useState(false);
+  const[showWaPanel,setShowWaPanel]=useState(false);
+  const[fullscreenMap,setFullscreenMap]=useState(false);
+  const[tempUnit,setTempUnit]=useState('F');
+  const[faqOpen,setFaqOpen]=useState({});
+  const[placesOpen,setPlacesOpen]=useState({});
+  const refs=useRef({});
+  const toF=(c)=>Math.round(c*9/5+32);
+  const getTemp=(c)=>tempUnit==='F'?toF(c):c;
+  const toc=[{id:'cover',l:'Cover'},{id:'brief',l:'Travel Brief'},{id:'map',l:'Journey'},{id:'ess',l:'Essentials'},...D.itin.map(d=>({id:`d${d.dy}`,l:`Day ${d.dy}`,s:d.loc})),{id:'emg',l:'Emergency'},{id:'places',l:'Places'},{id:'faq',l:'FAQ'}];
+  const goTo=(id)=>{setMenu(false);setSec(id);updH(id);refs.current[id]?.scrollIntoView({behavior:'smooth'});};
+  const updH=(id)=>{
+    if(id==='cover')setHero(H.cover);
+    else if(id==='brief')setHero(H.brief);
+    else if(id==='map')setHero(H.map);
+    else if(id==='ess')setHero(H.ess);
+    else if(id==='emg')setHero(H.emg);
+    else if(id==='places')setHero(H.places);
+    else if(id==='faq')setHero(H.faq);
+    else{const d=D.itin.find(x=>`d${x.dy}`===id);if(d?.hk)setHero(H[d.hk]);}
+  };
+  const tog=(di,ai)=>setExp(p=>({...p,[`${di}-${ai}`]:!p[`${di}-${ai}`]}));
+  const togFaq=(cat,idx)=>setFaqOpen(p=>({...p,[`${cat}-${idx}`]:!p[`${cat}-${idx}`]}));
+  const togPlace=(id)=>setPlacesOpen(p=>({...p,[id]:!p[id]}));
+  useEffect(()=>{
+    const obs=new IntersectionObserver((e)=>{e.forEach(x=>{if(x.isIntersecting){const id=x.target.getAttribute('data-s');if(id){setSec(id);updH(id);}}});},{threshold:0.3});
+    Object.entries(refs.current).forEach(([id,el])=>{if(el){el.setAttribute('data-s',id);obs.observe(el);}});
+    return()=>obs.disconnect();
+  },[]);
+  return(
+    <div className="min-h-screen bg-stone-50">
+      <header className="fixed top-0 right-0 left-0 lg:left-1/2 z-50 bg-stone-50/95 backdrop-blur-sm border-b border-stone-200">
+        <div className="flex items-center justify-between px-4 py-3">
+          <button onClick={()=>setMenu(!menu)} className="p-2 hover:bg-stone-100 rounded-full">{menu?<Ic.X c="w-6 h-6 text-stone-700"/>:<Ic.Menu c="w-6 h-6 text-stone-700"/>}</button>
+          <img src="https://lh7-rt.googleusercontent.com/docsz/AD_4nXdIfAEyZnQqzrPp2AOd3SENdfIaLDlaulW3xtDEqU1EtSBY6Hg8AnzjonTOl7lmz2QHQsY1H0aUiG_I03TB8chjlfk9rojfBi16X0-xi6NUPPVmLfBLtN7MrkNCvdWqarN_6w02vQ?key=5z7x5EJrcuoubrabZrlshg" alt="Essentially French" className="h-12" onError={(e)=>{e.target.outerHTML='<div class="font-serif text-xl italic" style="color:#7B2D42">Essentially French</div>';}}/>
+          <div className="flex items-center gap-2">
+            <button onClick={()=>setEdit(!edit)} className={`p-2 rounded-full no-print transition-colors ${edit?'bg-amber-100':'hover:bg-stone-100'}`} title={edit?"Exit Edit Mode":"Edit Notes"}>
+              <Ic.Ed c={`w-5 h-5 ${edit?'text-amber-700':'text-stone-600'}`}/>
+            </button>
+            <button onClick={async()=>{
+              const url=window.location.href;
+              const title=`${D.name} - France Itinerary`;
+              if(navigator.share){
+                try{await navigator.share({title,url});}catch(e){}
+              }else{
+                await navigator.clipboard.writeText(url);
+                alert('Link copied to clipboard!');
+              }
+            }} className="p-2 hover:bg-stone-100 rounded-full no-print" title="Share Itinerary">
+              <Ic.Sh c="w-5 h-5 text-stone-600"/>
+            </button>
+            <button onClick={()=>{
+              setPdfLoading(true);
+              const el=document.getElementById('booklet-content');
+              html2pdf().set({
+                margin:8,pagebreak:{mode:['avoid-all','css','legacy']},filename:`KendallCraig-France-Booklet-${new Date().toISOString().split('T')[0]}.pdf`,
+                image:{type:'jpeg',quality:0.95},html2canvas:{scale:2,useCORS:true},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}
+              }).from(el).save().then(()=>setPdfLoading(false)).catch(()=>setPdfLoading(false));
+            }} disabled={pdfLoading} className="p-2 hover:bg-stone-100 rounded-full no-print" title="Download PDF">
+              {pdfLoading?<div className="w-5 h-5 border-2 border-stone-300 border-t-stone-600 rounded-full animate-spin"/>:<Ic.Dl c="w-5 h-5 text-stone-600"/>}
+            </button>
+            <button onClick={()=>setShowWaPanel(!showWaPanel)} className="p-2 hover:bg-stone-100 rounded-full no-print" title="Chat with Concierge">
+              <Ic.Wa c="w-5 h-5" style={{color:'#25D366'}}/>
+            </button>
+          </div>
+        </div>
+        {menu&&(
+          <nav className="absolute top-full left-0 right-0 bg-white border-b border-stone-200 shadow-lg max-h-[70vh] overflow-y-auto">
+            {toc.map(t=>(
+              <button key={t.id} onClick={()=>goTo(t.id)} className={`w-full px-6 py-3 text-left hover:bg-stone-50 flex items-center justify-between ${sec===t.id?'bg-stone-50':''}`}>
+                <span className="font-medium" style={sec===t.id?{color:B.dg}:{}}>{t.l}</span>
+                {t.s&&<span className="text-xs text-stone-400">{t.s}</span>}
+              </button>
+            ))}
+          </nav>
+        )}
+      </header>
+      {edit&&(
+        <div className="fixed top-[57px] right-0 left-0 lg:left-1/2 z-40 bg-amber-50 border-b border-amber-200 px-4 py-2 flex items-center justify-between no-print">
+          <div className="flex items-center gap-2">
+            <Ic.Ed c="w-4 h-4 text-amber-700"/>
+            <span className="text-sm font-medium text-amber-700">Edit Mode</span>
+            <span className="text-sm text-amber-600">— Level III notes only</span>
+          </div>
+          <button onClick={()=>setEdit(false)} className="text-sm font-medium flex items-center gap-1" style={{color:B.dg}}>
+            <Ic.Ck c="w-4 h-4"/>Save
+          </button>
+        </div>
+      )}
+      <div className="hidden lg:block fixed top-0 left-0 w-1/2 h-screen">
+        <div className="relative w-full h-full">
+          <img src={hero} alt="" className="w-full h-full object-cover transition-all duration-700"/>
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent to-black/20"/>
+        </div>
+      </div>
+      <div id="booklet-content" className="lg:w-1/2 lg:ml-[50%]">
+        <div className="pt-16">
+          <section ref={el=>refs.current['cover']=el} className="min-h-screen flex flex-col items-center justify-center px-6 py-24 relative" style={{backgroundColor:B.cr}}>
+            <div className="text-center max-w-md">
+              <img src="https://lh7-rt.googleusercontent.com/docsz/AD_4nXdIfAEyZnQqzrPp2AOd3SENdfIaLDlaulW3xtDEqU1EtSBY6Hg8AnzjonTOl7lmz2QHQsY1H0aUiG_I03TB8chjlfk9rojfBi16X0-xi6NUPPVmLfBLtN7MrkNCvdWqarN_6w02vQ?key=5z7x5EJrcuoubrabZrlshg" alt="Essentially French" className="h-24 mx-auto mb-8" onError={(e)=>{e.target.style.display='none';}}/>
+              <p className="text-sm tracking-widest uppercase mb-2" style={{color:B.dg}}>Arrival Booklet</p>
+              <h1 className="font-serif text-4xl md:text-5xl italic mb-4" style={{color:B.dg}}>{D.name}</h1>
+              <p className="text-xl mb-2" style={{color:B.g}}>{D.dest}</p>
+              <p className="text-stone-500">{D.dates}</p>
+              <div className="mt-12">
+                <button onClick={()=>goTo('brief')} className="px-8 py-3 rounded-full text-white font-medium shadow-lg hover:shadow-xl transition-all" style={{backgroundColor:B.dg}}>
+                  Explore Your Journey
+                </button>
+              </div>
+            </div>
+          </section>
+          <section ref={el=>refs.current['brief']=el} className="min-h-screen px-6 py-20 bg-white">
+            <h2 className="font-serif text-3xl text-center mb-3 italic" style={{color:B.dg}}>Travel Brief</h2>
+            <p className="text-center text-stone-500 mb-8">Your trip at a glance</p>
+            <div className="flex justify-center gap-2 mb-8 border-b border-stone-200">
+              {[{id:'ov',l:'Overview',I:Ic.Cal},{id:'ac',l:'Accommodation',I:Ic.Bd},{id:'fl',l:'Flights',I:Ic.Pl}].map(t=>(
+                <button key={t.id} onClick={()=>setTab(t.id)} className={`flex items-center gap-2 pb-3 px-3 border-b-2 ${tab===t.id?'text-stone-800':'border-transparent text-stone-400'}`} style={tab===t.id?{borderColor:B.g}:{}}>
+                  <t.I c="w-4 h-4"/><span className="text-sm">{t.l}</span>
+                </button>
+              ))}
+            </div>
+            {tab==='ov'&&(
+              <div className="max-w-3xl mx-auto overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead><tr className="border-b border-stone-200">
+                    <th className="py-3 text-left text-stone-500 font-normal">Day</th>
+                    <th className="py-3 text-left text-stone-500 font-normal">Activities</th>
+                    <th className="py-3 text-center text-stone-500 font-normal w-28">
+                      <div className="flex items-center justify-center gap-2">
+                        <span>Weather</span>
+                        <div className="inline-flex rounded-full border border-stone-300 overflow-hidden text-xs">
+                          <button onClick={()=>setTempUnit('F')} className={`px-2 py-0.5 transition-colors ${tempUnit==='F'?'text-white':'text-stone-500 hover:bg-stone-100'}`} style={tempUnit==='F'?{backgroundColor:B.dg}:{}}>°F</button>
+                          <button onClick={()=>setTempUnit('C')} className={`px-2 py-0.5 transition-colors ${tempUnit==='C'?'text-white':'text-stone-500 hover:bg-stone-100'}`} style={tempUnit==='C'?{backgroundColor:B.dg}:{}}>°C</button>
+                        </div>
+                      </div>
+                    </th>
+                  </tr></thead>
+                  <tbody>{D.itin.map((d,i)=>{
+                    const w=D.weather[d.dy];
+                    return(
+                    <tr key={i} className="border-b border-stone-100">
+                      <td className="py-3 pr-4 align-top whitespace-nowrap"><span className="text-stone-800">Day {d.dy}</span><br/><span className="text-xs text-stone-400">{d.loc}</span></td>
+                      <td className="py-3"><div className="space-y-1.5">
+                        {d.act.filter(a=>!['acc','lei','info'].includes(a.t)).slice(0,2).map((a,j)=>(
+                          <div key={j} className="flex items-start gap-2">{getIc(a.i,'mt-0.5',{color:B.dg})}<span className="text-stone-700">{a.ti}</span></div>
+                        ))}
+                        {d.act.find(a=>a.t==='acc')&&<div className="flex items-start gap-2"><Ic.Bd c="w-5 h-5 mt-0.5" s={{color:B.dg}}/><span className="text-stone-700">{d.act.find(a=>a.t==='acc')?.loc}</span></div>}
+                      </div></td>
+                      <td className="py-3 text-center align-top">
+                        {w&&<div className="inline-flex flex-col items-center">
+                          <span className="text-2xl">{w.icon}</span>
+                          <span className="text-xs text-stone-600 font-medium">{getTemp(w.hi)}° / {getTemp(w.lo)}°</span>
+                          <span className="text-xs text-stone-400">{w.cond}</span>
+                        </div>}
+                      </td>
+                    </tr>
+                  );})}</tbody>
+                </table>
+                <p className="text-xs text-stone-400 text-center mt-4 italic">Weather forecast is approximate and will be updated closer to your travel date.</p>
+              </div>
+            )}
+            {tab==='ac'&&(
+              <div className="max-w-3xl mx-auto space-y-6">{D.acc.map((a,i)=>(
+                <div key={i} className="bg-stone-50 rounded-xl p-5 border border-stone-200">
+                  <div className="flex flex-wrap items-start justify-between gap-4 mb-3">
+                    <div><h3 className="font-medium text-stone-800">{a.n}</h3><p className="text-sm" style={{color:B.g}}>{a.l}</p></div>
+                    <div className="text-right"><span className="text-sm text-stone-600">{a.d}</span><span className="block text-xs text-stone-400">{a.ni} night{a.ni>1?'s':''}</span></div>
+                  </div>
+                  <p className="text-sm text-stone-600 mb-3">{a.ds}</p>
+                  {a.g&&<Gal imgs={G[a.g]} name={a.n}/>}
+                </div>
+              ))}</div>
+            )}
+            {tab==='fl'&&(
+              <div className="max-w-2xl mx-auto space-y-6">
+                <div className="bg-stone-50 rounded-xl p-5 border border-stone-200">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{backgroundColor:B.dg}}><Ic.Pl c="w-5 h-5 text-white" s={{transform:'rotate(-45deg)'}}/></div>
+                    <div><h3 className="font-medium text-stone-800">Arrival</h3><p className="text-sm text-stone-500">{D.flights.arr.date}</p></div>
+                  </div>
+                  <div className="grid grid-cols-3 gap-4 text-sm mb-4">
+                    <div><span className="text-stone-400 block">Time</span><span className="font-medium">{D.flights.arr.time}</span></div>
+                    <div><span className="text-stone-400 block">Airport</span><span className="font-medium">{D.flights.arr.port}</span></div>
+                    <div><span className="text-stone-400 block">Flight</span><span className="font-medium">{D.flights.arr.flight}</span></div>
+                  </div>
+                  <div className="text-sm"><span className="text-stone-400">Travelers:</span><span className="ml-2">{D.flights.arr.travelers.join(', ')}</span></div>
+                </div>
+                <div className="bg-stone-50 rounded-xl p-5 border border-stone-200">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{backgroundColor:B.g}}><Ic.Pl c="w-5 h-5 text-white" s={{transform:'rotate(45deg)'}}/></div>
+                    <div><h3 className="font-medium text-stone-800">Departure</h3><p className="text-sm text-stone-500">{D.flights.dep.date}</p></div>
+                  </div>
+                  <div className="grid grid-cols-3 gap-4 text-sm mb-4">
+                    <div><span className="text-stone-400 block">Time</span><span className="font-medium">{D.flights.dep.time}</span></div>
+                    <div><span className="text-stone-400 block">Airport</span><span className="font-medium">{D.flights.dep.port}</span></div>
+                    <div><span className="text-stone-400 block">Flight</span><span className="font-medium">{D.flights.dep.flight}</span></div>
+                  </div>
+                  <div className="text-sm"><span className="text-stone-400">Travelers:</span><span className="ml-2">{D.flights.dep.travelers.join(', ')}</span></div>
+                </div>
+              </div>
+            )}
+          </section>
+          <section ref={el=>refs.current['map']=el} className="min-h-screen px-6 py-20 bg-stone-50">
+            <h2 className="font-serif text-3xl text-center mb-3 italic" style={{color:B.dg}}>Your Journey</h2>
+            <p className="text-center text-stone-500 mb-8">Val d'Isere → Courchevel → Lyon → Paris</p>
+            <div className="max-w-3xl mx-auto">
+              <TripMap locs={D.locs} fullscreen={fullscreenMap} onToggleFs={()=>setFullscreenMap(!fullscreenMap)} onSelect={(id)=>{const loc=D.locs.find(l=>l.id===id);if(loc&&!fullscreenMap){goTo('d1');}}}/>
+              {!fullscreenMap&&(
+              <div className="mt-8 bg-white rounded-xl p-5 shadow-sm">
+                <h3 className="text-sm font-medium text-stone-700 mb-4">Accommodations</h3>
+                <div className="space-y-3">
+                  {D.acc.map((a,i)=>(
+                    <div key={i} className="flex items-start gap-3 p-3 rounded-lg hover:bg-stone-50 transition-colors">
+                      <span className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-semibold shrink-0" style={{background:B.dg}}>{i+1}</span>
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-medium text-stone-800 text-sm">{a.n}</h4>
+                        <p className="text-xs text-stone-500">{a.l} • {a.d}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              )}
+            </div>
+          </section>
+          <section ref={el=>refs.current['ess']=el} className="min-h-screen px-6 py-20 bg-white">
+            <h2 className="font-serif text-3xl text-center mb-3 italic" style={{color:B.dg}}>Travel Essentials</h2>
+            <p className="text-center text-stone-500 mb-8">Important information for your trip</p>
+            <div className="max-w-2xl mx-auto">
+              <div className="bg-stone-50 rounded-xl p-6 border border-stone-200">
+                <h3 className="font-medium text-stone-800 mb-3">Welcome to France!</h3>
+                <p className="text-stone-600 leading-relaxed">{D.intro}</p>
+              </div>
+            </div>
+          </section>
+          {D.itin.map((day,di)=>(
+            <section key={day.dy} ref={el=>refs.current[`d${day.dy}`]=el} className={`min-h-screen px-6 py-20 ${di%2===0?'bg-white':'bg-stone-50'}`}>
+              <div className="lg:hidden -mx-6 -mt-20 mb-6 h-48 bg-cover bg-center relative" style={{backgroundImage:`url(${H[day.hk]})`}}><div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent"/></div>
+              <div className="max-w-2xl mx-auto">
+                <div className="text-center mb-10">
+                  <p className="text-xs text-stone-400 tracking-widest uppercase mb-1">{day.dt}</p>
+                  <h2 className="font-serif text-3xl italic" style={{color:B.dg}}>Day {day.dy}</h2>
+                  <p className="mt-1" style={{color:B.dg}}>{day.loc}</p>
+                </div>
+                <div className="space-y-4">{day.act.map((a,ai)=>{
+                  const isExp=exp[`${di}-${ai}`];
+                  const nk=`${di}-${ai}`;
+                  const isExperience=a.t==='act';
+                  const accInfo=a.t==='acc'&&a.g?D.acc.find(x=>x.g===a.g):null;
+                  return(
+                    <div key={ai} className={`rounded-xl border transition-all ${isExperience?'bg-gradient-to-br from-white to-stone-50 shadow-sm':a.nt?'bg-amber-50':'bg-white'}`} style={isExperience?{borderColor:B.dg,borderWidth:'1.5px'}:a.nt?{borderColor:B.g}:{borderColor:'#e7e5e4'}}>
+                      <div className={`p-4 ${a.t!=='info'?'cursor-pointer':''}`} onClick={()=>a.t!=='info'&&tog(di,ai)}>
+                        <div className="flex items-start gap-3">
+                          <div className={`p-2 rounded-lg ${isExperience?'':'shrink-0'}`} style={{backgroundColor:isExperience?B.dg:a.nt?'#FEF3C7':'#f5f5f4'}}>{getIc(a.i,isExperience?'text-white':'',{color:isExperience?'#fff':a.nt?B.g:B.dg})}</div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-start justify-between gap-2">
+                              <div>
+                                {isExperience&&<span className="inline-block text-xs font-medium tracking-wide uppercase px-2 py-0.5 rounded mb-1.5" style={{backgroundColor:B.g,color:'#fff'}}>Experience</span>}
+                                <h3 className={`font-medium text-stone-800 ${isExperience?'text-base':'text-sm'}`}>{a.ti}</h3>
+                                {a.tm&&<p className={`${isExperience?'text-sm font-medium':'text-sm'} mt-0.5`} style={{color:B.dg}}>{a.tm}</p>}
+                                {a.loc&&<p className="text-sm text-stone-500 mt-0.5">{a.loc}</p>}
+                              </div>
+                              {a.t!=='info'&&<Ic.ChR c={`w-5 h-5 text-stone-400 transition-transform ${isExp?'rotate-90':''}`}/>}
+                            </div>
+                            {a.nt&&<p className="text-sm mt-2 italic" style={{color:'#92700C'}}>{a.ds}</p>}
+                            {a.t==='acc'&&a.ad&&<a href={`https://maps.google.com/search/${encodeURIComponent(a.ad)}`} target="_blank" rel="noopener noreferrer" className="text-sm mt-1 flex items-center gap-1 hover:opacity-70" style={{color:B.dg}}><Ic.Mp c="w-4 h-4" s={{color:B.dg}}/><span className="truncate">{a.ad}</span></a>}
+                          </div>
+                        </div>
+                      </div>
+                      {isExp&&a.t!=='info'&&(
+                        <div className="px-4 pb-4 border-t border-stone-100 pt-3">
+                          <div className="ml-11 space-y-3 text-sm">
+                            {isExperience&&a.eds&&<p className="text-stone-600 leading-relaxed">{a.eds}</p>}
+                            {!isExperience&&a.ds&&<p className="text-stone-600">{a.ds}</p>}
+                            {a.dur&&<div className="flex items-center gap-2 text-stone-500"><Ic.Cl c="w-4 h-4"/>Duration: {a.dur}</div>}
+                            {a.pr&&<div><span className="text-stone-500">Provider: </span><span className="text-stone-700">{a.pr}</span></div>}
+                            {accInfo&&<div className="bg-stone-50 rounded-lg p-3 mt-2"><h4 className="text-sm font-medium text-stone-700 mb-1.5">About {accInfo.n}</h4><p className="text-stone-600 text-sm leading-relaxed">{accInfo.ds}</p></div>}
+                            {a.g&&G[a.g]&&<Gal imgs={G[a.g]} name={isExperience?a.ti:a.loc} isExp={isExperience}/>}
+                          </div>
+                          {!edit&&notes[nk]&&(
+                            <div className="ml-11 mt-3 bg-amber-50 border-l-4 border-amber-400 rounded-r-lg px-4 py-2.5">
+                              <span className="text-sm text-amber-800"><span className="font-medium" style={{color:B.g}}>Note:</span> {notes[nk]}</span>
+                            </div>
+                          )}
+                          {edit&&(
+                            <div className="ml-11 mt-3 border-2 border-dashed rounded-lg p-3" style={{borderColor:B.g}}>
+                              <label className="text-xs font-medium block mb-2" style={{color:B.g}}>Ops Note (Level III)</label>
+                              <textarea
+                                value={notes[nk]||''}
+                                onChange={(e)=>setNotes(p=>({...p,[nk]:e.target.value.slice(0,200)}))}
+                                placeholder="Add note..."
+                                className="w-full text-sm border border-stone-200 rounded-lg p-2 resize-none focus:outline-none focus:border-stone-400"
+                                rows={2}
+                              />
+                              <div className="text-right text-xs text-stone-400 mt-1">{(notes[nk]||'').length}/200</div>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}</div>
+              </div>
+            </section>
+          ))}
+          <section ref={el=>refs.current['emg']=el} className="min-h-screen px-6 py-20" style={{backgroundColor:'#3D2E27'}}>
+            <h2 className="font-serif text-3xl text-white text-center mb-10 italic">Emergency Contacts</h2>
+            <div className="max-w-2xl mx-auto">
+              <div className="bg-white/15 backdrop-blur-sm rounded-xl p-6 space-y-5">
+                <div>
+                  <h3 className="text-sm tracking-wide uppercase mb-3 text-amber-300">Operations Manager</h3>
+                  <p className="text-white mb-2">Your primary contact: <span className="font-semibold">{D.em.tm}</span></p>
+                  <a href={`tel:${D.em.tmPh}`} className="inline-flex items-center gap-2 bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg transition-colors text-white"><Ic.Ph c="w-5 h-5"/><span>{D.em.tmPh}</span></a>
+                </div>
+                <div className="border-t border-white/30 pt-5">
+                  <h3 className="text-sm tracking-wide uppercase mb-3 text-red-300">Emergency Contact (24/7)</h3>
+                  <a href={`tel:${D.em.ep}`} className="inline-flex items-center gap-2 bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg transition-colors text-white font-medium"><Ic.Ph c="w-5 h-5"/>{D.em.ep}</a>
+                  <p className="text-white/80 text-sm mt-3">On business days: 7 PM to 8 AM (local time)<br/>On weekends and holidays: 24/7</p>
+                </div>
+                <div className="border-t border-white/30 pt-5">
+                  <a href={`https://wa.me/${D.em.wa}?text=${encodeURIComponent('Hello! I am Jeffrey Lehrfeld on the France trip and need assistance.')}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg transition-colors text-white"><Ic.Wa c="w-5 h-5"/><span>WhatsApp</span></a>
+                </div>
+              </div>
+              <div className="text-center mt-10">
+                <p className="text-white/80 text-sm">Welcome to France!</p>
+                <p className="font-medium mt-1 text-amber-300">Essentially French Team</p>
+              </div>
+            </div>
+          </section>
+          <section ref={el=>refs.current['places']=el} className="min-h-screen px-6 py-20" style={{background:'linear-gradient(180deg, #F5F2ED 0%, #E8E4DD 100%)'}}>
+            <h2 className="font-serif text-3xl text-center mb-3 italic" style={{color:B.dg}}>The Places You'll Go</h2>
+            <p className="text-center text-stone-500 mb-10">Discover the magic of France</p>
+            <div className="max-w-3xl mx-auto space-y-4">
+              {D.places.map((place,i)=>{
+                const isOpen=placesOpen[place.id];
+                return(
+                  <div key={i} className="bg-white rounded-2xl shadow-sm border border-stone-200 overflow-hidden">
+                    <button onClick={()=>togPlace(place.id)} className="w-full text-left">
+                      <div className="flex items-center gap-4 p-4">
+                        <span className="w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-semibold shrink-0" style={{background:B.dg}}>{i+1}</span>
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-serif text-xl italic" style={{color:B.dg}}>Experience {place.name}</h3>
+                        </div>
+                        <Ic.ChD c={`w-5 h-5 text-stone-400 shrink-0 transition-transform ${isOpen?'rotate-180':''}`}/>
+                      </div>
+                    </button>
+                    {isOpen&&(
+                      <div className="px-4 pb-4">
+                        <div className="w-full h-48 md:h-64 rounded-xl overflow-hidden mb-4">
+                          <img src={place.img} alt={place.name} className="w-full h-full object-cover"/>
+                        </div>
+                        <p className="text-stone-600 leading-relaxed">{place.desc}</p>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+          <section ref={el=>refs.current['faq']=el} className="min-h-screen px-6 py-20" style={{background:'linear-gradient(180deg, #FDF8F3 0%, #F5EDE4 100%)'}}>
+            <h2 className="font-serif text-3xl text-center mb-3 italic" style={{color:B.dg}}>Destination FAQ</h2>
+            <p className="text-center text-stone-500 mb-10">Everything you need to know about traveling in France</p>
+            <div className="max-w-3xl mx-auto space-y-6">
+              {D.faq.map((cat,ci)=>(
+                <div key={ci} className="bg-white rounded-2xl shadow-sm border border-stone-200 overflow-hidden">
+                  <div className="px-6 py-4 border-b border-stone-100" style={{background:'linear-gradient(90deg, #FAF5F0 0%, #FFFFFF 100%)'}}>
+                    <h3 className="font-medium text-lg flex items-center gap-3" style={{color:B.dg}}>
+                      <span className="text-2xl">{cat.icon}</span>
+                      {cat.cat}
+                    </h3>
+                  </div>
+                  <div className="divide-y divide-stone-100">
+                    {cat.items.map((item,qi)=>{
+                      const isOpen=faqOpen[`${ci}-${qi}`];
+                      return(
+                        <div key={qi} className="transition-colors hover:bg-stone-50">
+                          <button onClick={()=>togFaq(ci,qi)} className="w-full px-6 py-4 text-left flex items-start justify-between gap-4">
+                            <span className="font-medium text-stone-700">{item.q}</span>
+                            <Ic.ChD c={`w-5 h-5 text-stone-400 shrink-0 transition-transform ${isOpen?'rotate-180':''}`}/>
+                          </button>
+                          {isOpen&&(
+                            <div className="px-6 pb-4 -mt-2">
+                              <p className="text-stone-600 text-sm leading-relaxed pl-4 border-l-2" style={{borderColor:B.g}}>{item.a}</p>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+              <div className="text-center pt-6">
+                <p className="text-stone-500 text-sm mb-3">Have more questions?</p>
+                <a href={`https://wa.me/${D.em.wa}?text=${encodeURIComponent('Hello! I have a question about my upcoming France trip.')}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-white font-medium shadow-lg hover:shadow-xl transition-all" style={{backgroundColor:'#25D366'}}>
+                  <Ic.Wa c="w-5 h-5"/>Ask Your Concierge
+                </a>
+              </div>
+            </div>
+          </section>
+          <footer className="py-12 px-6 text-center" style={{backgroundColor:B.dg}}>
+            <img src="https://lh7-rt.googleusercontent.com/docsz/AD_4nXdIfAEyZnQqzrPp2AOd3SENdfIaLDlaulW3xtDEqU1EtSBY6Hg8AnzjonTOl7lmz2QHQsY1H0aUiG_I03TB8chjlfk9rojfBi16X0-xi6NUPPVmLfBLtN7MrkNCvdWqarN_6w02vQ?key=5z7x5EJrcuoubrabZrlshg" alt="Essentially French" className="h-16 mx-auto mb-4 brightness-0 invert" onError={(e)=>{e.target.style.display='none';}}/>
+            <p className="text-white text-lg font-serif italic mb-2">Share Your Experience</p>
+            <p className="text-white/80 text-sm mb-4">We love seeing France from your perspective!<br/>Tag us in your social media and photos.</p>
+            <div className="flex justify-center gap-4 mb-4">
+              <a href="https://www.instagram.com/essentiallyfrench/" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors"><Ic.Ig c="w-5 h-5 text-white"/></a>
+              <a href="https://www.essentiallyfrench.com/" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors"><Ic.Gl c="w-5 h-5 text-white"/></a>
+            </div>
+            <p className="text-white/70 text-sm">@essentiallyfrench</p>
+            <p className="text-white/80 text-sm mt-4">© 2026 Essentially French</p>
+            <p className="text-white/60 text-xs mt-1">Last updated: Jan 23, 2026</p>
+          </footer>
+        </div>
+      </div>
+      {showWaPanel&&<WhatsAppPanel onClose={()=>setShowWaPanel(false)} wa={D.em.wa} name={D.name}/>}
+      {fullscreenMap&&<TripMap locs={D.locs} fullscreen={true} onToggleFs={()=>setFullscreenMap(false)} onSelect={()=>{}}/>}
+      <button onClick={()=>setShowWaPanel(!showWaPanel)} className={`fixed bottom-5 right-5 text-white px-5 py-2.5 rounded-full shadow-lg hover:scale-105 transition-all flex items-center gap-2 z-30 no-print ${showWaPanel?'':'pulse-ring'}`} style={{backgroundColor:'#25D366'}}>
+        <Ic.Wa c="w-5 h-5"/><span className="font-medium">{showWaPanel?'Close':'Chat with Concierge'}</span>
+      </button>
+    </div>
+  );
+}
+ReactDOM.render(<App/>,document.getElementById('root'));
+</script>
+</body>
+</html>
