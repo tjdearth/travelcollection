@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ContentHub - Travel Content CMS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: 'Inter', system-ui, sans-serif; }
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: #0f1056; }
+    ::-webkit-scrollbar-thumb { background: #5b86a0; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState, useEffect, useRef } = React;
+
+    // Data
+    const destinations = [
+      { id: 1, name: 'Italy', locations: 3, newWithoutAssets: 1 },
+      { id: 2, name: 'Spain', locations: 2, newWithoutAssets: 0 },
+      { id: 3, name: 'Portugal', locations: 2, newWithoutAssets: 1 },
+      { id: 4, name: 'Kenya', locations: 2, newWithoutAssets: 0 },
+      { id: 5, name: 'Tanzania', locations: 1, newWithoutAssets: 0 },
+      { id: 6, name: 'Uganda', locations: 1, newWithoutAssets: 1 },
+      { id: 7, name: 'Rwanda', locations: 1, newWithoutAssets: 0 },
+      { id: 8, name: 'Mexico', locations: 2, newWithoutAssets: 1 },
+      { id: 9, name: 'Indonesia', locations: 2, newWithoutAssets: 0 },
+      { id: 10, name: 'Singapore', locations: 1, newWithoutAssets: 0 },
+      { id: 11, name: 'Malaysia', locations: 1, newWithoutAssets: 0 },
+      { id: 12, name: 'UAE', locations: 2, newWithoutAssets: 0 },
+      { id: 13, name: 'UK', locations: 2, newWithoutAssets: 1 },
+      { id: 14, name: 'Japan', locations: 3, newWithoutAssets: 1 },
+      { id: 15, name: 'France', locations: 2, newWithoutAssets: 0 },
+      { id: 16, name: 'Australia', locations: 2, newWithoutAssets: 1 },
+      { id: 17, name: 'Thailand', locations: 2, newWithoutAssets: 0 },
+      { id: 18, name: 'Türkiye', locations: 2, newWithoutAssets: 1 },
+      { id: 19, name: 'Greece', locations: 2, newWithoutAssets: 0 },
+      { id: 20, name: 'Colombia', locations: 1, newWithoutAssets: 0 },
+      { id: 21, name: 'Peru', locations: 1, newWithoutAssets: 1 },
+    ];
+
+    const locations = [
+      // Italy (12)
+      { id: 1, name: 'Rome', destination: 'Italy', hasAssets: true },
+      { id: 2, name: 'Florence', destination: 'Italy', hasAssets: true },
+      { id: 3, name: 'Amalfi Coast', destination: 'Italy', hasAssets: true },
+      { id: 4, name: 'Venice', destination: 'Italy', hasAssets: true },
+      { id: 5, name: 'Tuscany', destination: 'Italy', hasAssets: true },
+      { id: 6, name: 'Milan', destination: 'Italy', hasAssets: true },
+      { id: 7, name: 'Lake Como', destination: 'Italy', hasAssets: true },
+      { id: 8, name: 'Sicily', destination: 'Italy', hasAssets: true },
+      { id: 9, name: 'Sardinia', destination: 'Italy', hasAssets: true },
+      { id: 10, name: 'Cinque Terre', destination: 'Italy', hasAssets: true },
+      { id: 11, name: 'Puglia', destination: 'Italy', hasAssets: true },
+      { id: 12, name: 'Naples', destination: 'Italy', hasAssets: true },
+      // Spain (8)
+      { id: 13, name: 'Barcelona', destination: 'Spain', hasAssets: true },
+      { id: 14, name: 'Madrid', destination: 'Spain', hasAssets: true },
+      { id: 15, name: 'Seville', destination: 'Spain', hasAssets: true },
+      { id: 16, name: 'San Sebastian', destination: 'Spain', hasAssets: true },
+      { id: 17, name: 'Granada', destination: 'Spain', hasAssets: true },
+      { id: 18, name: 'Mallorca', destination: 'Spain', hasAssets: true },
+      { id: 19, name: 'Ibiza', destination: 'Spain', hasAssets: true },
+      { id: 20, name: 'Valencia', destination: 'Spain', hasAssets: true },
+      // Portugal (4)
+      { id: 21, name: 'Lisbon', destination: 'Portugal', hasAssets: true },
+      { id: 22, name: 'Porto', destination: 'Portugal', hasAssets: true },
+      { id: 23, name: 'Algarve', destination: 'Portugal', hasAssets: true },
+      { id: 24, name: 'Madeira', destination: 'Portugal', hasAssets: false },
+      // Kenya (4)
+      { id: 25, name: 'Masai Mara', destination: 'Kenya', hasAssets: true },
+      { id: 26, name: 'Nairobi', destination: 'Kenya', hasAssets: true },
+      { id: 27, name: 'Amboseli', destination: 'Kenya', hasAssets: true },
+      { id: 28, name: 'Lamu', destination: 'Kenya', hasAssets: true },
+      // Tanzania (3)
+      { id: 29, name: 'Serengeti', destination: 'Tanzania', hasAssets: true },
+      { id: 30, name: 'Zanzibar', destination: 'Tanzania', hasAssets: true },
+      { id: 31, name: 'Ngorongoro', destination: 'Tanzania', hasAssets: true },
+      // Uganda (2)
+      { id: 32, name: 'Bwindi', destination: 'Uganda', hasAssets: true },
+      { id: 33, name: 'Queen Elizabeth NP', destination: 'Uganda', hasAssets: true },
+      // Rwanda (2)
+      { id: 34, name: 'Volcanoes NP', destination: 'Rwanda', hasAssets: true },
+      { id: 35, name: 'Kigali', destination: 'Rwanda', hasAssets: true },
+      // Mexico (4)
+      { id: 36, name: 'Mexico City', destination: 'Mexico', hasAssets: true },
+      { id: 37, name: 'Oaxaca', destination: 'Mexico', hasAssets: true },
+      { id: 38, name: 'Tulum', destination: 'Mexico', hasAssets: true },
+      { id: 39, name: 'San Miguel de Allende', destination: 'Mexico', hasAssets: true },
+      // Indonesia (3)
+      { id: 40, name: 'Bali', destination: 'Indonesia', hasAssets: true },
+      { id: 41, name: 'Komodo', destination: 'Indonesia', hasAssets: true },
+      { id: 42, name: 'Raja Ampat', destination: 'Indonesia', hasAssets: true },
+      // Singapore (1)
+      { id: 43, name: 'Singapore City', destination: 'Singapore', hasAssets: true },
+      // Malaysia (2)
+      { id: 44, name: 'Kuala Lumpur', destination: 'Malaysia', hasAssets: true },
+      { id: 45, name: 'Langkawi', destination: 'Malaysia', hasAssets: true },
+      // UAE (2)
+      { id: 46, name: 'Dubai', destination: 'UAE', hasAssets: true },
+      { id: 47, name: 'Abu Dhabi', destination: 'UAE', hasAssets: true },
+      // UK (4)
+      { id: 48, name: 'London', destination: 'UK', hasAssets: true },
+      { id: 49, name: 'Cotswolds', destination: 'UK', hasAssets: true },
+      { id: 50, name: 'Edinburgh', destination: 'UK', hasAssets: true },
+      { id: 51, name: 'Bath', destination: 'UK', hasAssets: true },
+      // Japan (4)
+      { id: 52, name: 'Tokyo', destination: 'Japan', hasAssets: true },
+      { id: 53, name: 'Kyoto', destination: 'Japan', hasAssets: true },
+      { id: 54, name: 'Osaka', destination: 'Japan', hasAssets: true },
+      { id: 55, name: 'Hakone', destination: 'Japan', hasAssets: true },
+      // France (4)
+      { id: 56, name: 'Paris', destination: 'France', hasAssets: true },
+      { id: 57, name: 'Provence', destination: 'France', hasAssets: true },
+      { id: 58, name: 'French Riviera', destination: 'France', hasAssets: true },
+      { id: 59, name: 'Bordeaux', destination: 'France', hasAssets: true },
+      // Australia (3)
+      { id: 60, name: 'Sydney', destination: 'Australia', hasAssets: true },
+      { id: 61, name: 'Melbourne', destination: 'Australia', hasAssets: true },
+      { id: 62, name: 'Great Barrier Reef', destination: 'Australia', hasAssets: false },
+      // Thailand (2)
+      { id: 63, name: 'Bangkok', destination: 'Thailand', hasAssets: true },
+      { id: 64, name: 'Chiang Mai', destination: 'Thailand', hasAssets: true },
+      // Türkiye (2)
+      { id: 65, name: 'Istanbul', destination: 'Türkiye', hasAssets: true },
+      { id: 66, name: 'Cappadocia', destination: 'Türkiye', hasAssets: true },
+      // Greece (1)
+      { id: 67, name: 'Santorini', destination: 'Greece', hasAssets: true },
+    ];
+
+    const servicesWithoutAssets = [
+      { id: 1, name: 'Private Chef Experience', type: 'Experiences', supplier: 'Local Chefs Co' },
+      { id: 2, name: 'Helicopter Transfer', type: 'Transport', supplier: 'SkyWay Aviation' },
+      { id: 3, name: 'Desert Safari', type: 'Experiences', supplier: 'Desert Adventures' },
+      { id: 4, name: 'Villa Rental - Tuscany', type: 'Accommodation', supplier: 'Luxury Villas' },
+      { id: 5, name: 'Wine Tasting Tour', type: 'Experiences', supplier: 'Vineyard Tours' },
+      { id: 6, name: 'Mountain Guide Service', type: 'Guides', supplier: 'Alpine Experts' },
+    ];
+
+    const suppliersData = { total: 156, accommodation: 68, experiences: 52, transport: 24, guides: 12, newWithoutAssets: 8 };
+    const servicesData = { total: 423, accommodation: 187, experiences: 142, transport: 58, guides: 36, newWithoutAssets: 14 };
+
+    // Sample supplier for editor - REAL DATA from palazzoscanderbeg.com
+    const sampleSupplier = {
+      id: 1,
+      name: 'Palazzo Scanderbeg',
+      type: 'Accommodation',
+      address: 'Piazza Scanderbeg 117, 00187 Rome, Italy',
+      city: 'Rome',
+      country: 'Italy',
+      starRating: 5,
+      website: 'https://www.palazzoscanderbeg.com',
+      email: 'info@palazzoscanderbeg.com',
+      phone: '+39 06 8952 9001',
+      description: "Hidden in a tiny piazza just streets away from the Trevi Fountain, Palazzo Scanderbeg is a magical 15th-century residence rich in history. Named after Albanian hero and prince George Castriot Scanderbeg who commissioned the Palace, this elegant Roman collection features modern, apartment-style suites and understated rooms. The historical charm blends seamlessly with contemporary comfort, offering guests a true 'home away from home' in the heart of the Eternal City. With original wooden vaults, Venetian-wood floors, and design furnishings by famous Made in Italy signatures, guests can live like nobility while enjoying modern amenities including fully-equipped kitchens, complimentary minibars, and optional butler service.",
+      hasAssets: true,
+      gallery: [
+        'https://cdn.blastness.biz/media/134/gallery/thumbs/full/Palazzo-Scanderbeg-gallery-facciata.jpg',
+        'https://cdn.blastness.biz/media/134/gallery/thumbs/full/Palazzo-Scanderbeg-gallery-ingresso.jpg',
+        'https://cdn.blastness.biz/media/134/gallery/thumbs/full/Palazzo-Scanderbeg-gallery-libreria.jpg',
+        'https://cdn.blastness.biz/media/134/gallery/thumbs/full/Palazzo-Scanderbeg-gallery-butler.jpg',
+        'https://cdn.blastness.biz/media/134/gallery/thumbs/full/Palazzo-Scanderbeg-gallery-colazioni.jpg',
+      ],
+      services: [
+        {
+          id: 101,
+          name: 'Classic Room',
+          type: 'Room Category',
+          description: 'Clean, simple and understated rooms ideal for couples looking for a comfortable base from which to explore Rome. Features modern amenities including free WiFi, TV, air-conditioning, minibar, safe, and CO Bigelow bath products. Continental breakfast served in the elegant Morning Room with views over Piazza Scanderbeg.',
+          bedType: 'Double',
+          maxOccupancy: 2,
+          size: '30 sqm',
+          amenities: ['Free WiFi', 'Air Conditioning', 'Minibar', 'Safe', 'TV', 'CO Bigelow Bath Products'],
+          hasAssets: true,
+          gallery: [
+            'https://cdn.blastness.biz/media/134/gallery/thumbs/full/Palazzo-Scanderbeg-gallery-classic.jpg',
+            'https://cdn.blastness.biz/media/134/top/thumbs/full/Palazzo-Scanderbeg-top-classic.jpg',
+          ]
+        },
+        {
+          id: 102,
+          name: 'Deluxe Townhouse',
+          type: 'Room Category',
+          description: 'Bright and noble suite just steps from the Trevi Fountain. Unique for its original wooden floor and vaults, featuring design furnishings by famous Made in Italy signatures. Includes spacious living area, liquor cabinet for crafting aperitivos, large wardrobes, fully-equipped kitchen with espresso machine, and all modern comforts. Views of Scanderbeg Square.',
+          bedType: 'King',
+          maxOccupancy: 2,
+          size: '70 sqm',
+          amenities: ['Kitchen', 'Espresso Machine', 'Liquor Cabinet', 'Free WiFi', 'Air Conditioning', 'Minibar', 'CO Bigelow Bath Products', 'Square Views'],
+          hasAssets: true,
+          gallery: [
+            'https://cdn.blastness.biz/media/134/gallery/thumbs/full/Palazzo-Scanderbeg-gallery-deluxe-suite.jpg',
+          ]
+        },
+        {
+          id: 103,
+          name: 'Annex Suite',
+          type: 'Room Category',
+          description: 'Large suites decorated in a palette of brown, navy blue and white with Venetian-wood floors, exposed wooden beams and views of Scanderbeg Square. Features king-size bedroom, living area with sofa bed, dining area, and fully-equipped kitchen with hob, microwave and dishwasher. Some suites include a luxurious hammam shower.',
+          bedType: 'King + Sofa Bed',
+          maxOccupancy: 4,
+          size: '70-106 sqm',
+          amenities: ['Kitchen', 'Dining Area', 'Sofa Bed', 'Hammam Shower', 'Free WiFi', 'Exposed Beams', 'Square Views'],
+          hasAssets: true,
+          gallery: [
+            'https://cdn.blastness.biz/media/134/gallery/thumbs/full/gallery-App_Annex_Living_and_Kitchen_02.jpg',
+          ]
+        },
+        {
+          id: 104,
+          name: 'The Victory Suite',
+          type: 'Room Category',
+          description: 'Set over two floors with 120 sqm of space, this magnificent suite features mid-century decor with Venetian-wood floors, orange-leather furnishings and white walls. Ground floor has kitchen and living area, upstairs has additional living space. King-size bed and sofa-bed, with views of Scanderbeg Square. Butler service included.',
+          bedType: 'King + Sofa Bed',
+          maxOccupancy: 4,
+          size: '120 sqm',
+          amenities: ['Two Floors', 'Butler Service', 'Full Kitchen', 'Mid-Century Decor', 'Venetian Floors', 'Orange Leather', 'Square Views'],
+          hasAssets: true,
+          gallery: [
+            'https://cdn.blastness.biz/media/134/gallery/thumbs/full/Palazzo-Scanderbeg-gallery-the-victory-suite01.jpg',
+          ]
+        },
+        {
+          id: 105,
+          name: 'The Scanderbeg Suite',
+          type: 'Room Category',
+          description: 'This bright and exclusive suite on the fourth floor takes its name from Albanian hero George Castriot Scanderbeg. Features original high white wooden vaults from the 15th century, two bedrooms each with ensuite, a private roof terrace with enchanting Roman sunsets. Butler service for breakfast each morning. Perfect for immersing in authentic palazzo atmosphere.',
+          bedType: 'King (2 bedrooms)',
+          maxOccupancy: 4,
+          size: '127 sqm',
+          amenities: ['Private Roof Terrace', 'Butler Service', '15th-Century Vaults', 'Two Bedrooms', 'Two Ensuites', 'Kitchen', 'Roman Sunset Views'],
+          hasAssets: true,
+          gallery: [
+            'https://cdn.blastness.biz/media/134/gallery/thumbs/full/Palazzo-Scanderbeg-gallery-scanderbeg-suite-living.jpg',
+            'https://cdn.blastness.biz/media/134/top/thumbs/full/Palazzo-Scanderbeg-top-scanderbeg-suite-camera.jpg',
+            'https://cdn.blastness.biz/media/134/top/thumbs/full/Palazzo-Scanderbeg-top-scanderbeg-suite-living.jpg',
+          ]
+        },
+        {
+          id: 106,
+          name: 'The Ambassador Suite',
+          type: 'Room Category',
+          description: 'One of a kind, this magnificent 166 sqm suite spans three floors with a private terrace overlooking Roman rooftops. Features a wellness turret with private hammam shower and Technogym exercise bike. Two bedrooms (King and Queen), living room with sofa bed, dining room with fully equipped kitchen. Butler service included. Ensuite bathroom has rainfall shower and bathtub for two.',
+          bedType: 'King + Queen + Sofa',
+          maxOccupancy: 6,
+          size: '166 sqm',
+          amenities: ['Private Terrace', 'Wellness Turret', 'Hammam Shower', 'Technogym Bike', 'Butler Service', '3 Floors', 'Full Kitchen', 'Bathtub for Two'],
+          hasAssets: true,
+          gallery: [
+            'https://cdn.blastness.biz/media/134/gallery/thumbs/full/Palazzo-Scanderbeg-gallery-ambassador-suite-camera.jpg',
+            'https://cdn.blastness.biz/media/134/top/thumbs/full/Palazzo-Scanderbeg-top-ambassador-suite-camera.jpg',
+          ]
+        },
+        {
+          id: 107,
+          name: 'Private Chef Dinner',
+          type: 'Experience',
+          description: 'Enjoy an intimate dining experience in the privacy of your suite with a private chef preparing authentic Italian cuisine. Perfect for special occasions or a romantic evening in the heart of Rome.',
+          maxOccupancy: 8,
+          duration: '3-4 hours',
+          amenities: ['Private Chef', 'Multi-course Menu', 'Wine Pairing Available', 'In-Suite Dining'],
+          hasAssets: false,
+          gallery: []
+        },
+        {
+          id: 108,
+          name: "Nonna's Home Cooking Class",
+          type: 'Experience',
+          description: 'Learn to prepare authentic Roman cuisine with a real Italian grandmother. This hands-on cooking class teaches traditional recipes passed down through generations, followed by enjoying the meal you created.',
+          maxOccupancy: 6,
+          duration: '4 hours',
+          amenities: ['Hands-on Cooking', 'Traditional Recipes', 'Meal Included', 'Recipe Cards'],
+          hasAssets: false,
+          gallery: []
+        },
+        {
+          id: 109,
+          name: 'Private Vatican Tour',
+          type: 'Experience',
+          description: 'Skip the lines with an exclusive private tour of the Vatican Museums, Sistine Chapel, and St. Peter\'s Basilica. Expert English-speaking guide reveals the secrets and masterpieces of this incredible collection.',
+          maxOccupancy: 8,
+          duration: '3 hours',
+          amenities: ['Skip-the-Line Access', 'Private Guide', 'Sistine Chapel', 'St. Peter\'s Basilica'],
+          hasAssets: false,
+          gallery: []
+        }
+      ]
+    };
+
+    // Icon Component
+    const Icon = ({ name, size = 24, className = "" }) => {
+      const ref = useRef();
+      useEffect(() => {
+        if (ref.current && lucide.icons[name]) {
+          ref.current.innerHTML = '';
+          const icon = lucide.createElement(lucide.icons[name]);
+          icon.setAttribute('width', size);
+          icon.setAttribute('height', size);
+          if (className) icon.setAttribute('class', className);
+          ref.current.appendChild(icon);
+        }
+      }, [name, size, className]);
+      return <span ref={ref} className="inline-flex items-center justify-center" />;
+    };
+
+    // Upload Zone Component
+    const UploadZone = ({ label, existingImages = [] }) => (
+      <div className="space-y-3">
+        <label className="text-sm font-medium text-slate-300">{label}</label>
+        {existingImages.length > 0 && (
+          <div className="flex gap-3 flex-wrap">
+            {existingImages.map((img, i) => (
+              <div key={i} className="relative group">
+                <img src={img} alt="" className="w-32 h-24 object-cover rounded-lg border border-slate-600" />
+                <button className="absolute top-1 right-1 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                  <Icon name="X" size={14} className="text-white" />
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+        <div className="border-2 border-dashed border-slate-600 rounded-xl p-6 hover:border-amber-500/50 transition-colors cursor-pointer group">
+          <div className="flex flex-col items-center text-center">
+            <div className="w-12 h-12 rounded-xl bg-slate-700 flex items-center justify-center mb-3 group-hover:bg-amber-500/20 transition-colors">
+              <Icon name="Upload" size={24} className="text-slate-400 group-hover:text-amber-400" />
+            </div>
+            <p className="text-sm text-slate-300 mb-1">Drop files here or click to upload</p>
+            <p className="text-xs text-slate-500">PNG, JPG, MP4 up to 50MB</p>
+          </div>
+        </div>
+      </div>
+    );
+
+    // Service Card Component
+    const ServiceCard = ({ service, isExpanded, onToggle }) => {
+      const hasAllAssets = service.hasAssets && service.gallery?.length > 0;
+      const isRoom = service.type === 'Room Category';
+      
+      return (
+        <div className={`rounded-xl border transition-all ${hasAllAssets ? 'border-emerald-500/30 bg-emerald-500/5' : 'border-amber-500/30 bg-amber-500/5'}`}>
+          <div className="flex items-center justify-between p-4 cursor-pointer hover:bg-white/5 transition-colors rounded-t-xl" onClick={onToggle}>
+            <div className="flex items-center gap-4">
+              <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${isRoom ? 'bg-blue-500/20' : 'bg-purple-500/20'}`}>
+                <Icon name={isRoom ? 'Bed' : 'Sparkles'} size={20} className={isRoom ? 'text-blue-400' : 'text-purple-400'} />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h4 className="font-semibold text-white">{service.name}</h4>
+                  <span className={`px-2 py-0.5 rounded-full text-xs ${isRoom ? 'bg-blue-500/20 text-blue-300' : 'bg-purple-500/20 text-purple-300'}`}>
+                    {service.type}
+                  </span>
+                </div>
+                <p className="text-sm text-slate-400">
+                  {isRoom ? `${service.bedType} • ${service.maxOccupancy} guests • ${service.size}` : `${service.maxOccupancy} guests • ${service.duration}`}
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              {!hasAllAssets && (
+                <span className="px-2 py-1 bg-amber-500/20 text-amber-400 text-xs rounded-lg flex items-center gap-1">
+                  <Icon name="AlertCircle" size={12} /> Missing Assets
+                </span>
+              )}
+              <Icon name={isExpanded ? 'ChevronUp' : 'ChevronDown'} size={20} className="text-slate-400" />
+            </div>
+          </div>
+          
+          {isExpanded && (
+            <div className="p-4 pt-0 space-y-4 border-t border-slate-700/50">
+              <div>
+                <label className="text-sm font-medium text-slate-300 mb-2 block">Description</label>
+                <textarea defaultValue={service.description} className="w-full px-4 py-3 bg-slate-800/50 border border-slate-600 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-500/50 resize-none" rows={3} />
+              </div>
+              <div className="grid grid-cols-4 gap-4">
+                {isRoom ? (
+                  <>
+                    <div>
+                      <label className="text-xs font-medium text-slate-400 mb-1 block">Bed Type</label>
+                      <input type="text" defaultValue={service.bedType} className="w-full px-3 py-2 bg-slate-800/50 border border-slate-600 rounded-lg text-sm text-white focus:outline-none focus:ring-2 focus:ring-amber-500/50" />
+                    </div>
+                    <div>
+                      <label className="text-xs font-medium text-slate-400 mb-1 block">Max Occupancy</label>
+                      <input type="number" defaultValue={service.maxOccupancy} className="w-full px-3 py-2 bg-slate-800/50 border border-slate-600 rounded-lg text-sm text-white focus:outline-none focus:ring-2 focus:ring-amber-500/50" />
+                    </div>
+                    <div>
+                      <label className="text-xs font-medium text-slate-400 mb-1 block">Room Size</label>
+                      <input type="text" defaultValue={service.size} className="w-full px-3 py-2 bg-slate-800/50 border border-slate-600 rounded-lg text-sm text-white focus:outline-none focus:ring-2 focus:ring-amber-500/50" />
+                    </div>
+                    <div>
+                      <label className="text-xs font-medium text-slate-400 mb-1 block">Amenities</label>
+                      <input type="text" defaultValue={service.amenities?.join(', ')} className="w-full px-3 py-2 bg-slate-800/50 border border-slate-600 rounded-lg text-sm text-white focus:outline-none focus:ring-2 focus:ring-amber-500/50" />
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div>
+                      <label className="text-xs font-medium text-slate-400 mb-1 block">Max Guests</label>
+                      <input type="number" defaultValue={service.maxOccupancy} className="w-full px-3 py-2 bg-slate-800/50 border border-slate-600 rounded-lg text-sm text-white focus:outline-none focus:ring-2 focus:ring-amber-500/50" />
+                    </div>
+                    <div>
+                      <label className="text-xs font-medium text-slate-400 mb-1 block">Duration</label>
+                      <input type="text" defaultValue={service.duration} className="w-full px-3 py-2 bg-slate-800/50 border border-slate-600 rounded-lg text-sm text-white focus:outline-none focus:ring-2 focus:ring-amber-500/50" />
+                    </div>
+                    <div className="col-span-2">
+                      <label className="text-xs font-medium text-slate-400 mb-1 block">Includes</label>
+                      <input type="text" defaultValue={service.amenities?.join(', ')} className="w-full px-3 py-2 bg-slate-800/50 border border-slate-600 rounded-lg text-sm text-white focus:outline-none focus:ring-2 focus:ring-amber-500/50" />
+                    </div>
+                  </>
+                )}
+              </div>
+              <UploadZone label={isRoom ? 'Room Photos' : 'Experience Photos'} existingImages={service.gallery} />
+            </div>
+          )}
+        </div>
+      );
+    };
+
+    // Booklet Preview Modal
+    const BookletPreview = ({ supplier, onClose }) => {
+      const [currentImageIndex, setCurrentImageIndex] = useState(0);
+      const roomServices = supplier.services.filter(s => s.type === 'Room Category');
+      const roomService = roomServices[0]; // Show first room
+      
+      return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-8" onClick={onClose}>
+          {/* Backdrop */}
+          <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" />
+          
+          {/* Modal */}
+          <div className="relative bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-auto" onClick={e => e.stopPropagation()}>
+            {/* Close button */}
+            <button onClick={onClose} className="absolute top-4 right-4 z-10 w-8 h-8 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center transition-colors">
+              <Icon name="X" size={18} className="text-gray-600" />
+            </button>
+            
+            {/* Preview Label */}
+            <div className="absolute top-4 left-4 z-10 px-3 py-1 bg-emerald-500 text-white text-xs font-medium rounded-full">
+              Booklet Preview
+            </div>
+            
+            {/* Booklet Content */}
+            <div className="p-6 pt-14">
+              {/* Accommodation Header */}
+              <div className="flex items-start gap-3 mb-4">
+                <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <Icon name="Hotel" size={20} className="text-gray-600" />
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm text-gray-500 font-medium">Accommodation</p>
+                    <Icon name="ChevronDown" size={20} className="text-gray-400" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-900">{supplier.name}</h3>
+                  <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-1 text-sm text-gray-500">
+                      <Icon name="MapPin" size={14} className="text-emerald-600" />
+                      <span>{supplier.address}</span>
+                    </div>
+                  </div>
+                  {/* Star Rating */}
+                  <div className="flex items-center gap-1 mt-1">
+                    {[1,2,3,4,5].map(star => (
+                      <svg key={star} className={`w-4 h-4 ${star <= supplier.starRating ? 'text-amber-400' : 'text-gray-300'}`} fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                      </svg>
+                    ))}
+                    <span className="text-xs text-gray-500 ml-1">{supplier.starRating}-Star Property</span>
+                  </div>
+                </div>
+              </div>
+              
+              {/* About Section */}
+              <div className="mb-6 pl-4 border-l-4 border-emerald-500 rounded">
+                <h4 className="font-semibold text-gray-900 mb-2">About {supplier.name}</h4>
+                <p className="text-sm text-gray-600 leading-relaxed">{supplier.description}</p>
+              </div>
+              
+              {/* Property Gallery */}
+              <div className="mb-6">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <Icon name="Image" size={16} className="text-gray-500" />
+                    <span className="font-medium text-gray-900">Property Gallery</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button 
+                      onClick={() => setCurrentImageIndex(Math.max(0, currentImageIndex - 2))}
+                      className="w-7 h-7 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100"
+                    >
+                      <Icon name="ChevronLeft" size={16} className="text-gray-600" />
+                    </button>
+                    <button 
+                      onClick={() => setCurrentImageIndex(Math.min(supplier.gallery.length - 2, currentImageIndex + 2))}
+                      className="w-7 h-7 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100"
+                    >
+                      <Icon name="ChevronRight" size={16} className="text-gray-600" />
+                    </button>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  {supplier.gallery.slice(currentImageIndex, currentImageIndex + 2).map((img, i) => (
+                    <img key={i} src={img} alt="" className="w-full h-40 object-cover rounded-xl" />
+                  ))}
+                </div>
+              </div>
+              
+              {/* Room Category */}
+              {roomService && (
+                <div className="border-t border-gray-200 pt-6">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Icon name="Bed" size={16} className="text-gray-500" />
+                    <span className="font-medium text-gray-900">Your Room</span>
+                  </div>
+                  <div className="bg-gray-50 rounded-xl p-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <h4 className="font-semibold text-gray-900">{roomService.name}</h4>
+                      <span className="text-xs bg-emerald-100 text-emerald-700 px-2 py-1 rounded-full">{roomService.size}</span>
+                    </div>
+                    <p className="text-sm text-gray-600 mb-3">{roomService.description}</p>
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      {roomService.amenities?.slice(0, 5).map((amenity, i) => (
+                        <span key={i} className="text-xs bg-white border border-gray-200 text-gray-600 px-2 py-1 rounded-lg">{amenity}</span>
+                      ))}
+                    </div>
+                    {roomService.gallery?.length > 0 && (
+                      <div className="grid grid-cols-2 gap-2">
+                        {roomService.gallery.slice(0, 2).map((img, i) => (
+                          <img key={i} src={img} alt="" className="w-full h-28 object-cover rounded-lg" />
+                        ))}
+                      </div>
+                    )}
+                    {!roomService.gallery?.length && (
+                      <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 text-center">
+                        <p className="text-xs text-amber-600">Room photos not yet uploaded</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      );
+    };
+
+    // Supplier Editor Component
+    const SupplierEditor = ({ supplier, onBack }) => {
+      const [expandedServices, setExpandedServices] = useState([supplier.services[0]?.id]);
+      const [showPreview, setShowPreview] = useState(false);
+      const toggleService = (id) => setExpandedServices(prev => prev.includes(id) ? prev.filter(s => s !== id) : [...prev, id]);
+      const missingAssetsCount = supplier.services.filter(s => !s.hasAssets || !s.gallery?.length).length;
+
+      return (
+        <div className="space-y-6">
+          {/* Booklet Preview Modal */}
+          {showPreview && <BookletPreview supplier={supplier} onClose={() => setShowPreview(false)} />}
+          
+          {/* Header */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <button onClick={onBack} className="p-2 hover:bg-white/10 rounded-lg transition-colors">
+                <Icon name="ArrowLeft" size={20} className="text-slate-400" />
+              </button>
+              <div>
+                <div className="flex items-center gap-2 text-sm text-slate-400 mb-1">
+                  <span>Suppliers</span>
+                  <Icon name="ChevronRight" size={14} />
+                  <span>Accommodation</span>
+                  <Icon name="ChevronRight" size={14} />
+                  <span className="text-white">{supplier.name}</span>
+                </div>
+                <h1 className="text-2xl font-bold text-white">{supplier.name}</h1>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              {missingAssetsCount > 0 && (
+                <span className="px-3 py-1.5 bg-amber-500/20 text-amber-400 text-sm rounded-lg flex items-center gap-2">
+                  <Icon name="AlertCircle" size={16} />
+                  {missingAssetsCount} service{missingAssetsCount > 1 ? 's' : ''} missing assets
+                </span>
+              )}
+              <button className="px-4 py-2 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white rounded-lg flex items-center gap-2 transition-all shadow-lg shadow-violet-500/25">
+                <Icon name="Sparkles" size={18} />
+                Create with Tripster
+              </button>
+              <button onClick={() => setShowPreview(true)} className="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg flex items-center gap-2 transition-colors">
+                <Icon name="Eye" size={18} />
+                Preview
+              </button>
+              <button className="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-lg flex items-center gap-2 transition-colors">
+                <Icon name="Save" size={18} />
+                Save
+              </button>
+            </div>
+          </div>
+
+          {/* Supplier Details */}
+          <div className="rounded-2xl border border-amber-500/30 p-6" style={{backgroundColor: 'rgba(245, 158, 11, 0.05)'}}>
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center">
+                <Icon name="Hotel" size={24} className="text-white" />
+              </div>
+              <div>
+                <h2 className="text-lg font-semibold text-white">Supplier Information</h2>
+                <p className="text-sm text-slate-400">Hotel details and property content</p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-6">
+              <div className="space-y-4">
+                {/* Salesforce Sync Indicator */}
+                <div className="flex items-center gap-2 px-3 py-2 bg-blue-500/10 border border-blue-500/30 rounded-lg mb-2">
+                  <Icon name="Cloud" size={16} className="text-blue-400" />
+                  <span className="text-xs text-blue-300">Some fields synced from Salesforce</span>
+                  <Icon name="Lock" size={12} className="text-blue-400 ml-auto" />
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-sm font-medium text-slate-300 mb-2 flex items-center gap-2">
+                      Hotel Name
+                      <Icon name="Lock" size={12} className="text-blue-400" />
+                    </label>
+                    <input type="text" value={supplier.name} readOnly className="w-full px-4 py-2.5 bg-slate-900/50 border border-slate-700 rounded-xl text-slate-400 cursor-not-allowed" />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-slate-300 mb-2 block">Star Rating</label>
+                    <div className="flex items-center gap-1 px-4 py-2.5 bg-slate-800/50 border border-slate-600 rounded-xl">
+                      {[1,2,3,4,5].map(star => (
+                        <svg key={star} className={`w-5 h-5 ${star <= supplier.starRating ? 'text-amber-400 fill-amber-400' : 'text-slate-600'}`} viewBox="0 0 20 20" fill="currentColor">
+                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        </svg>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-slate-300 mb-2 flex items-center gap-2">
+                    Address
+                    <Icon name="Lock" size={12} className="text-blue-400" />
+                  </label>
+                  <input type="text" value={supplier.address} readOnly className="w-full px-4 py-2.5 bg-slate-900/50 border border-slate-700 rounded-xl text-slate-400 cursor-not-allowed" />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-sm font-medium text-slate-300 mb-2 flex items-center gap-2">
+                      City
+                      <Icon name="Lock" size={12} className="text-blue-400" />
+                    </label>
+                    <div className="w-full px-4 py-2.5 bg-slate-900/50 border border-slate-700 rounded-xl text-slate-400 cursor-not-allowed">
+                      {supplier.city}
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-slate-300 mb-2 flex items-center gap-2">
+                      Country
+                      <Icon name="Lock" size={12} className="text-blue-400" />
+                    </label>
+                    <div className="w-full px-4 py-2.5 bg-slate-900/50 border border-slate-700 rounded-xl text-slate-400 cursor-not-allowed">
+                      {supplier.country}
+                    </div>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-sm font-medium text-slate-300 mb-2 flex items-center gap-2">
+                      Website
+                      <Icon name="Lock" size={12} className="text-blue-400" />
+                    </label>
+                    <input type="url" value={supplier.website} readOnly className="w-full px-4 py-2.5 bg-slate-900/50 border border-slate-700 rounded-xl text-slate-400 text-sm cursor-not-allowed" />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-slate-300 mb-2 flex items-center gap-2">
+                      Phone
+                      <Icon name="Lock" size={12} className="text-blue-400" />
+                    </label>
+                    <input type="tel" value={supplier.phone} readOnly className="w-full px-4 py-2.5 bg-slate-900/50 border border-slate-700 rounded-xl text-slate-400 text-sm cursor-not-allowed" />
+                  </div>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-slate-300 mb-2 block">About / Description</label>
+                  <textarea defaultValue={supplier.description} className="w-full px-4 py-3 bg-slate-800/50 border border-slate-600 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-500/50 resize-none" rows={5} />
+                </div>
+              </div>
+              <div>
+                <UploadZone label="Property Gallery" existingImages={supplier.gallery} />
+              </div>
+            </div>
+          </div>
+
+          {/* Services */}
+          <div className="rounded-2xl border border-emerald-500/30 p-6" style={{backgroundColor: 'rgba(16, 185, 129, 0.05)'}}>
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center">
+                  <Icon name="Layers" size={24} className="text-white" />
+                </div>
+                <div>
+                  <h2 className="text-lg font-semibold text-white">Services</h2>
+                  <p className="text-sm text-slate-400">Room categories and experiences offered</p>
+                </div>
+              </div>
+            </div>
+            <div className="space-y-4">
+              {supplier.services.map(service => (
+                <ServiceCard key={service.id} service={service} isExpanded={expandedServices.includes(service.id)} onToggle={() => toggleService(service.id)} />
+              ))}
+            </div>
+          </div>
+        </div>
+      );
+    };
+
+    // Dashboard Component
+    const Dashboard = ({ onEditSupplier }) => {
+      const locationsWithoutAssets = locations.filter(c => !c.hasAssets).length;
+      const destinationsWithoutAssets = destinations.filter(d => d.newWithoutAssets > 0).length;
+
+      return (
+        <div className="space-y-6">
+          <div className="grid grid-cols-4 gap-6">
+            {/* Destinations */}
+            <div className="relative overflow-hidden rounded-2xl border border-violet-500/30 p-6 hover:border-violet-400/50 transition-all" style={{backgroundColor: 'rgba(139, 92, 246, 0.1)'}}>
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center mb-4">
+                <Icon name="Globe" size={24} className="text-white" />
+              </div>
+              <p className="text-4xl font-bold text-white mb-1">{destinations.length}</p>
+              <p className="text-slate-400 text-sm mb-4">Destinations</p>
+              {destinationsWithoutAssets > 0 && (
+                <div className="flex items-center gap-2 px-3 py-2 bg-amber-500/10 border border-amber-500/30 rounded-lg">
+                  <Icon name="AlertCircle" size={14} className="text-amber-400" />
+                  <span className="text-xs text-amber-400 font-medium">{destinationsWithoutAssets} new without assets</span>
+                </div>
+              )}
+            </div>
+
+            {/* Locations */}
+            <div className="relative overflow-hidden rounded-2xl border border-cyan-500/30 p-6 hover:border-cyan-400/50 transition-all" style={{backgroundColor: 'rgba(6, 182, 212, 0.1)'}}>
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500 to-teal-600 flex items-center justify-center mb-4">
+                <Icon name="MapPin" size={24} className="text-white" />
+              </div>
+              <p className="text-4xl font-bold text-white mb-1">{locations.length}</p>
+              <p className="text-slate-400 text-sm mb-4">Locations</p>
+              {locationsWithoutAssets > 0 && (
+                <div className="flex items-center gap-2 px-3 py-2 bg-amber-500/10 border border-amber-500/30 rounded-lg">
+                  <Icon name="AlertCircle" size={14} className="text-amber-400" />
+                  <span className="text-xs text-amber-400 font-medium">{locationsWithoutAssets} new without assets</span>
+                </div>
+              )}
+            </div>
+
+            {/* Suppliers */}
+            <div className="relative overflow-hidden rounded-2xl border border-amber-500/30 p-6 hover:border-amber-400/50 transition-all cursor-pointer" style={{backgroundColor: 'rgba(245, 158, 11, 0.1)'}} onClick={() => onEditSupplier(sampleSupplier)}>
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center mb-4">
+                <Icon name="Users" size={24} className="text-white" />
+              </div>
+              <p className="text-4xl font-bold text-white mb-1">{suppliersData.total}</p>
+              <p className="text-slate-400 text-sm mb-3">Suppliers</p>
+              <div className="space-y-1.5 mb-3 text-xs">
+                <div className="flex justify-between"><span className="text-slate-500">Accommodation</span><span className="text-slate-300">{suppliersData.accommodation}</span></div>
+                <div className="flex justify-between"><span className="text-slate-500">Experiences</span><span className="text-slate-300">{suppliersData.experiences}</span></div>
+                <div className="flex justify-between"><span className="text-slate-500">Transport</span><span className="text-slate-300">{suppliersData.transport}</span></div>
+                <div className="flex justify-between"><span className="text-slate-500">Guides</span><span className="text-slate-300">{suppliersData.guides}</span></div>
+              </div>
+              {suppliersData.newWithoutAssets > 0 && (
+                <div className="flex items-center gap-2 px-3 py-2 bg-amber-500/10 border border-amber-500/30 rounded-lg">
+                  <Icon name="AlertCircle" size={14} className="text-amber-400" />
+                  <span className="text-xs text-amber-400 font-medium">{suppliersData.newWithoutAssets} new without assets</span>
+                </div>
+              )}
+            </div>
+
+            {/* Services */}
+            <div className="relative overflow-hidden rounded-2xl border border-emerald-500/30 p-6 hover:border-emerald-400/50 transition-all" style={{backgroundColor: 'rgba(16, 185, 129, 0.1)'}}>
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center mb-4">
+                <Icon name="Briefcase" size={24} className="text-white" />
+              </div>
+              <p className="text-4xl font-bold text-white mb-1">{servicesData.total}</p>
+              <p className="text-slate-400 text-sm mb-3">Services</p>
+              <div className="space-y-1.5 mb-3 text-xs">
+                <div className="flex justify-between"><span className="text-slate-500">Accommodation</span><span className="text-slate-300">{servicesData.accommodation}</span></div>
+                <div className="flex justify-between"><span className="text-slate-500">Experiences</span><span className="text-slate-300">{servicesData.experiences}</span></div>
+                <div className="flex justify-between"><span className="text-slate-500">Transport</span><span className="text-slate-300">{servicesData.transport}</span></div>
+                <div className="flex justify-between"><span className="text-slate-500">Guides</span><span className="text-slate-300">{servicesData.guides}</span></div>
+              </div>
+              {servicesData.newWithoutAssets > 0 && (
+                <div className="flex items-center gap-2 px-3 py-2 bg-amber-500/10 border border-amber-500/30 rounded-lg">
+                  <Icon name="AlertCircle" size={14} className="text-amber-400" />
+                  <span className="text-xs text-amber-400 font-medium">{servicesData.newWithoutAssets} new without assets</span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Destinations List */}
+          <div className="rounded-2xl border border-slate-700/50 p-6" style={{backgroundColor: 'rgba(91, 134, 160, 0.1)'}}>
+            <h3 className="text-lg font-semibold text-white mb-4">All Destinations</h3>
+            <div className="flex flex-wrap gap-2">
+              {destinations.map((dest) => (
+                <div key={dest.id} className={`px-3 py-1.5 rounded-lg text-sm font-medium cursor-pointer transition-all ${dest.newWithoutAssets > 0 ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' : 'bg-slate-700/50 text-slate-300 hover:bg-slate-700'}`}>
+                  {dest.name}{dest.newWithoutAssets > 0 && <span className="ml-1.5 text-xs text-amber-400">•</span>}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Alerts */}
+          <div className="bg-amber-500/10 border border-amber-500/30 rounded-2xl p-6">
+            <div className="flex items-start gap-4">
+              <div className="w-10 h-10 rounded-xl bg-amber-500/20 flex items-center justify-center flex-shrink-0">
+                <Icon name="AlertCircle" size={20} className="text-amber-400" />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-lg font-semibold text-amber-300 mb-2">Locations Requiring Assets</h3>
+                <div className="flex flex-wrap gap-2">
+                  {locations.filter(c => !c.hasAssets).map((loc) => (
+                    <div key={loc.id} className="px-3 py-1.5 bg-amber-500/20 rounded-lg text-sm text-amber-300 border border-amber-500/30">
+                      {loc.name} <span className="text-amber-400/70">({loc.destination})</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-cyan-500/10 border border-cyan-500/30 rounded-2xl p-6">
+            <div className="flex items-start gap-4">
+              <div className="w-10 h-10 rounded-xl bg-cyan-500/20 flex items-center justify-center flex-shrink-0">
+                <Icon name="AlertCircle" size={20} className="text-cyan-400" />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-lg font-semibold text-cyan-300 mb-2">Services Requiring Assets</h3>
+                <div className="flex flex-wrap gap-2">
+                  {servicesWithoutAssets.map((svc) => (
+                    <div key={svc.id} className="px-3 py-1.5 bg-cyan-500/20 rounded-lg text-sm text-cyan-200 border border-cyan-500/40 cursor-pointer hover:bg-cyan-500/30">
+                      {svc.name} <span className="text-cyan-300/70">({svc.type})</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    };
+
+    // NavItem Component
+    const NavItem = ({ icon, label, active, onClick, count, collapsed }) => (
+      <button onClick={onClick} title={collapsed ? label : ''} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left transition-all ${active ? 'text-white border border-[#5b86a0]/50' : 'text-slate-400 hover:text-white hover:bg-white/5'}`} style={active ? {backgroundColor: 'rgba(91, 134, 160, 0.2)'} : {}}>
+        <Icon name={icon} size={20} className={active ? 'text-[#5b86a0]' : 'text-slate-500'} />
+        {!collapsed && (
+          <>
+            <span className="flex-1 font-medium">{label}</span>
+            {count !== undefined && <span className={`text-xs px-2 py-0.5 rounded-full ${active ? 'bg-[#5b86a0]/30 text-[#5b86a0]' : 'bg-slate-700 text-slate-400'}`}>{count}</span>}
+          </>
+        )}
+      </button>
+    );
+
+    // Main App
+    const App = () => {
+      const [activeSection, setActiveSection] = useState('dashboard');
+      const [searchQuery, setSearchQuery] = useState('');
+      const [editingSupplier, setEditingSupplier] = useState(null);
+      const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+
+      useEffect(() => { if (editingSupplier) setSidebarCollapsed(true); }, [editingSupplier]);
+
+      return (
+        <div className="min-h-screen text-white flex" style={{backgroundColor: '#0f1056'}}>
+          {/* Sidebar */}
+          <aside className={`${sidebarCollapsed ? 'w-20' : 'w-72'} border-r border-slate-700/50 p-4 flex flex-col transition-all duration-300`} style={{backgroundColor: '#0f1056'}}>
+            <div className="flex items-center justify-center mb-4">
+              <img src="https://cdn.prod.website-files.com/645dce8d3cf060ba152e3ed6/645dd0fb59b28a589dc86dba_TCL%20White%20Logo%20200.png" alt="Travel Collection" className={sidebarCollapsed ? 'h-8' : 'h-12'} />
+            </div>
+            <button onClick={() => setSidebarCollapsed(!sidebarCollapsed)} className="mb-4 p-2 hover:bg-white/10 rounded-lg transition-colors self-end">
+              <Icon name={sidebarCollapsed ? 'ChevronsRight' : 'ChevronsLeft'} size={18} className="text-slate-400" />
+            </button>
+            <nav className="space-y-2 flex-1">
+              <NavItem icon="LayoutGrid" label="Dashboard" active={activeSection === 'dashboard' && !editingSupplier} onClick={() => { setActiveSection('dashboard'); setEditingSupplier(null); }} collapsed={sidebarCollapsed} />
+              {!sidebarCollapsed && <div className="pt-4 pb-2"><p className="text-xs text-slate-600 uppercase tracking-wider px-4">Content</p></div>}
+              <NavItem icon="HelpCircle" label="FAQ" active={activeSection === 'faq'} onClick={() => setActiveSection('faq')} count={21} collapsed={sidebarCollapsed} />
+              <NavItem icon="Globe" label="Destinations" active={activeSection === 'destinations'} onClick={() => setActiveSection('destinations')} count={21} collapsed={sidebarCollapsed} />
+              <NavItem icon="MapPin" label="Locations" active={activeSection === 'locations'} onClick={() => setActiveSection('locations')} count={67} collapsed={sidebarCollapsed} />
+              <NavItem icon="Users" label="Suppliers" active={activeSection === 'suppliers' || editingSupplier} onClick={() => setActiveSection('suppliers')} count={156} collapsed={sidebarCollapsed} />
+              <NavItem icon="Briefcase" label="Services" active={activeSection === 'services'} onClick={() => setActiveSection('services')} count={423} collapsed={sidebarCollapsed} />
+              {!sidebarCollapsed && <div className="pt-4 pb-2"><p className="text-xs text-slate-600 uppercase tracking-wider px-4">Assets</p></div>}
+              <NavItem icon="Image" label="Media Library" active={activeSection === 'media'} onClick={() => setActiveSection('media')} count={12} collapsed={sidebarCollapsed} />
+              <NavItem icon="FileText" label="Content Blocks" active={activeSection === 'blocks'} onClick={() => setActiveSection('blocks')} count={8} collapsed={sidebarCollapsed} />
+            </nav>
+            {!sidebarCollapsed && (
+              <div className="pt-6 border-t border-slate-700/50">
+                <div className="flex items-center gap-3 px-4 py-3">
+                  <div className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold text-white" style={{background: 'linear-gradient(to bottom right, #5b86a0, #0f1056)'}}>JD</div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-white truncate">Jane Doe</p>
+                    <p className="text-xs text-slate-400 truncate">Product Team</p>
+                  </div>
+                </div>
+              </div>
+            )}
+          </aside>
+
+          {/* Main */}
+          <main className="flex-1 overflow-auto">
+            {!editingSupplier && (
+              <header className="sticky top-0 z-20 backdrop-blur-xl border-b border-slate-700/50 px-8 py-5" style={{backgroundColor: 'rgba(15, 16, 86, 0.8)'}}>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h2 className="text-2xl font-bold">Level II Asset Dashboard</h2>
+                    <p className="text-slate-400 text-sm mt-0.5">Overview of your travel content library</p>
+                  </div>
+                  <div className="relative">
+                    <Icon name="Search" size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+                    <input type="text" placeholder="Search suppliers, services..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="w-80 pl-11 pr-4 py-2.5 border border-slate-600/50 rounded-xl text-sm text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#5b86a0]" style={{backgroundColor: 'rgba(91, 134, 160, 0.15)'}} />
+                  </div>
+                </div>
+              </header>
+            )}
+            <div className="p-8">
+              {editingSupplier ? (
+                <SupplierEditor supplier={editingSupplier} onBack={() => { setEditingSupplier(null); setSidebarCollapsed(false); }} />
+              ) : (
+                <Dashboard onEditSupplier={setEditingSupplier} />
+              )}
+            </div>
+          </main>
+        </div>
+      );
+    };
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>
