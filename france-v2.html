@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jakel & Mollet France Trip - Arrival Booklet | Essentially French</title>
+  <meta name="theme-color" content="#5C4033">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;1,400&family=Source+Sans+3:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:'Source Sans 3',sans-serif;transition:background .3s,color .3s}
+    .font-serif{font-family:'Cormorant Garamond',Georgia,serif}
+    ::-webkit-scrollbar{width:8px;height:8px}
+    ::-webkit-scrollbar-track{background:#f5f5f4}
+    ::-webkit-scrollbar-thumb{background:#5C4033;border-radius:4px}
+    .hide-scrollbar::-webkit-scrollbar{display:none}
+    .hide-scrollbar{-ms-overflow-style:none;scrollbar-width:none}
+    .leaflet-container{font-family:'Source Sans 3',sans-serif}
+    .wa-panel{animation:slideUp .3s ease-out}
+    @keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+    .pulse-ring{animation:pulseRing 2s infinite}
+    @keyframes pulseRing{0%{box-shadow:0 0 0 0 rgba(37,211,102,.4)}70%{box-shadow:0 0 0 15px rgba(37,211,102,0)}100%{box-shadow:0 0 0 0 rgba(37,211,102,0)}}
+    .dark body,.dark .bg-white,.dark .bg-stone-50{background:#1a1a2e!important;color:#e0e0e0!important}
+    .dark .bg-stone-50\/95,.dark .bg-white\/95{background:rgba(26,26,46,.95)!important}
+    .dark .text-stone-800,.dark .text-stone-700,.dark .text-stone-600{color:#d0d0d0!important}
+    .dark .text-stone-500,.dark .text-stone-400{color:#999!important}
+    .dark .border-stone-200,.dark .border-stone-100{border-color:#333!important}
+    .dark .bg-stone-100,.dark .hover\:bg-stone-100:hover,.dark .hover\:bg-stone-50:hover{background:#2a2a3e!important}
+    .dark section.bg-white,.dark section.bg-stone-50{background:#1a1a2e!important}
+    .dark .bg-stone-50.rounded-xl,.dark .bg-white.rounded-xl,.dark .bg-white.rounded-2xl{background:#22223a!important}
+    .dark .bg-amber-50{background:#2a2518!important}
+    .dark .shadow-sm,.dark .shadow-lg,.dark .shadow-xl{box-shadow:0 2px 8px rgba(0,0,0,.5)!important}
+    .dark ::-webkit-scrollbar-track{background:#1a1a2e}
+    .currency-input:focus{outline:none}
+    .pdf-export #booklet-content,.pdf-export .lg\:w-1\/2{margin-left:0!important;width:100%!important;max-width:100%!important}
+    .pdf-export .lg\:ml-\[50\%\]{margin-left:0!important}
+    .pdf-export [data-hero-panel]{display:none!important}
+    .pdf-export .fixed{position:absolute!important}
+    .pdf-export .no-print{display:none!important}
+    @media print{
+      .no-print{display:none!important}
+      body{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+      .min-h-screen{min-height:auto!important;page-break-inside:avoid}
+      section{page-break-after:auto;page-break-inside:avoid}
+      .fixed{position:static!important}
+      .lg\\:w-1\\/2{width:100%!important;margin-left:0!important}
+      .lg\\:block.fixed{display:none!important}
+      h2{page-break-after:avoid}
+    }
+  </style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const{useState,useRef,useEffect,useMemo,useCallback}=React;
+const B={dg:'#5C4033',g:'#C4956A',cr:'#F5F0EB',dk:'#3A2820'};
+const LOGO='https://cdn.prod.website-files.com/659c107a3943f6a9434454b8/67ee1ff5b4badef806fc9020_EF%20no%20tagline-p-500.png';
+const TRIP_START=new Date('2025-10-19T00:00:00+02:00');
+const TRIP_END=new Date('2025-11-02T23:59:59+01:00');
+const TRIP_DAYS=15;
+const H={
+  cover:'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=1600&q=80',
+  brief:'https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&w=1600&q=80',
+  map:'https://images.unsplash.com/photo-1431274172761-fca41d930114?auto=format&fit=crop&w=1600&q=80',
+  ess:'https://images.unsplash.com/photo-1550340499-a6c60fc8287c?auto=format&fit=crop&w=1600&q=80',
+  emg:'https://images.unsplash.com/photo-1478391679764-b2d8b3cd1e94?auto=format&fit=crop&w=1600&q=80',
+  places:'https://images.unsplash.com/photo-1543349689-9a4d426bee8e?auto=format&fit=crop&w=1600&q=80',
+  faq:'https://images.unsplash.com/photo-1520939817895-060bdaf4fe1b?auto=format&fit=crop&w=1600&q=80',
+  pa1:'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=1600&q=80',
+  pa2:'https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&w=1600&q=80',
+  pa3:'https://images.unsplash.com/photo-1511739001486-6bfe10ce65f6?auto=format&fit=crop&w=1600&q=80',
+  pa4:'https://images.unsplash.com/photo-1550340499-a6c60fc8287c?auto=format&fit=crop&w=1600&q=80',
+  pa5:'https://images.unsplash.com/photo-1543349689-9a4d426bee8e?auto=format&fit=crop&w=1600&q=80',
+  cg1:'https://images.unsplash.com/photo-1568625365131-079e026a927d?auto=format&fit=crop&w=1600&q=80',
+  cg2:'https://images.unsplash.com/photo-1597212618440-806a892ecb5f?auto=format&fit=crop&w=1600&q=80',
+  bx1:'https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?auto=format&fit=crop&w=1600&q=80',
+  bx2:'https://images.unsplash.com/photo-1565362912296-55e8b04b6e3f?auto=format&fit=crop&w=1600&q=80',
+  bx3:'https://images.unsplash.com/photo-1573455494060-c5595004fb6c?auto=format&fit=crop&w=1600&q=80',
+  se1:'https://images.unsplash.com/photo-1586791965003-9c4f0b1e2e5e?auto=format&fit=crop&w=1600&q=80',
+  ar1:'https://images.unsplash.com/photo-1595242614770-31891afad0af?auto=format&fit=crop&w=1600&q=80',
+  bi1:'https://images.unsplash.com/photo-1600019248002-3f496c79eadc?auto=format&fit=crop&w=1600&q=80',
+  bi2:'https://images.unsplash.com/photo-1613395877369-2aa0e3494bf4?auto=format&fit=crop&w=1600&q=80',
+  bi3:'https://images.unsplash.com/photo-1560717789-0ac7c58ac90a?auto=format&fit=crop&w=1600&q=80',
+  dep:'https://images.unsplash.com/photo-1431274172761-fca41d930114?auto=format&fit=crop&w=1600&q=80'
+};
+const G={
+  damedesarts:[{u:'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=800&q=80',c:'Paris Skyline'},{u:'https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&w=800&q=80',c:'Notre-Dame Area'},{u:'https://images.unsplash.com/photo-1550340499-a6c60fc8287c?auto=format&fit=crop&w=800&q=80',c:'Latin Quarter'}],
+  chaimonnet:[{u:'https://images.unsplash.com/photo-1568625365131-079e026a927d?auto=format&fit=crop&w=800&q=80',c:'Cognac Region'},{u:'https://images.unsplash.com/photo-1597212618440-806a892ecb5f?auto=format&fit=crop&w=800&q=80',c:'Wine Cellars'},{u:'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80',c:'Hotel Exterior'}],
+  intercontinental:[{u:'https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?auto=format&fit=crop&w=800&q=80',c:'Bordeaux City'},{u:'https://images.unsplash.com/photo-1565362912296-55e8b04b6e3f?auto=format&fit=crop&w=800&q=80',c:'Place de la Comédie'},{u:'https://images.unsplash.com/photo-1573455494060-c5595004fb6c?auto=format&fit=crop&w=800&q=80',c:'Grand Théâtre'}],
+  brindos:[{u:'https://images.unsplash.com/photo-1600019248002-3f496c79eadc?auto=format&fit=crop&w=800&q=80',c:'Biarritz Coast'},{u:'https://images.unsplash.com/photo-1613395877369-2aa0e3494bf4?auto=format&fit=crop&w=800&q=80',c:'Basque Country'},{u:'https://images.unsplash.com/photo-1560717789-0ac7c58ac90a?auto=format&fit=crop&w=800&q=80',c:'Château Gardens'}],
+  foodtour:[{u:'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=800&q=80',c:'French Pastries'},{u:'https://images.unsplash.com/photo-1486427944544-d2c246c4df4c?auto=format&fit=crop&w=800&q=80',c:'Cheese Selection'},{u:'https://images.unsplash.com/photo-1478145046317-39f10e56b5e9?auto=format&fit=crop&w=800&q=80',c:'Parisian Market'}],
+  louvre:[{u:'https://images.unsplash.com/photo-1499426600726-7f5b1570ee5b?auto=format&fit=crop&w=800&q=80',c:'The Louvre'},{u:'https://images.unsplash.com/photo-1565099824688-e93eb20fe622?auto=format&fit=crop&w=800&q=80',c:'Museum Interior'},{u:'https://images.unsplash.com/photo-1543349689-9a4d426bee8e?auto=format&fit=crop&w=800&q=80',c:'Glass Pyramid'}],
+  versailles:[{u:'https://images.unsplash.com/photo-1551410224-699683e15636?auto=format&fit=crop&w=800&q=80',c:'Palace of Versailles'},{u:'https://images.unsplash.com/photo-1597757874251-1a6e4c0c5e3b?auto=format&fit=crop&w=800&q=80',c:'Gardens'},{u:'https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?auto=format&fit=crop&w=800&q=80',c:'Hall of Mirrors'}],
+  perfume:[{u:'https://images.unsplash.com/photo-1541643600914-78b084683601?auto=format&fit=crop&w=800&q=80',c:'Perfume Workshop'},{u:'https://images.unsplash.com/photo-1588405748880-12d1d2a59f75?auto=format&fit=crop&w=800&q=80',c:'Fragrance Creation'},{u:'https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=800&q=80',c:'Essential Oils'}],
+  martell:[{u:'https://images.unsplash.com/photo-1568625365131-079e026a927d?auto=format&fit=crop&w=800&q=80',c:'Cognac Cellar'},{u:'https://images.unsplash.com/photo-1597212618440-806a892ecb5f?auto=format&fit=crop&w=800&q=80',c:'Tasting Room'},{u:'https://images.unsplash.com/photo-1567696153798-9111f9cd3d0d?auto=format&fit=crop&w=800&q=80',c:'Glass Blowing'}],
+  bassinlumieres:[{u:'https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?auto=format&fit=crop&w=800&q=80',c:'Bordeaux'},{u:'https://images.unsplash.com/photo-1573455494060-c5595004fb6c?auto=format&fit=crop&w=800&q=80',c:'Digital Art'},{u:'https://images.unsplash.com/photo-1565362912296-55e8b04b6e3f?auto=format&fit=crop&w=800&q=80',c:'Immersive Experience'}],
+  stemilion:[{u:'https://images.unsplash.com/photo-1586791965003-9c4f0b1e2e5e?auto=format&fit=crop&w=800&q=80',c:'Saint-Émilion'},{u:'https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?auto=format&fit=crop&w=800&q=80',c:'Vineyards'},{u:'https://images.unsplash.com/photo-1560185127-6ed189bf02f4?auto=format&fit=crop&w=800&q=80',c:'Wine Tasting'}],
+  citeduvin:[{u:'https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?auto=format&fit=crop&w=800&q=80',c:'Bordeaux Riverfront'},{u:'https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?auto=format&fit=crop&w=800&q=80',c:'Wine Heritage'},{u:'https://images.unsplash.com/photo-1573455494060-c5595004fb6c?auto=format&fit=crop&w=800&q=80',c:'Cité du Vin'}],
+  arcachon:[{u:'https://images.unsplash.com/photo-1595242614770-31891afad0af?auto=format&fit=crop&w=800&q=80',c:'Arcachon Bay'},{u:'https://images.unsplash.com/photo-1551524164-687a55867c30?auto=format&fit=crop&w=800&q=80',c:'Dune du Pilat'},{u:'https://images.unsplash.com/photo-1568625365131-079e026a927d?auto=format&fit=crop&w=800&q=80',c:'Oyster Farms'}],
+  pelota:[{u:'https://images.unsplash.com/photo-1600019248002-3f496c79eadc?auto=format&fit=crop&w=800&q=80',c:'Biarritz'},{u:'https://images.unsplash.com/photo-1613395877369-2aa0e3494bf4?auto=format&fit=crop&w=800&q=80',c:'Basque Culture'},{u:'https://images.unsplash.com/photo-1560717789-0ac7c58ac90a?auto=format&fit=crop&w=800&q=80',c:'Fronton'}],
+  espelette:[{u:'https://images.unsplash.com/photo-1613395877369-2aa0e3494bf4?auto=format&fit=crop&w=800&q=80',c:'Espelette Village'},{u:'https://images.unsplash.com/photo-1600019248002-3f496c79eadc?auto=format&fit=crop&w=800&q=80',c:'Chili Peppers'},{u:'https://images.unsplash.com/photo-1560717789-0ac7c58ac90a?auto=format&fit=crop&w=800&q=80',c:'Basque Farm'}],
+  zoo:[{u:'https://images.unsplash.com/photo-1600019248002-3f496c79eadc?auto=format&fit=crop&w=800&q=80',c:'Labenne Zoo'},{u:'https://images.unsplash.com/photo-1613395877369-2aa0e3494bf4?auto=format&fit=crop&w=800&q=80',c:'Wildlife'},{u:'https://images.unsplash.com/photo-1560717789-0ac7c58ac90a?auto=format&fit=crop&w=800&q=80',c:'Animal Care'}],
+  biarritztour:[{u:'https://images.unsplash.com/photo-1600019248002-3f496c79eadc?auto=format&fit=crop&w=800&q=80',c:'Biarritz Coastline'},{u:'https://images.unsplash.com/photo-1613395877369-2aa0e3494bf4?auto=format&fit=crop&w=800&q=80',c:'Grande Plage'},{u:'https://images.unsplash.com/photo-1560717789-0ac7c58ac90a?auto=format&fit=crop&w=800&q=80',c:'Rocher de la Vierge'}],
+  sjdl:[{u:'https://images.unsplash.com/photo-1613395877369-2aa0e3494bf4?auto=format&fit=crop&w=800&q=80',c:'Saint-Jean-de-Luz'},{u:'https://images.unsplash.com/photo-1600019248002-3f496c79eadc?auto=format&fit=crop&w=800&q=80',c:'Harbour'},{u:'https://images.unsplash.com/photo-1560717789-0ac7c58ac90a?auto=format&fit=crop&w=800&q=80',c:'Basque Cuisine'}],
+  paristour:[{u:'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=800&q=80',c:'Eiffel Tower'},{u:'https://images.unsplash.com/photo-1550340499-a6c60fc8287c?auto=format&fit=crop&w=800&q=80',c:'Montmartre'},{u:'https://images.unsplash.com/photo-1543349689-9a4d426bee8e?auto=format&fit=crop&w=800&q=80',c:'Sacré-Cœur'}]
+};
+const PHRASES=[
+  {en:'Hello',fr:'Bonjour',rm:'Bon-zhoor',cat:'basics'},
+  {en:'Good evening',fr:'Bonsoir',rm:'Bon-swahr',cat:'basics'},
+  {en:'Goodbye',fr:'Au revoir',rm:'Oh ruh-vwahr',cat:'basics'},
+  {en:'Please',fr:'S\'il vous plaît',rm:'Seel voo pleh',cat:'basics'},
+  {en:'Thank you',fr:'Merci',rm:'Mair-see',cat:'basics'},
+  {en:'Excuse me',fr:'Excusez-moi',rm:'Ex-koo-zay mwah',cat:'basics'},
+  {en:'Yes / No',fr:'Oui / Non',rm:'Wee / Noh',cat:'basics'},
+  {en:'I don\'t speak French',fr:'Je ne parle pas français',rm:'Zhuh nuh parl pah frahn-say',cat:'useful'},
+  {en:'Do you speak English?',fr:'Parlez-vous anglais ?',rm:'Par-lay voo ahn-glay?',cat:'useful'},
+  {en:'How much is this?',fr:'C\'est combien ?',rm:'Say com-bee-ehn?',cat:'useful'},
+  {en:'Where is…?',fr:'Où est… ?',rm:'Oo ay…?',cat:'useful'},
+  {en:'The bill, please',fr:'L\'addition, s\'il vous plaît',rm:'Lah-dee-see-ohn seel voo pleh',cat:'dining'},
+  {en:'Delicious!',fr:'Délicieux !',rm:'Day-lee-see-uh!',cat:'dining'},
+  {en:'Cheers!',fr:'Santé !',rm:'Sahn-tay!',cat:'dining'},
+  {en:'A table for two',fr:'Une table pour deux',rm:'Oon tahbl poor duh',cat:'dining'}
+];
+const PACKING=[
+  {cat:'🛂 Travel Documents',items:['Passport (valid 6+ months)','Flight tickets / boarding passes','Travel insurance documents','Hotel confirmation printouts','Euros cash + credit cards','Copy of itinerary','Power adapter (EU Type C/E)']},
+  {cat:'👔 Clothing & Weather',items:['Layers for 10–18°C autumn weather','Light jacket or warm sweater','Comfortable walking shoes','Compact umbrella or rain jacket','Smart casual for fine dining','Sun hat/sunglasses for Biarritz coast']},
+  {cat:'🎨 Activity-Specific',items:['Comfortable shoes for walking tours','Camera for wine country & coast','Day bag or small backpack','Formal-ish attire for Versailles evening','Warm layer for boat trip in Arcachon']},
+  {cat:'📱 Tech & Essentials',items:['Phone + charger + portable battery','EU power adapter (Type C/E, 230V)','Download: Google Maps, Google Translate','Earphones for train rides','Toiletries (small sizes)','Medications & prescriptions','Reusable water bottle','Snacks for travel days']}
+];
+const DINING=[
+  {area:'Paris — Left Bank',icon:'🗼',recs:[
+    {name:'Ami Louis',type:'Traditional French',price:'$$$',desc:'Legendary bistro famous for its foie gras and roast chicken. A quintessential Parisian dining experience booked for your Oct 22 lunch.',maps:'https://maps.google.com/?q=Ami+Louis+Paris'},
+    {name:'Le Comptoir du Panthéon',type:'Brasserie',price:'$$',desc:'Classic Parisian brasserie near your hotel with excellent steak frites and people-watching on a bustling corner.',maps:'https://maps.google.com/?q=Le+Comptoir+du+Pantheon+Paris'},
+    {name:'Le Procope',type:'Historic French',price:'$$',desc:'Paris\'s oldest restaurant (1686). Elegant setting near Odéon with traditional French cuisine.',maps:'https://maps.google.com/?q=Le+Procope+Paris'}
+  ]},
+  {area:'Cognac',icon:'🥃',recs:[
+    {name:'Les Foudres at Chais Monnet',type:'Michelin-starred',price:'$$$$',desc:'Your hotel\'s Michelin-starred restaurant featuring refined French cuisine paired with exceptional cognacs.',maps:'https://maps.google.com/?q=Les+Foudres+Chais+Monnet+Cognac'},
+    {name:'La Distillerie',type:'Casual French',price:'$$',desc:'Casual dining option at Chais Monnet with local specialties and a relaxed atmosphere.',maps:'https://maps.google.com/?q=La+Distillerie+Chais+Monnet+Cognac'}
+  ]},
+  {area:'Bordeaux',icon:'🍷',recs:[
+    {name:'Le Petit Commerce',type:'Seafood',price:'$$',desc:'Beloved local seafood restaurant with fresh oysters, grilled fish, and a lively atmosphere in the city center.',maps:'https://maps.google.com/?q=Le+Petit+Commerce+Bordeaux'},
+    {name:'La Tupina',type:'Southwest French',price:'$$$',desc:'Iconic Bordeaux restaurant with cooking over an open fire. Foie gras, duck confit, and regional specialties.',maps:'https://maps.google.com/?q=La+Tupina+Bordeaux'},
+    {name:'Bar à Vin du CIVB',type:'Wine Bar',price:'$$',desc:'Wine bar run by the Bordeaux Wine Council. Outstanding by-the-glass selection at reasonable prices.',maps:'https://maps.google.com/?q=Bar+a+Vin+CIVB+Bordeaux'}
+  ]},
+  {area:'Biarritz & Basque Country',icon:'🌊',recs:[
+    {name:'Chez Albert',type:'Seafood',price:'$$$',desc:'Iconic seafood restaurant overlooking the Port des Pêcheurs. Fresh catch of the day and stunning ocean views.',maps:'https://maps.google.com/?q=Chez+Albert+Biarritz'},
+    {name:'Bar Jean',type:'Tapas / Pintxos',price:'$$',desc:'Famous Basque tapas bar in Saint-Jean-de-Luz. Try the chipirones (squid) and local cider.',maps:'https://maps.google.com/?q=Bar+Jean+Saint+Jean+de+Luz'},
+    {name:'Les Halles de Biarritz',type:'Market / Street Food',price:'$–$$',desc:'Covered market with fresh local produce, cheese, charcuterie, and prepared Basque specialties.',maps:'https://maps.google.com/?q=Les+Halles+Biarritz'}
+  ]}
+];
+const TRANSIT=[
+  {step:1,title:'TGV High-Speed Trains',icon:'🚄',desc:'France\'s TGV network connects major cities at up to 320 km/h. Your Paris–Cognac journey uses TGV to Angoulême. Keep tickets accessible for onboard checks.'},
+  {step:2,title:'Finding Your Platform',icon:'🏷️',desc:'Check departure boards (yellow = departures, white = arrivals) for platform number, usually announced 20 minutes before departure. Look for "Voie" (platform) number.'},
+  {step:3,title:'Private Transfers',icon:'🚗',desc:'Most of your inter-city travel is via private car with driver. Drivers will meet you at hotel lobbies, train station platforms, and airport exit gates.'},
+  {step:4,title:'Paris Metro & Taxis',icon:'🚇',desc:'The Paris Metro is efficient and easy. For taxis, use the Uber or Bolt apps, or hail official taxis (look for the green light on top = available).'},
+  {step:5,title:'Driving Times',icon:'⏱️',desc:'All driving times in your itinerary are estimates and may vary with traffic and weather. Your drivers know the best routes.'},
+  {step:6,title:'At the Airport',icon:'✈️',desc:'Driver Mickael will meet you at the exit gate at CDG. For departure, plan to arrive 3 hours before international flights.'}
+];
+const DOCS=[
+  {name:'Flight Confirmation — AF1641 (Arrival 1, Oct 19)',type:'flight',status:'confirmed'},
+  {name:'Flight Confirmation — KLM 2290 (Arrival 2, Oct 21)',type:'flight',status:'confirmed'},
+  {name:'TGV Ticket — Paris Montparnasse → Angoulême (Oct 24)',type:'ticket',status:'confirmed'},
+  {name:'Hotel Dame des Arts — Booking Confirmation',type:'hotel',status:'confirmed'},
+  {name:'Hotel Chais Monnet — Booking Confirmation',type:'hotel',status:'confirmed'},
+  {name:'InterContinental Bordeaux — Booking Confirmation',type:'hotel',status:'confirmed'},
+  {name:'Château de Brindos — Booking Confirmation',type:'hotel',status:'confirmed'},
+  {name:'Travel Insurance Policy',type:'insurance',status:'upload'},
+  {name:'Passport Copies',type:'id',status:'upload'}
+];
+const Ic={
+  Menu:({c})=><svg className={c} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M4 6h16M4 12h16M4 18h16"/></svg>,
+  X:({c})=><svg className={c} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M6 18L18 6M6 6l12 12"/></svg>,
+  ChD:({c,s})=><svg className={c} style={s} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M19 9l-7 7-7-7"/></svg>,
+  ChR:({c})=><svg className={c} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M9 5l7 7-7 7"/></svg>,
+  ChL:({c})=><svg className={c} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M15 19l-7-7 7-7"/></svg>,
+  Ph:({c})=><svg className={c} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>,
+  Wa:({c})=><svg className={c} fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>,
+  Mp:({c,s})=><svg className={c} style={s} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>,
+  Cl:({c})=><svg className={c} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>,
+  Ca:({c,s})=><svg className={c} style={s} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M8 17h.01M16 17h.01M9 11h6M5 11l1.5-4.5A2 2 0 018.39 5h7.22a2 2 0 011.89 1.5L19 11M5 11v6a1 1 0 001 1h1a1 1 0 001-1v-1h8v1a1 1 0 001 1h1a1 1 0 001-1v-6M5 11h14"/></svg>,
+  Pl:({c,s})=><svg className={c} style={s} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>,
+  Bd:({c,s})=><svg className={c} style={s} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>,
+  Im:({c,s})=><svg className={c} style={s} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>,
+  Cp:({c,s})=><svg className={c} style={s} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><circle cx="12" cy="12" r="9"/></svg>,
+  Ft:({c,s})=><svg className={c} style={s} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>,
+  Cal:({c,s})=><svg className={c} style={s} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>,
+  Sh:({c})=><svg className={c} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>,
+  Dl:({c})=><svg className={c} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>,
+  Ed:({c})=><svg className={c} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>,
+  Ck:({c})=><svg className={c} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M5 13l4 4L19 7"/></svg>,
+  Fs:({c})=><svg className={c} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg>,
+  Sn:({c})=><svg className={c} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>,
+  Ig:({c})=><svg className={c} fill="currentColor" viewBox="0 0 24 24"><path d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 015.45 2.525c.636-.247 1.363-.416 2.427-.465C8.901 2.013 9.256 2 11.685 2h.63zm-.081 1.802h-.468c-2.456 0-2.784.011-3.807.058-.975.045-1.504.207-1.857.344-.467.182-.8.398-1.15.748-.35.35-.566.683-.748 1.15-.137.353-.3.882-.344 1.857-.047 1.023-.058 1.351-.058 3.807v.468c0 2.456.011 2.784.058 3.807.045.975.207 1.504.344 1.857.182.466.399.8.748 1.15.35.35.683.566 1.15.748.353.137.882.3 1.857.344 1.054.048 1.37.058 4.041.058h.08c2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z"/></svg>,
+  Moon:({c})=><svg className={c} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>,
+  Sun:({c})=><svg className={c} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>,
+  Tr:({c,s})=><svg className={c} style={s} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M9 17h6l2-7H7l2 7zM9 17l-1 4m6-4l1 4M5 10h14M7.5 7h9l-.5-3h-8l-.5 3z"/></svg>,
+  Tc:({c,s})=><svg className={c} style={s} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"/></svg>
+};
+const getIc=(t,c,s)=>{const m={car:Ic.Ca,plane:Ic.Pl,hotel:Ic.Bd,coffee:Ic.Cp,compass:Ic.Cp,info:Ic.Ft,train:Ic.Tr,ticket:Ic.Tc};const I=m[t]||Ic.Cal;return<I c={`w-5 h-5 ${c}`} s={s}/>;};
+const Gal=({imgs,name,isExp=false})=>{
+  const ref=useRef(null);const[cL,setCL]=useState(false);const[cR,setCR]=useState(true);
+  const chk=()=>{if(ref.current){const{scrollLeft:l,scrollWidth:w,clientWidth:c}=ref.current;setCL(l>0);setCR(l<w-c-10);}};
+  useEffect(()=>{chk();const el=ref.current;if(el){el.addEventListener('scroll',chk);return()=>el.removeEventListener('scroll',chk);}},[]);
+  const scr=(d)=>{if(ref.current)ref.current.scrollBy({left:d*200,behavior:'smooth'});};
+  return(<div className="mt-4"><div className="flex items-center justify-between mb-2"><div className="flex items-center gap-2"><Ic.Im c="w-4 h-4" style={{color:B.dg}}/><h4 className="text-sm font-medium text-stone-600">{isExp?'Experience Gallery':'Property Gallery'}</h4></div><div className="flex gap-1"><button onClick={()=>scr(-1)} disabled={!cL} className={`p-1 rounded-full ${cL?'hover:bg-stone-100 text-stone-500':'text-stone-300 cursor-not-allowed'}`}><Ic.ChL c="w-4 h-4"/></button><button onClick={()=>scr(1)} disabled={!cR} className={`p-1 rounded-full ${cR?'hover:bg-stone-100 text-stone-500':'text-stone-300 cursor-not-allowed'}`}><Ic.ChR c="w-4 h-4"/></button></div></div><div ref={ref} className="flex gap-3 overflow-x-auto pb-2 hide-scrollbar">{imgs.map((i,x)=>(<div key={x} className="flex-shrink-0 w-48 group cursor-pointer"><div className="relative h-32 rounded-lg overflow-hidden bg-stone-100"><img src={i.u} alt={i.c} className="w-full h-full object-cover" loading="lazy"/><div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"/><span className="absolute bottom-2 left-2 text-white text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity">{i.c}</span></div></div>))}</div></div>);
+};
+const TripMap=({locs,fullscreen=false,onToggleFs,onSelect})=>{
+  const mapRef=useRef(null);const mapInst=useRef(null);const[selectedLoc,setSelectedLoc]=useState(null);
+  useEffect(()=>{if(!mapRef.current||mapInst.current||typeof L==='undefined')return;const map=L.map(mapRef.current,{scrollWheelZoom:!fullscreen,zoomControl:fullscreen}).setView([45.5,0],6);L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{attribution:'©OSM ©CARTO',maxZoom:19}).addTo(map);const ml=locs.filter(l=>!l.dt);ml.forEach((loc,i)=>{const icon=L.divIcon({className:'custom-marker',html:`<div style="background:${loc.c};color:white;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:14px;box-shadow:0 2px 8px rgba(0,0,0,0.3);border:2px solid white;">${i+1}</div>`,iconSize:[32,32],iconAnchor:[16,16]});L.marker([loc.lat,loc.lng],{icon}).addTo(map).on('click',()=>{setSelectedLoc(loc);onSelect&&onSelect(loc.id);});});if(ml.length>1)L.polyline(ml.map(l=>[l.lat,l.lng]),{color:B.dg,weight:2,opacity:.6,dashArray:'5,10'}).addTo(map);map.fitBounds(L.latLngBounds(locs.map(l=>[l.lat,l.lng])),{padding:[30,30]});mapInst.current=map;return()=>{map.remove();mapInst.current=null;};},[fullscreen]);
+  return(<div className={`relative ${fullscreen?'fixed inset-0 z-50 bg-white':''}`}>{fullscreen&&<div className="absolute top-0 left-0 right-0 z-[1001] bg-white/95 backdrop-blur-sm border-b border-stone-200 px-4 py-3 flex items-center justify-between"><h3 className="font-serif text-xl italic" style={{color:B.dg}}>Your Journey Map</h3><button onClick={onToggleFs} className="p-2 hover:bg-stone-100 rounded-full"><Ic.X c="w-6 h-6 text-stone-600"/></button></div>}<div ref={mapRef} className={`w-full rounded-xl overflow-hidden shadow-inner ${fullscreen?'h-full pt-14':'h-80 md:h-96'}`} style={{background:'#f5f5f4'}}/>{!fullscreen&&<button onClick={onToggleFs} className="absolute top-3 right-3 p-2 bg-white/90 hover:bg-white rounded-lg shadow-md z-[1000]" title="Fullscreen"><Ic.Fs c="w-5 h-5 text-stone-600"/></button>}{fullscreen&&selectedLoc&&<div className="absolute bottom-6 left-6 right-6 md:left-auto md:right-6 md:w-80 bg-white rounded-xl shadow-xl p-4 z-[1001]"><div className="flex items-start gap-3"><span className="w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold shrink-0" style={{background:selectedLoc.c}}>{locs.filter(l=>!l.dt).indexOf(selectedLoc)+1}</span><div className="flex-1"><h4 className="font-medium text-stone-800">{selectedLoc.n}</h4><p className="text-sm text-stone-500">Days {selectedLoc.days}</p><p className="text-sm mt-1" style={{color:B.dg}}>{selectedLoc.h}</p><a href={`https://www.google.com/maps/search/?api=1&query=${selectedLoc.lat},${selectedLoc.lng}`} target="_blank" rel="noopener noreferrer" className="text-xs text-stone-400 hover:text-stone-600 mt-2 inline-flex items-center gap-1">Open in Maps <Ic.ChR c="w-3 h-3"/></a></div></div></div>}</div>);
+};
+const WhatsAppPanel=({onClose,wa,name})=>{
+  const msgs=[{l:'👋 Say Hello',m:`Hello! I am part of the ${name} group and I'm on my France trip. Just saying hi!`},{l:'🚗 Transfer Help',m:`Hello! I am part of the ${name} group on the France trip. I need assistance with a transfer.`},{l:'🗺️ Itinerary Question',m:`Hello! I am part of the ${name} group. I have a question about my itinerary.`},{l:'🎫 Tours / Activities',m:`Hello! I am part of the ${name} group. I have a question about one of my tours or activities.`},{l:'🆘 Urgent Help',m:`Hello! I am part of the ${name} group on the France trip and I need urgent assistance.`}];
+  return(<div className="fixed bottom-20 right-5 z-40 wa-panel no-print"><div className="bg-white rounded-2xl shadow-2xl w-80 overflow-hidden border border-stone-200"><div className="p-4" style={{backgroundColor:'#25D366'}}><div className="flex items-center justify-between"><div className="flex items-center gap-3"><div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center"><Ic.Wa c="w-6 h-6 text-white"/></div><div><h3 className="text-white font-medium">Essentially French</h3><p className="text-white/80 text-xs">Typically replies quickly</p></div></div><button onClick={onClose} className="p-1 hover:bg-white/20 rounded-full"><Ic.X c="w-5 h-5 text-white"/></button></div></div><div className="p-4"><p className="text-sm text-stone-600 mb-3">Select a quick message or start a custom chat:</p><div className="space-y-2">{msgs.map((m,i)=>(<a key={i} href={`https://wa.me/${wa}?text=${encodeURIComponent(m.m)}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-3 rounded-lg bg-stone-50 hover:bg-stone-100 transition-colors"><span className="text-sm text-stone-700">{m.l}</span><Ic.ChR c="w-4 h-4 text-stone-400 ml-auto"/></a>))}</div><a href={`https://wa.me/${wa}`} target="_blank" rel="noopener noreferrer" className="mt-3 w-full py-2.5 rounded-lg text-white text-sm font-medium flex items-center justify-center gap-2" style={{backgroundColor:'#25D366'}}><Ic.Sn c="w-4 h-4"/>Open Chat</a></div></div></div>);
+};
+const D={
+  name:"Jakel & Mollet",dest:"France",sub:"October – November 2025",dates:"October 19 – November 2, 2025",
+  intro:"We are delighted to welcome you on this carefully curated journey through the beauty, culture, and elegance of France. From timeless landscapes and iconic landmarks to hidden gems and refined experiences, your itinerary has been designed with the utmost care to reflect your interests and expectations.\n\nThroughout your stay, you'll discover the richness of French art de vivre — through its cuisine, heritage, people, and unique sense of style. Whether you're strolling cobbled streets, savoring a glass of wine among the vines, or unwinding in a breathtaking setting, we hope each moment will be both inspiring and unforgettable.\n\nWe wish you a beautiful stay, filled with discovery, connection, and joy. Bon voyage!",
+  contactInfo:"Your primary and emergency contact throughout your trip in France will be Merewyne Rougeul. She is available over the phone, via text message or on WhatsApp. Except contraindication, drivers will always meet you at the exit gate at airports, at the end of the platform at train stations, and at the lobby of your hotel for pick-ups and drop-offs.\n\nPer our guides and company policy, guide contacts are sent one week prior to arrival. For some museums and monuments, we cannot share guide contact information, but someone from our team will always be reachable.",
+  ticketInfo:"Your TGV train ticket from Paris Montparnasse to Angoulême (Oct 24, departing 6:52 AM) will be provided digitally or at your hotel. Driver contacts for transfers will be confirmed 48 hours before each service unless already noted in this booklet.",
+  flights:{arr1:{date:"Sun, Oct 19",time:"3:30 PM",port:"CDG Paris",flight:"AF1641",travelers:["Jakel"]},arr2:{date:"Tue, Oct 21",time:"12:55 PM",port:"CDG Paris",flight:"KLM 2290",travelers:["Mollet"]}},
+  weather:{1:{icon:'🌤️',hi:17,lo:9,cond:'Paris'},2:{icon:'⛅',hi:16,lo:10,cond:'Paris'},3:{icon:'☀️',hi:18,lo:10,cond:'Paris'},4:{icon:'⛅',hi:17,lo:9,cond:'Paris'},5:{icon:'☀️',hi:16,lo:8,cond:'Paris'},6:{icon:'🌤️',hi:14,lo:7,cond:'Cognac'},7:{icon:'⛅',hi:15,lo:8,cond:'Cognac'},8:{icon:'☀️',hi:17,lo:9,cond:'Bordeaux'},9:{icon:'🌤️',hi:16,lo:8,cond:'Saint-Émilion'},10:{icon:'⛅',hi:16,lo:9,cond:'Bordeaux'},11:{icon:'☀️',hi:18,lo:10,cond:'Arcachon/Biarritz'},12:{icon:'🌤️',hi:19,lo:11,cond:'Biarritz'},13:{icon:'⛅',hi:18,lo:10,cond:'Biarritz'},14:{icon:'☀️',hi:19,lo:11,cond:'Biarritz'},15:{icon:'🌤️',hi:17,lo:10,cond:'Departure'}},
+  em:{tm:"Merewyne Rougeul",tmPh:"+33 6 87 51 31 03",tmNote:"Available throughout your trip",wa:"33687513103",firefighter:"18",health:"15",police:"17"},
+  places:[
+    {id:'paris',name:'Paris',img:'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=800&q=80',desc:"The City of Light enchants with its iconic landmarks, world-class museums, exquisite cuisine, and timeless elegance. From the Eiffel Tower to hidden Left Bank cafés, Paris offers an endless tapestry of art, culture, and romance."},
+    {id:'cognac',name:'Cognac',img:'https://images.unsplash.com/photo-1568625365131-079e026a927d?auto=format&fit=crop&w=800&q=80',desc:"Cognac is a charming town in southwest France, famous worldwide for its namesake spirit. Explore historic distilleries, taste exceptional eaux-de-vie, and discover the art of blending in this picturesque riverside town."},
+    {id:'bordeaux',name:'Bordeaux',img:'https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?auto=format&fit=crop&w=800&q=80',desc:"A UNESCO World Heritage city, Bordeaux is the wine capital of the world. Its stunning 18th-century architecture, vibrant food scene, and proximity to legendary vineyards make it a destination of elegance and discovery."},
+    {id:'stemilion',name:'Saint-Émilion',img:'https://images.unsplash.com/photo-1586791965003-9c4f0b1e2e5e?auto=format&fit=crop&w=800&q=80',desc:"This medieval village perched among rolling vineyards is a UNESCO site renowned for its exceptional wines, underground monuments, and timeless charm. A jewel of the Bordeaux wine region."},
+    {id:'arcachon',name:'Arcachon & Dune du Pilat',img:'https://images.unsplash.com/photo-1595242614770-31891afad0af?auto=format&fit=crop&w=800&q=80',desc:"Arcachon Bay offers stunning natural beauty — from oyster-rich waters and charming fishing villages to Europe's tallest sand dune, the Dune du Pilat, with breathtaking panoramic views."},
+    {id:'biarritz',name:'Biarritz & Basque Country',img:'https://images.unsplash.com/photo-1600019248002-3f496c79eadc?auto=format&fit=crop&w=800&q=80',desc:"Biarritz combines elegant Belle Époque architecture with world-class surf beaches and vibrant Basque culture. From dramatic coastal cliffs to charming villages like Espelette and Saint-Jean-de-Luz, the Basque Country is a feast for the senses."}
+  ],
+  faq:[
+    {cat:'Money & Payments',icon:'💶',items:[{q:'What currency is used?',a:'Euro (€) is the official and only currency used in France. Most payments can be done by credit card and/or contactless, but we recommend having some cash just in case for small vendors and markets.'},{q:'Are credit cards accepted everywhere?',a:'Visa and Mastercard are widely accepted. American Express is less common. Carry some cash for markets, tips, and small purchases.'}]},
+    {cat:'Tipping & Etiquette',icon:'🤝',items:[{q:'Should I tip in France?',a:'Tipping is not mandatory in France but is appreciated. The amount is always at the client\'s discretion. A few euros for good service at restaurants is customary.'},{q:'Any important cultural customs?',a:'It is customary to greet anyone by "Bonjour." Shop keepers, waiters, and service staff may not be as helpful if you don\'t start your conversation with "Bonjour." A simple greeting goes a long way!'}]},
+    {cat:'Dining & Restaurants',icon:'🍽️',items:[{q:'What are French dining hours?',a:'Restaurants tend to close between lunch and dinner service. Dinner service does not start before 6:30 PM in France and typically ends around 9:30 PM. Plan accordingly!'},{q:'Any restaurant reservations needed?',a:'For popular restaurants, especially in Paris and Bordeaux, reservations are recommended. Your concierge team can assist with bookings.'}]},
+    {cat:'Power & Electricity',icon:'🔌',items:[{q:'What adapter do I need?',a:'France uses 230V with Type C and Type E plugs (two round pins). You\'ll need an adapter for US appliances. We\'ve provided adapters for your stay — let us know if you need more.'}]},
+    {cat:'Safety & Security',icon:'🛡️',items:[{q:'Is France safe for tourists?',a:'France is a safe country in general. We recommend keeping your personal belongings in a secured bag close to you in big touristic areas, especially in Paris.'},{q:'What about medical emergencies?',a:'For emergencies: dial 18 for firefighters, 15 for health emergencies, 17 for police. Your trip contact Merewyne is also available for any assistance.'}]},
+    {cat:'Climate & Weather',icon:'🌤️',items:[{q:'October/November weather?',a:'Late October in France is pleasant autumn weather. Paris averages 15-18°C (59-64°F), while the southwest (Bordeaux, Biarritz) is slightly warmer at 17-20°C (63-68°F). Pack layers and a light rain jacket.'},{q:'Any weather concerns?',a:'Autumn is generally dry with occasional rain. The Basque coast can be breezy. Pack a compact umbrella and a warm layer for evenings.'}]}
+  ],
+  locs:[{id:'paris',n:'Paris',lat:48.8566,lng:2.3522,days:'1-6',h:'Dame des Arts',c:B.dg},{id:'cognac',n:'Cognac',lat:45.6958,lng:-0.3301,days:'6-7',h:'Chais Monnet',c:B.dg},{id:'bordeaux',n:'Bordeaux',lat:44.8378,lng:-0.5792,days:'8-10',h:'InterContinental',c:B.dg},{id:'arcachon',n:'Arcachon',lat:44.6586,lng:-1.1681,days:'11',h:'Day Trip',c:B.g},{id:'biarritz',n:'Biarritz',lat:43.4832,lng:-1.5586,days:'11-15',h:'Château de Brindos',c:B.dg}],
+  acc:[
+    {d:"Days 1-5",n:"Hôtel Dame des Arts",l:"Paris",dt:"Room details TBC",ni:5,g:'damedesarts',stars:4,ds:"In the heart of the Latin Quarter, just steps from Notre-Dame and the Seine. Bold design and understated elegance with panoramic rooftop, wellness area, and modern French cuisine.",ad:"4 rue Danton, 75006 Paris",ph:"+33 1 XX XX XX XX"},
+    {d:"Days 6-7",n:"Chais Monnet & Spa",l:"Cognac",dt:"Room details TBC",ni:2,g:'chaimonnet',stars:5,ds:"Luxurious escape within a beautifully restored historic cellar. Michelin-starred Les Foudres restaurant, Jazz Bar 1838, serene spa with heated pool.",ad:"50 avenue Paul Firino Martell, Cognac",ph:"+33 5 XX XX XX XX"},
+    {d:"Days 8-10",n:"InterContinental Bordeaux – Le Grand Hôtel",l:"Bordeaux",dt:"Room details TBC",ni:3,g:'intercontinental',stars:5,ds:"Masterpiece of historic elegance overlooking Place de la Comédie. 18th-century neoclassical building with Michelin-starred dining, luxurious spa, and rooftop bar.",ad:"2 Place de la Comédie, Bordeaux",ph:"+33 5 XX XX XX XX"},
+    {d:"Days 11-14",n:"Château de Brindos",l:"Biarritz / Anglet",dt:"Room details TBC",ni:4,g:'brindos',stars:4,ds:"Charming château offering spacious rooms, a peaceful courtyard, and easy access to Biarritz's beaches and the vibrant Basque Country.",ad:"1 allée du Château, 64600 Anglet",ph:"+33 5 XX XX XX XX"}
+  ],
+  itin:[
+    {dy:1,dt:"Sun, Oct 19",loc:"Paris — Arrival",hk:'pa1',act:[{t:"tr",i:"plane",ti:"Arrival at CDG Airport",tm:"3:30 PM",ds:"Flight AF1641"},{t:"tr",i:"car",ti:"V-Class Transfer to Hotel",tm:"3:30 PM",ds:"Driver: Mickael +33 6 71 56 55 86. Approx 1 hour from airport.",dur:"~1 hr"},{t:"info",i:"info",ti:"No Car Disposal Today",ds:"Evening at leisure. Explore the Latin Quarter on foot!",nt:true},{t:"acc",i:"hotel",ti:"Check in",loc:"Hôtel Dame des Arts",g:'damedesarts',ad:"4 rue Danton, 75006 Paris"}]},
+    {dy:2,dt:"Mon, Oct 20",loc:"Paris",hk:'pa2',act:[{t:"lei",i:"coffee",ti:"Morning at Leisure",ds:"Explore the Latin Quarter, visit Notre-Dame, stroll along the Seine"},{t:"act",i:"compass",ti:"Private Food Tour in Paris",tm:"2:00 PM",dur:"~2.5 hrs",ds:"Meet at hotel lobby. Contact provided 48 hours before.",eds:"Discover Paris through a private food tour, savoring pastries, cheeses, chocolates, and wine while meeting passionate artisans. Iconic stops blended with hidden gems.",g:'foodtour'},{t:"info",i:"info",ti:"No Car Disposal",ds:"Walking tour — no car needed today",nt:true},{t:"acc",i:"hotel",ti:"Accommodation",loc:"Hôtel Dame des Arts",g:'damedesarts'}]},
+    {dy:3,dt:"Tue, Oct 21",loc:"Paris — Second Arrival",hk:'pa3',act:[{t:"lei",i:"coffee",ti:"Morning at Leisure",ds:"For those already in Paris"},{t:"tr",i:"plane",ti:"Second Arrival at CDG Airport",tm:"12:55 PM",ds:"Flight KLM 2290"},{t:"tr",i:"car",ti:"V-Class Transfer to Hotel",tm:"12:55 PM",ds:"Driver: Mickael +33 6 71 56 55 86. Approx 1 hour from airport.",dur:"~1 hr"},{t:"info",i:"info",ti:"No Car Disposal",ds:"Reunite and enjoy Paris together!",nt:true},{t:"acc",i:"hotel",ti:"Accommodation",loc:"Hôtel Dame des Arts",g:'damedesarts'}]},
+    {dy:4,dt:"Wed, Oct 22",loc:"Paris",hk:'pa4',act:[{t:"lei",i:"coffee",ti:"Morning at Leisure",ds:"Explore Paris at your own pace"},{t:"lei",i:"coffee",ti:"Lunch at Ami Louis",tm:"12:30 PM",ds:"Legendary Parisian bistro"},{t:"act",i:"compass",ti:"Paris Must-See Guided Tour",tm:"3:00 PM",dur:"~3 hrs",ds:"Meet at hotel lobby. Contact provided 48 hours before.",eds:"Explore Paris in style with a private guide and chauffeur, discovering the city's most iconic landmarks — from the Eiffel Tower to Montmartre, with expert insights and seamless comfort.",g:'paristour'},{t:"info",i:"info",ti:"Car Disposal 12 PM – 6 PM",ds:"Driver: Mickael +33 6 71 56 55 86",nt:true},{t:"acc",i:"hotel",ti:"Accommodation",loc:"Hôtel Dame des Arts",g:'damedesarts'}]},
+    {dy:5,dt:"Thu, Oct 23",loc:"Paris",hk:'pa5',act:[{t:"act",i:"compass",ti:"Perfume Workshop at Molinard",tm:"10:00 AM",dur:"~2 hrs",ds:"Meeting point: 270 Rue Saint Honoré, Paris 1er. Contact provided 48 hours before.",eds:"Create your own signature fragrance guided by master perfumers in the art of scent composition. A unique blend of luxury, heritage, and personalization.",g:'perfume'},{t:"act",i:"compass",ti:"Private Guided Visit of the Louvre",tm:"2:00 PM",dur:"~2 hrs",ds:"Meeting point: in front of the statue of Louis XIV. Contact provided 48 hours before.",eds:"Skip the lines on a private Louvre tour with an expert guide, tailored to your interests, highlighting masterpieces, hidden gems, and captivating stories.",g:'louvre'},{t:"act",i:"compass",ti:"After Hours at Versailles",tm:"7:00 PM",dur:"~2 hrs",ds:"Meeting point: Entrance B of the Palace. Contact: Sonia +33 6 30 44 95 78",eds:"Experience Versailles like royalty on a private after-hours tour of its grand halls, royal apartments, and courtyards, with captivating stories bringing history to life.",g:'versailles'},{t:"info",i:"info",ti:"Car Disposal 9 AM – 9:30 PM",ds:"Driver: Mickael. Approx 2h45 driving total.",nt:true},{t:"acc",i:"hotel",ti:"Accommodation",loc:"Hôtel Dame des Arts",g:'damedesarts'}]},
+    {dy:6,dt:"Fri, Oct 24",loc:"Paris → Cognac",hk:'cg1',act:[{t:"tr",i:"car",ti:"Transfer Hotel to Gare Montparnasse",tm:"6:00 AM",ds:"Driver: Mickael +33 6 71 56 55 86"},{t:"tr",i:"train",ti:"TGV to Angoulême",tm:"6:52 AM",ds:"Paris Montparnasse → Angoulême • Arr 8:59 AM",dur:"~2 hrs"},{t:"tr",i:"car",ti:"Transfer Angoulême to Cognac",tm:"9:00 AM",ds:"Driver provided 48 hours before. Approx 45 min.",dur:"~45 min"},{t:"act",i:"compass",ti:"Cognac Workshop & Glass Blowing at Maison Martell",tm:"10:30 AM",dur:"~2 hrs",ds:"Meeting point TBC. Contact provided 48 hours before.",eds:"Private cellar tour, blending workshop, Michelin-starred lunch, and refined tasting of exceptional cognacs. Complete with a hands-on glassblowing workshop — create your own Cognac glasses to take home.",g:'martell'},{t:"lei",i:"coffee",ti:"Evening at Leisure",ds:"Explore Cognac or enjoy the hotel spa"},{t:"acc",i:"hotel",ti:"Check in at Chais Monnet",loc:"Chais Monnet & Spa",g:'chaimonnet',ad:"50 avenue Paul Firino Martell, Cognac"}]},
+    {dy:7,dt:"Sat, Oct 25",loc:"Cognac",hk:'cg2',act:[{t:"lei",i:"coffee",ti:"Morning at Leisure",ds:"Enjoy the hotel spa, heated pool, or explore Cognac town"},{t:"lei",i:"coffee",ti:"Afternoon at Leisure",ds:"Relax at Chais Monnet or stroll the riverside"},{t:"lei",i:"coffee",ti:"Evening at Leisure",ds:"Try Les Foudres (Michelin-starred) or La Distillerie"},{t:"info",i:"info",ti:"No Car Disposal",ds:"Free day — enjoy at your own pace",nt:true},{t:"acc",i:"hotel",ti:"Accommodation",loc:"Chais Monnet & Spa",g:'chaimonnet'}]},
+    {dy:8,dt:"Sun, Oct 26",loc:"Cognac → Bordeaux",hk:'bx1',act:[{t:"tr",i:"car",ti:"Transfer to Bordeaux",tm:"9:00 AM",ds:"Driver provided 48 hours before. Approx 1h50.",dur:"~1h 50min"},{t:"act",i:"compass",ti:"Bassin des Lumières Visit",tm:"2:00 PM",dur:"~2 hrs",ds:"Meeting point TBC. Contact: Aurélie 0651330531",eds:"The world's largest digital art centre set in a former WWII submarine base. Private screening of immersive exhibition amid art, history, and stunning architecture.",g:'bassinlumieres'},{t:"lei",i:"coffee",ti:"Evening at Leisure",ds:"Explore Bordeaux's restaurants and wine bars"},{t:"info",i:"info",ti:"Car Disposal 11:30 AM – 3:30 PM",ds:"Driver provided 48 hours before",nt:true},{t:"acc",i:"hotel",ti:"Check in",loc:"InterContinental Bordeaux",g:'intercontinental',ad:"2 Place de la Comédie, Bordeaux"}]},
+    {dy:9,dt:"Mon, Oct 27",loc:"Saint-Émilion",hk:'se1',act:[{t:"tr",i:"car",ti:"Route to Saint-Émilion",tm:"8:00 AM",ds:"Approx 45 min by car",dur:"~45 min"},{t:"act",i:"compass",ti:"Underground Museum Visit",tm:"10:00 AM",dur:"~1.5 hrs",ds:"Meeting point: Office de tourisme, Place des Créneaux, 33330 Saint-Émilion",eds:"Guided tour through ancient walls, monasteries, and quarries. Discover hidden treasures including the hermitage, Trinity Chapel, catacombs, and Europe's largest monolithic church.",g:'stemilion'},{t:"lei",i:"coffee",ti:"Lunch & Tasting at Château de Ferrand",tm:"12:30 PM",ds:"Wine tasting paired with a refined lunch in the vineyards"},{t:"tr",i:"car",ti:"Transfer back to Bordeaux",tm:"4:00 PM",ds:"Approx 45 min",dur:"~45 min"},{t:"lei",i:"coffee",ti:"Evening at Leisure",ds:"Explore Bordeaux dining"},{t:"info",i:"info",ti:"Car Disposal 9 AM – 7 PM",ds:"Driver provided 48 hours before",nt:true},{t:"acc",i:"hotel",ti:"Accommodation",loc:"InterContinental Bordeaux",g:'intercontinental'}]},
+    {dy:10,dt:"Tue, Oct 28",loc:"Bordeaux",hk:'bx2',act:[{t:"lei",i:"coffee",ti:"Morning at Leisure",ds:"Explore Bordeaux's historic center and riverfront"},{t:"act",i:"compass",ti:"Guided Visit at La Cité du Vin",tm:"2:00 PM",dur:"~1.5 hrs",ds:"Guide: Ines +33(0)7 68 49 45 19. Meet at main lobby.",eds:"Private after-hours tour of an immersive wine museum, exploring history and techniques of viticulture. Hands-on workshop led by a sommelier with personalized glass keepsake.",g:'citeduvin'},{t:"lei",i:"coffee",ti:"Evening at Leisure",ds:"40 min car disposal total"},{t:"info",i:"info",ti:"No Car Disposal",ds:"Guided visit is walking distance or short taxi",nt:true},{t:"acc",i:"hotel",ti:"Accommodation",loc:"InterContinental Bordeaux",g:'intercontinental'}]},
+    {dy:11,dt:"Wed, Oct 29",loc:"Arcachon → Biarritz",hk:'ar1',act:[{t:"tr",i:"car",ti:"Route to Arcachon",tm:"8:00 AM",ds:"Approx 1 hour from Bordeaux",dur:"~1 hr"},{t:"act",i:"compass",ti:"Boat Trip in Arcachon & Picnic",tm:"11:00 AM",dur:"~4 hrs",ds:"Meeting point: Rue des marins 33120 Arcachon, pontoon 3. Contact: Nicolas +33 6 43 27 63 62",eds:"Discover Arcachon Bay with a private cruise. Visit the historic Dubourdieu shipyard, explore Bird Island, meet an oyster farmer for a tasting, and enjoy a beachside picnic of local specialties.",g:'arcachon'},{t:"tr",i:"car",ti:"Route to Biarritz with Stop at Dune du Pilat",tm:"3:00 PM",ds:"Approx 2 hours. Stop at Europe's tallest sand dune for panoramic views.",dur:"~2 hrs"},{t:"lei",i:"coffee",ti:"Evening at Leisure",ds:"Settle in at Château de Brindos"},{t:"info",i:"info",ti:"Car Disposal 8 AM – 6 PM",ds:"Driver provided 48 hours before",nt:true},{t:"acc",i:"hotel",ti:"Check in",loc:"Château de Brindos",g:'brindos',ad:"1 allée du Château, 64600 Anglet"}]},
+    {dy:12,dt:"Thu, Oct 30",loc:"Biarritz",hk:'bi1',act:[{t:"act",i:"compass",ti:"Basque Pelota Initiation",tm:"10:00 AM",dur:"~2 hrs",ds:"Meeting point TBC. Contact provided 48 hours before.",eds:"Experience Basque culture with a private pelota initiation guided by a professional player inside a traditional fronton. Learn techniques from bare-hand play to the chistera.",g:'pelota'},{t:"act",i:"compass",ti:"Espelette Chili Pepper Workshop",tm:"2:00 PM",dur:"~2 hrs",ds:"Meeting point: 625 chemin de l'église, Espelette. Contact provided 48 hours before.",eds:"Discover Basque gastronomy on a picturesque farm. Learn cultivation and culinary uses, craft your own blend, and enjoy a tasting of local specialties.",g:'espelette'},{t:"lei",i:"coffee",ti:"Evening at Leisure",ds:"Explore Biarritz dining scene"},{t:"info",i:"info",ti:"No Car Disposal",ds:"Transfers arranged for activities",nt:true},{t:"acc",i:"hotel",ti:"Accommodation",loc:"Château de Brindos",g:'brindos'}]},
+    {dy:13,dt:"Fri, Oct 31",loc:"Biarritz",hk:'bi2',act:[{t:"act",i:"compass",ti:"Zookeeper for a Day at Labenne Zoo",tm:"9:00 AM",dur:"~3 hrs",ds:"Meeting point: 'caretaker' entrance, large gate left of visitor entrance at 8:55 AM. Contact provided 48 hours before.",eds:"A unique experience caring for and feeding animals alongside the zoo's keepers.",g:'zoo'},{t:"act",i:"compass",ti:"Walking Guided Tour of Biarritz",tm:"2:00 PM",dur:"~2 hrs",ds:"Contact: Luciano Piccolo +33 632712329",eds:"Explore Biarritz's elegant seaside charm, rich Basque heritage, and vibrant surf culture. Iconic landmarks, hidden streets, and scenic coastal paths.",g:'biarritztour'},{t:"lei",i:"coffee",ti:"Evening at Leisure",ds:"Enjoy Biarritz's restaurants and coastline"},{t:"info",i:"info",ti:"No Car Disposal",ds:"Activities arranged with local transport",nt:true},{t:"acc",i:"hotel",ti:"Accommodation",loc:"Château de Brindos",g:'brindos'}]},
+    {dy:14,dt:"Sat, Nov 1",loc:"Biarritz",hk:'bi3',act:[{t:"act",i:"compass",ti:"Food Tour of Saint-Jean-De-Luz",tm:"9:30 AM",dur:"~1.5 hrs",ds:"Contact: Luciano Piccolo +33 632712329. 45 min drive each way.",eds:"Savor the flavors of Saint-Jean-de-Luz on a private food tour. Stroll through lively markets, tasting Basque specialties like fresh seafood, artisanal cheeses, and the town's famous macarons.",g:'sjdl'},{t:"lei",i:"coffee",ti:"Afternoon at Leisure",ds:"Relax at the hotel or explore the Basque coast"},{t:"lei",i:"coffee",ti:"Evening at Leisure",ds:"Final evening — enjoy Biarritz"},{t:"info",i:"info",ti:"Car Disposal — 45 min total",ds:"For Saint-Jean-de-Luz food tour transfer",nt:true},{t:"acc",i:"hotel",ti:"Accommodation",loc:"Château de Brindos",g:'brindos'}]},
+    {dy:15,dt:"Sun, Nov 2",loc:"Departure",hk:'dep',act:[{t:"info",i:"info",ti:"Departure Day",ds:"Safe travels home! We hope you had an unforgettable journey through France.",nt:true},{t:"info",i:"info",ti:"Au revoir et bon voyage !",ds:"Thank you for traveling with Essentially French! Until next time!",nt:true}]}
+  ]
+};
+function App(){
+  const[menu,setMenu]=useState(false);
+  const[sec,setSec]=useState('cover');
+  const[exp,setExp]=useState({});
+  const[edit,setEdit]=useState(false);
+  const[notes,setNotes]=useState({});
+  const[tab,setTab]=useState('ov');
+  const[hero,setHero]=useState(H.cover);
+  const[pdfLoading,setPdfLoading]=useState(false);
+  const[showWaPanel,setShowWaPanel]=useState(false);
+  const[fullscreenMap,setFullscreenMap]=useState(false);
+  const[tempUnit,setTempUnit]=useState('F');
+  const[faqOpen,setFaqOpen]=useState({});
+  const[placesOpen,setPlacesOpen]=useState({});
+  const[dark,setDark]=useState(false);
+  const[checked,setChecked]=useState({});
+  const[phraseFilter,setPhraseFilter]=useState('all');
+  const[showDayNav,setShowDayNav]=useState(false);
+  const[usdAmount,setUsdAmount]=useState(100);
+  const[eurRate]=useState(0.92);
+  const refs=useRef({});
+  const dayNavRef=useRef(null);
+  const[hovAct,setHovAct]=useState(null);
+  const hovRef=useRef(null);
+  const toF=(c)=>Math.round(c*9/5+32);
+  const getTemp=(c)=>tempUnit==='F'?toF(c):c;
+  const tripStatus=useMemo(()=>{
+    const now=new Date();const diff=TRIP_START-now;const dayMs=864e5;
+    if(diff>0)return{status:'pre',daysUntil:Math.ceil(diff/dayMs)};
+    const dayNum=Math.floor((now-TRIP_START)/dayMs)+1;
+    if(dayNum>=1&&dayNum<=TRIP_DAYS)return{status:'during',day:dayNum,total:TRIP_DAYS,pct:Math.round(dayNum/TRIP_DAYS*100)};
+    return{status:'post'};
+  },[]);
+  const toc=[{id:'cover',l:'Cover'},{id:'brief',l:'Travel Brief'},{id:'map',l:'Journey'},{id:'ess',l:'Essentials'},{id:'packing',l:'Packing'},{id:'phrases',l:'Phrases'},{id:'transit',l:'Transit Guide'},...D.itin.map(d=>({id:`d${d.dy}`,l:`Day ${d.dy}`,s:d.loc})),{id:'dining',l:'Dining'},{id:'emg',l:'Emergency'},{id:'places',l:'Places'},{id:'faq',l:'FAQ'},{id:'docs',l:'Documents'}];
+  const goTo=(id)=>{setMenu(false);setSec(id);updH(id);refs.current[id]?.scrollIntoView({behavior:'smooth'});};
+  const updH=(id)=>{if(id==='cover')setHero(H.cover);else if(id==='brief')setHero(H.brief);else if(id==='map')setHero(H.map);else if(id==='ess'||id==='packing'||id==='phrases'||id==='transit')setHero(H.ess);else if(id==='emg')setHero(H.emg);else if(id==='places'||id==='dining')setHero(H.places);else if(id==='faq'||id==='docs')setHero(H.faq);else{const d=D.itin.find(x=>`d${x.dy}`===id);if(d?.hk)setHero(H[d.hk]);}};
+  const tog=(di,ai)=>setExp(p=>({...p,[`${di}-${ai}`]:!p[`${di}-${ai}`]}));
+  const togFaq=(cat,idx)=>setFaqOpen(p=>({...p,[`${cat}-${idx}`]:!p[`${cat}-${idx}`]}));
+  const togPlace=(id)=>setPlacesOpen(p=>({...p,[id]:!p[id]}));
+  const togglePack=(cat,idx)=>{const k=`${cat}-${idx}`;setChecked(p=>({...p,[k]:!p[k]}));};
+  useEffect(()=>{
+    const obs=new IntersectionObserver((e)=>{e.forEach(x=>{if(x.isIntersecting){const id=x.target.getAttribute('data-s');if(id){setSec(id);updH(id);}}});},{threshold:0.3});
+    Object.entries(refs.current).forEach(([id,el])=>{if(el){el.setAttribute('data-s',id);obs.observe(el);}});
+    return()=>obs.disconnect();
+  },[]);
+  useEffect(()=>{
+    const handleScroll=()=>{const y=window.scrollY;setShowDayNav(y>window.innerHeight*.5);};
+    window.addEventListener('scroll',handleScroll);return()=>window.removeEventListener('scroll',handleScroll);
+  },[]);
+  const goToday=()=>{if(tripStatus.status==='during')goTo(`d${tripStatus.day}`);else goTo('d1');};
+  const exportDoc=()=>{
+    let h=`<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"><title>${D.name} - France Itinerary</title><!--[if gte mso 9]><xml><w:WordDocument><w:View>Print</w:View></w:WordDocument></xml><![endif]--><style>body{font-family:Calibri,sans-serif;font-size:11pt;color:#333;line-height:1.5;margin:40px}h1{font-size:22pt;color:#5C4033;margin-bottom:4pt}h2{font-size:16pt;color:#5C4033;border-bottom:1pt solid #5C4033;padding-bottom:4pt;margin-top:20pt}h3{font-size:13pt;color:#3A2820;margin-top:14pt}h4{font-size:11pt;color:#555;margin-top:10pt}table{border-collapse:collapse;width:100%;margin:8pt 0}td,th{border:1pt solid #ddd;padding:6pt 8pt;font-size:10pt;vertical-align:top}th{background:#F5F0EB;font-weight:bold;color:#333}p{margin:4pt 0}.exp{color:#5C4033;font-weight:bold}.note{background:#FFF8E1;padding:6pt 10pt;border-left:3pt solid #C4956A;margin:6pt 0;font-style:italic;font-size:10pt}.divider{border:none;border-top:2pt solid #5C4033;margin:16pt 0}.sub{color:#888;font-size:9pt}</style></head><body>`;
+    h+=`<h1>${D.name} — France Arrival Booklet</h1><p>${D.dates}<br/><b>Essentially French</b></p><hr class="divider"/>`;
+    h+=`<h2>✈ Flights</h2><table><tr><th></th><th>Date</th><th>Time</th><th>Airport</th><th>Flight</th></tr><tr><td><b>Arrival 1</b></td><td>${D.flights.arr1.date}</td><td>${D.flights.arr1.time}</td><td>${D.flights.arr1.port}</td><td>${D.flights.arr1.flight}</td></tr><tr><td><b>Arrival 2</b></td><td>${D.flights.arr2.date}</td><td>${D.flights.arr2.time}</td><td>${D.flights.arr2.port}</td><td>${D.flights.arr2.flight}</td></tr></table>`;
+    h+=`<h2>🏨 Accommodation</h2>`;
+    D.acc.forEach(a=>{h+=`<h3>${a.n}</h3><p>${a.l} · ${a.d} · ${a.ni} night${a.ni>1?'s':''} · ${a.dt}</p><p>${a.ds}</p><p class="sub">📍 ${a.ad}</p>`;});
+    h+=`<h2>📅 Daily Itinerary</h2>`;
+    D.itin.forEach(d=>{h+=`<hr class="divider"/><h3>Day ${d.dy} — ${d.dt} — ${d.loc}</h3>`;d.act.forEach(a=>{const isExp=a.t==='act';h+=`<h4>${isExp?'<span class="exp">⬤ ':''} ${a.tm?a.tm+' — ':''}${a.ti}${isExp?'</span>':''}</h4>`;if(a.ds)h+=`<p>${a.nt?'<span class="note">ℹ '+a.ds+'</span>':a.ds}</p>`;if(a.eds)h+=`<p><i>${a.eds}</i></p>`;if(a.loc)h+=`<p class="sub">📍 ${a.loc}</p>`;if(a.ad)h+=`<p class="sub">📍 ${a.ad}</p>`;if(a.dur)h+=`<p class="sub">⏱ ${a.dur}</p>`;});});
+    h+=`<hr class="divider"/><h2>🚨 Emergency Contacts</h2>`;
+    h+=`<table><tr><th>Contact</th><th>Phone</th><th>Availability</th></tr><tr><td>${D.em.tm}</td><td>${D.em.tmPh}</td><td>Throughout your trip</td></tr><tr><td>Firefighters</td><td>${D.em.firefighter}</td><td></td></tr><tr><td>Health Emergency</td><td>${D.em.health}</td><td></td></tr><tr><td>Police</td><td>${D.em.police}</td><td></td></tr></table>`;
+    h+=`<hr class="divider"/><p style="text-align:center;color:#888;margin-top:20pt">© 2025 Essentially French · Last updated ${new Date().toLocaleDateString()}</p></body></html>`;
+    const blob=new Blob([h],{type:'application/msword'});
+    const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`JakelMollet-France-Itinerary-${new Date().toISOString().split('T')[0]}.doc`;a.click();URL.revokeObjectURL(url);
+  };
+  return(
+    <div className={`min-h-screen ${dark?'dark bg-gray-900':'bg-stone-50'}`}>
+      <header className="fixed top-0 right-0 left-0 lg:left-1/2 z-50 bg-stone-50/95 backdrop-blur-sm border-b border-stone-200" style={dark?{background:'rgba(26,26,46,.95)',borderColor:'#333'}:{}}>
+        <div className="flex items-center justify-between px-3 py-2.5">
+          <button onClick={()=>setMenu(!menu)} className="p-2 hover:bg-stone-100 rounded-full">{menu?<Ic.X c="w-5 h-5 text-stone-700"/>:<Ic.Menu c="w-5 h-5 text-stone-700"/>}</button>
+          <img src={LOGO} alt="Essentially French" className="h-10" onError={(e)=>{e.target.outerHTML='<span class="font-serif text-lg italic" style="color:#5C4033">Essentially French</span>';}}/>
+          <div className="flex items-center gap-1">
+            <button onClick={()=>setDark(!dark)} className="p-2 hover:bg-stone-100 rounded-full no-print" title={dark?"Light Mode":"Dark Mode"}>{dark?<Ic.Sun c="w-4 h-4 text-yellow-400"/>:<Ic.Moon c="w-4 h-4 text-stone-600"/>}</button>
+            <button onClick={()=>setEdit(!edit)} className={`p-2 rounded-full no-print ${edit?'bg-amber-100':''}`} title="Edit Notes"><Ic.Ed c={`w-4 h-4 ${edit?'text-amber-700':'text-stone-600'}`}/></button>
+            <button onClick={async()=>{const url=window.location.href;if(navigator.share)try{await navigator.share({title:`${D.name} - France`,url});}catch(e){}else{await navigator.clipboard.writeText(url);alert('Link copied!');}}} className="p-2 hover:bg-stone-100 rounded-full no-print"><Ic.Sh c="w-4 h-4 text-stone-600"/></button>
+            <button onClick={exportDoc} className="p-2 hover:bg-stone-100 rounded-full no-print" title="Download DOC"><Ic.Ft c="w-4 h-4 text-stone-600"/></button>
+          </div>
+        </div>
+        {menu&&<nav className="absolute top-full left-0 right-0 bg-white border-b border-stone-200 shadow-lg max-h-[70vh] overflow-y-auto" style={dark?{background:'#1a1a2e',borderColor:'#333'}:{}}>{toc.map(t=>(<button key={t.id} onClick={()=>goTo(t.id)} className={`w-full px-6 py-3 text-left hover:bg-stone-50 flex items-center justify-between ${sec===t.id?'bg-stone-50':''}`} style={dark&&sec===t.id?{background:'#22223a'}:{}}><span className="font-medium" style={sec===t.id?{color:B.dg}:{}}>{t.l}</span>{t.s&&<span className="text-xs text-stone-400">{t.s}</span>}</button>))}</nav>}
+      </header>
+      {showDayNav&&<div className="fixed top-[52px] right-0 left-0 lg:left-1/2 z-40 no-print border-b" style={{background:dark?'rgba(26,26,46,.97)':'rgba(245,240,235,.97)',borderColor:dark?'#333':'#e7e5e4'}}>
+        <div className="flex items-center gap-1 px-3 py-2 overflow-x-auto hide-scrollbar" ref={dayNavRef}>
+          <button onClick={goToday} className="flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-bold text-white mr-1" style={{backgroundColor:B.dg}} title="Jump to today">📍 {tripStatus.status==='during'?'Today':'Day 1'}</button>
+          {D.itin.map(d=>{const isActive=sec===`d${d.dy}`;const isToday=tripStatus.status==='during'&&tripStatus.day===d.dy;return(
+            <button key={d.dy} onClick={()=>goTo(`d${d.dy}`)} className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition-all ${isActive?'text-white shadow-sm':'hover:bg-stone-100'}`} style={isActive?{backgroundColor:B.dg}:isToday?{backgroundColor:B.g,color:B.dk}:{color:dark?'#999':'#78716c'}}>
+              {d.dy}{isToday&&!isActive&&' ★'}
+            </button>
+          );})}
+        </div>
+      </div>}
+      {edit&&<div className={`fixed ${showDayNav?'top-[88px]':'top-[52px]'} right-0 left-0 lg:left-1/2 z-40 bg-amber-50 border-b border-amber-200 px-4 py-2 flex items-center justify-between no-print`}><div className="flex items-center gap-2"><Ic.Ed c="w-4 h-4 text-amber-700"/><span className="text-sm font-medium text-amber-700">Edit Mode</span></div><button onClick={()=>setEdit(false)} className="text-sm font-medium flex items-center gap-1" style={{color:B.dg}}><Ic.Ck c="w-4 h-4"/>Save</button></div>}
+      <div data-hero-panel="true" className="hidden lg:block fixed top-0 left-0 w-1/2 h-screen"><div className="relative w-full h-full"><img src={hero} alt="" className="w-full h-full object-cover transition-all duration-700"/><div className="absolute inset-0 bg-gradient-to-r from-transparent to-black/20"/></div></div>
+      <div id="booklet-content" className="lg:w-1/2 lg:ml-[50%]"><div className="pt-14">
+        {/* COVER */}
+        <section ref={el=>refs.current['cover']=el} className="min-h-screen flex flex-col items-center justify-center px-6 py-24 relative" style={{backgroundColor:dark?'#1a1a2e':B.cr}}>
+          <div className="text-center max-w-md">
+            <img src={LOGO} alt="Essentially French" className="h-24 mx-auto mb-8" onError={(e)=>{e.target.style.display='none';}}/>
+            <p className="text-sm tracking-widest uppercase mb-2" style={{color:B.dg}}>Arrival Booklet</p>
+            <h1 className="font-serif text-4xl md:text-5xl italic mb-4" style={{color:B.dg}}>{D.name}</h1>
+            <p className="text-xl mb-2" style={{color:B.dk}}>{D.dest}</p>
+            <p className="text-stone-500">{D.dates}</p>
+            <div className="mt-6 inline-block">
+              {tripStatus.status==='pre'&&<div className="bg-white/80 backdrop-blur rounded-xl px-6 py-3 shadow-sm border border-stone-200" style={dark?{background:'#22223a',borderColor:'#333'}:{}}><p className="text-sm text-stone-500">Your journey begins in</p><p className="text-3xl font-bold mt-1" style={{color:B.dg}}>{tripStatus.daysUntil} <span className="text-lg font-normal">day{tripStatus.daysUntil!==1?'s':''}</span></p></div>}
+              {tripStatus.status==='during'&&<div className="bg-white/80 backdrop-blur rounded-xl px-6 py-3 shadow-sm border border-stone-200"><p className="text-sm text-stone-500">Currently on</p><p className="text-2xl font-bold mt-1" style={{color:B.dg}}>Day {tripStatus.day} of {tripStatus.total}</p><div className="mt-2 h-2 bg-stone-200 rounded-full overflow-hidden"><div className="h-full rounded-full transition-all" style={{width:`${tripStatus.pct}%`,backgroundColor:B.dg}}/></div></div>}
+              {tripStatus.status==='post'&&<div className="bg-white/80 backdrop-blur rounded-xl px-6 py-3 shadow-sm border border-stone-200"><p className="text-lg" style={{color:B.dg}}>Merci et au revoir !</p><p className="text-sm text-stone-500 mt-1">What a wonderful journey</p></div>}
+            </div>
+            <div className="mt-8"><button onClick={()=>tripStatus.status==='during'?goToday():goTo('brief')} className="px-8 py-3 rounded-full text-white font-medium shadow-lg hover:shadow-xl transition-all" style={{backgroundColor:B.dg}}>{tripStatus.status==='during'?"Today's Plan":'Explore Your Journey'}</button></div>
+          </div>
+        </section>
+        {/* TRAVEL BRIEF */}
+        <section ref={el=>refs.current['brief']=el} className="min-h-screen px-6 py-20 bg-white" style={dark?{background:'#1a1a2e'}:{}}>
+          <h2 className="font-serif text-3xl text-center mb-3 italic" style={{color:B.dg}}>Travel Brief</h2>
+          <p className="text-center text-stone-500 mb-8">Your trip at a glance</p>
+          <div className="flex justify-center gap-2 mb-8 border-b border-stone-200">
+            {[{id:'ov',l:'Overview'},{id:'ac',l:'Accommodation'},{id:'fl',l:'Flights'}].map(t=>(<button key={t.id} onClick={()=>setTab(t.id)} className={`pb-3 px-3 border-b-2 text-sm ${tab===t.id?'text-stone-800':'border-transparent text-stone-400'}`} style={tab===t.id?{borderColor:B.dg}:{}}>{t.l}</button>))}
+          </div>
+          {tab==='ov'&&<div className="max-w-3xl mx-auto overflow-x-auto"><table className="w-full text-sm"><thead><tr className="border-b border-stone-200"><th className="py-3 text-left text-stone-500 font-normal">Day</th><th className="py-3 text-left text-stone-500 font-normal">Activities</th><th className="py-3 text-center text-stone-500 font-normal w-28"><div className="flex items-center justify-center gap-2">Weather<div className="inline-flex rounded-full border border-stone-300 overflow-hidden text-xs"><button onClick={()=>setTempUnit('F')} className={`px-2 py-0.5 ${tempUnit==='F'?'text-white':''}`} style={tempUnit==='F'?{backgroundColor:B.dg}:{}}>°F</button><button onClick={()=>setTempUnit('C')} className={`px-2 py-0.5 ${tempUnit==='C'?'text-white':''}`} style={tempUnit==='C'?{backgroundColor:B.dg}:{}}>°C</button></div></div></th></tr></thead><tbody>{D.itin.map((d,i)=>{const w=D.weather[d.dy];const isMob=typeof window!=='undefined'&&window.innerWidth<768;return(<tr key={i} className="border-b border-stone-100 cursor-pointer hover:bg-stone-50" onClick={()=>{if(!isMob)goTo(`d${d.dy}`);}}><td className="py-3 pr-4 align-top whitespace-nowrap"><span className="text-stone-800">Day {d.dy}</span><br/><span className="text-xs text-stone-400">{d.dt}</span><br/><span className="text-xs text-stone-400">{d.loc}</span></td><td className="py-3"><div className="space-y-1">{d.act.filter(a=>a.t!=='lei'&&!(a.t==='info'&&!a.ti.includes('Car')&&!a.ti.includes('Departure'))).map((a,j)=>{const hk=`${d.dy}-${j}`;const isActive=hovAct&&hovAct.k===hk;return(<div key={j} className="relative" onMouseEnter={(e)=>{if(!isMob){const r=e.currentTarget.getBoundingClientRect();setHovAct({k:hk,a,x:r.left,y:r.bottom+window.scrollY,w:r.width});}}} onMouseLeave={()=>{if(!isMob)setHovAct(null);}} onClick={(e)=>{if(isMob&&(a.ds||a.eds||a.tm||a.dur)){e.stopPropagation();setHovAct(isActive?null:{k:hk,a,x:0,y:0,w:0});}}}>
+  <div className="flex items-start gap-2 cursor-default">{getIc(a.i,'mt-0.5',{color:a.t==='act'?B.dg:a.t==='acc'?'#78716c':B.dk})}<span className={`text-sm ${a.t==='act'?'text-stone-800 font-medium':'text-stone-600'}`}>{a.t==='acc'?`Check in: ${a.loc||a.ti}`:a.ti}</span></div>
+  {isActive&&(a.ds||a.eds||a.tm||a.dur)&&<div className={`${isMob?'relative mt-2':'absolute left-0 top-full mt-1'} z-50 bg-white rounded-xl shadow-2xl border border-stone-200 p-4 w-72`} style={dark?{background:'#22223a',borderColor:'#444'}:{}} onClick={(e)=>e.stopPropagation()}>
+    <div className="flex items-start gap-2 mb-2">{getIc(a.i,'mt-0.5',{color:B.dg})}<h4 className="font-medium text-stone-800 text-sm">{a.t==='acc'?(a.loc||a.ti):a.ti}</h4></div>
+    {a.tm&&<p className="text-xs mb-1" style={{color:B.dg}}>🕐 {a.tm}{a.dur?` • ${a.dur}`:''}</p>}
+    {a.ds&&<p className="text-xs text-stone-600 leading-relaxed">{a.ds}</p>}
+    {a.eds&&<p className="text-xs text-stone-500 mt-1.5 leading-relaxed italic">{a.eds}</p>}
+    {a.loc&&a.t==='acc'&&<p className="text-xs mt-1.5" style={{color:B.dg}}>📍 {a.loc}</p>}
+    {isMob&&<button onClick={(e)=>{e.stopPropagation();goTo(`d${d.dy}`);}} className="mt-3 text-xs font-medium px-3 py-1.5 rounded-full text-white w-full" style={{backgroundColor:B.dg}}>View Day {d.dy} Details →</button>}
+    {!isMob&&<div className="absolute -top-1.5 left-6 w-3 h-3 rotate-45 border-l border-t border-stone-200" style={{background:dark?'#22223a':'white',borderColor:dark?'#444':undefined}}/>}
+  </div>}
+</div>);})}</div></td><td className="py-3 text-center align-top">{w&&<div className="inline-flex flex-col items-center"><span className="text-xl">{w.icon}</span><span className="text-xs text-stone-600">{getTemp(w.hi)}°/{getTemp(w.lo)}°</span></div>}</td></tr>);})}</tbody></table></div>}
+          {tab==='ac'&&<div className="max-w-3xl mx-auto space-y-6">{D.acc.map((a,i)=>(<div key={i} className="bg-stone-50 rounded-xl p-5 border border-stone-200" style={dark?{background:'#22223a',borderColor:'#333'}:{}}><div className="flex flex-wrap items-start justify-between gap-4 mb-3"><div><h3 className="font-medium text-stone-800">{a.n}</h3><div className="flex items-center gap-2 mt-0.5"><p className="text-sm font-medium" style={{color:B.dg}}>{a.l}</p>{a.stars&&<span className="text-sm" title={`${a.stars}-star`}>{'★'.repeat(a.stars)}{'☆'.repeat(5-a.stars)}</span>}</div></div><div className="text-right"><span className="text-sm text-stone-600">{a.d}</span><span className="block text-xs text-stone-400">{a.ni} night{a.ni>1?'s':''}</span></div></div><p className="text-sm text-stone-600 mb-2">{a.ds}</p>{a.ph&&<a href={`tel:${a.ph.replace(/\s/g,'')}`} className="text-xs text-stone-500 mb-1 flex items-center gap-1 hover:opacity-70">📞 {a.ph}</a>}{a.ad&&<a href={`https://maps.google.com/search/${encodeURIComponent(a.ad)}`} target="_blank" rel="noopener noreferrer" className="text-xs flex items-center gap-1 hover:opacity-70 mb-3" style={{color:B.dg}}>📍 {a.ad}</a>}{a.g&&<Gal imgs={G[a.g]} name={a.n}/>}<div className="mt-4 pt-4 border-t border-stone-200"><div className="flex items-center gap-2 mb-2"><Ic.Bd c="w-4 h-4" style={{color:B.dg}}/><h4 className="text-sm font-medium text-stone-700">Room Category</h4></div><p className="text-sm text-stone-800 font-medium">{a.dt}</p><p className="text-xs text-stone-400 mt-1 italic">Room photos available upon request</p></div></div>))}</div>}
+          {tab==='fl'&&<div className="max-w-2xl mx-auto space-y-6">{[{d:D.flights.arr1,lbl:'Arrival 1 (Jakel)',bg:B.dg,rot:'-45deg'},{d:D.flights.arr2,lbl:'Arrival 2 (Mollet)',bg:B.g,rot:'-45deg'}].map((f,i)=>(<div key={i} className="bg-stone-50 rounded-xl p-5 border border-stone-200" style={dark?{background:'#22223a',borderColor:'#333'}:{}}><div className="flex items-center gap-3 mb-4"><div className="w-10 h-10 rounded-full flex items-center justify-center" style={{backgroundColor:f.bg}}><Ic.Pl c="w-5 h-5 text-white" s={{transform:`rotate(${f.rot})`}}/></div><div><h3 className="font-medium text-stone-800">{f.lbl}</h3><p className="text-sm text-stone-500">{f.d.date}</p></div></div><div className="grid grid-cols-3 gap-4 text-sm"><div><span className="text-stone-400 block">Time</span><span className="font-medium">{f.d.time}</span></div><div><span className="text-stone-400 block">Airport</span><span className="font-medium">{f.d.port}</span></div><div><span className="text-stone-400 block">Flight</span><span className="font-medium">{f.d.flight}</span></div></div></div>))}</div>}
+        </section>
+        {/* MAP */}
+        <section ref={el=>refs.current['map']=el} className="min-h-screen px-6 py-20 bg-stone-50" style={dark?{background:'#1a1a2e'}:{}}>
+          <h2 className="font-serif text-3xl text-center mb-3 italic" style={{color:B.dg}}>Your Journey</h2>
+          <p className="text-center text-stone-500 mb-8">Paris → Cognac → Bordeaux → Arcachon → Biarritz</p>
+          <div className="max-w-3xl mx-auto"><TripMap locs={D.locs} fullscreen={fullscreenMap} onToggleFs={()=>setFullscreenMap(!fullscreenMap)} onSelect={()=>{}}/>{!fullscreenMap&&<div className="mt-8 bg-white rounded-xl p-5 shadow-sm" style={dark?{background:'#22223a'}:{}}><h3 className="text-sm font-medium text-stone-700 mb-4">Accommodations</h3><div className="space-y-3">{D.acc.map((a,i)=>(<div key={i} className="flex items-start gap-3 p-3 rounded-lg hover:bg-stone-50"><span className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-semibold shrink-0" style={{background:B.dg}}>{i+1}</span><div className="flex-1 min-w-0"><div className="flex items-center gap-2"><h4 className="font-medium text-stone-800 text-sm">{a.n}</h4>{a.stars&&<span className="text-xs">{'★'.repeat(a.stars)}{'☆'.repeat(5-a.stars)}</span>}</div><p className="text-xs text-stone-500">{a.l} • {a.d} • {a.dt}</p>{a.ad&&<a href={`https://maps.google.com/search/${encodeURIComponent(a.ad)}`} target="_blank" rel="noopener noreferrer" className="text-xs flex items-center gap-1 hover:opacity-70 mt-0.5" style={{color:B.dg}}>📍 {a.ad}</a>}{a.ph&&<a href={`tel:${a.ph.replace(/\s/g,'')}`} className="text-xs text-stone-500 flex items-center gap-1 hover:opacity-70 mt-0.5">📞 {a.ph}</a>}</div></div>))}</div></div>}</div>
+        </section>
+        {/* ESSENTIALS */}
+        <section ref={el=>refs.current['ess']=el} className="min-h-screen px-6 py-20 bg-white" style={dark?{background:'#1a1a2e'}:{}}>
+          <h2 className="font-serif text-3xl text-center mb-3 italic" style={{color:B.dg}}>Travel Essentials</h2>
+          <p className="text-center text-stone-500 mb-8">Important information for your trip</p>
+          <div className="max-w-2xl mx-auto space-y-6">
+            <div className="bg-stone-50 rounded-xl p-6 border border-stone-200" style={dark?{background:'#22223a',borderColor:'#333'}:{}}><h3 className="font-medium text-stone-800 mb-3">Bienvenue en France !</h3><p className="text-stone-600 leading-relaxed text-sm whitespace-pre-line">{D.intro}</p></div>
+            <div className="bg-stone-50 rounded-xl p-6 border border-stone-200" style={dark?{background:'#22223a',borderColor:'#333'}:{}}><h3 className="font-medium text-stone-800 mb-3">📞 How to Contact Us</h3><p className="text-stone-600 leading-relaxed text-sm whitespace-pre-line">{D.contactInfo}</p></div>
+            <div className="bg-stone-50 rounded-xl p-6 border border-stone-200" style={dark?{background:'#22223a',borderColor:'#333'}:{}}><h3 className="font-medium text-stone-800 mb-3">🎫 Tickets & Logistics</h3><p className="text-stone-600 leading-relaxed text-sm">{D.ticketInfo}</p></div>
+            <div className="bg-stone-50 rounded-xl p-6 border border-stone-200" style={dark?{background:'#22223a',borderColor:'#333'}:{}}>
+              <h3 className="font-medium text-stone-800 mb-3">💱 Currency Converter</h3>
+              <div className="flex items-center gap-3">
+                <div className="flex-1"><label className="text-xs text-stone-500 block mb-1">USD ($)</label><input type="number" value={usdAmount} onChange={e=>setUsdAmount(Number(e.target.value))} className="w-full px-3 py-2 rounded-lg border border-stone-300 text-lg font-medium currency-input" style={dark?{background:'#2a2a3e',borderColor:'#444',color:'#e0e0e0'}:{}}/></div>
+                <span className="text-stone-400 text-xl mt-4">→</span>
+                <div className="flex-1"><label className="text-xs text-stone-500 block mb-1">EUR (€)</label><div className="w-full px-3 py-2 rounded-lg border border-stone-200 text-lg font-medium" style={dark?{background:'#2a2a3e',borderColor:'#444'}:{}}>€{Math.round(usdAmount*eurRate).toLocaleString()}</div></div>
+              </div>
+              <p className="text-xs text-stone-400 mt-2 text-center">Approx. rate: $1 USD ≈ €0.92. Check xe.com for live rates.</p>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              {[['💶','Currency','Euro (€)'],['🗣️','Language','French'],['🔌','Voltage','230V, Type C/E'],['🤝','Tipping','Appreciated, not mandatory'],['🇫🇷','Greeting','Bonjour!'],['🍽️','Dinner','From 6:30 PM']].map(([ic,lb,vl],i)=>(
+                <div key={i} className="bg-stone-50 rounded-xl p-4 border border-stone-200 text-center" style={dark?{background:'#22223a',borderColor:'#333'}:{}}><span className="text-2xl block mb-2">{ic}</span><p className="text-xs text-stone-500">{lb}</p><p className="font-medium text-stone-800 text-sm">{vl}</p></div>
+              ))}
+            </div>
+          </div>
+        </section>
+        {/* PACKING / PHRASES / TRANSIT */}
+        <section className="px-6 py-12 bg-stone-50" style={dark?{background:'#1a1a2e'}:{}}>
+          <div className="max-w-2xl mx-auto space-y-3">
+            <div ref={el=>refs.current['packing']=el} className="bg-white rounded-2xl border border-stone-200 overflow-hidden" style={dark?{background:'#22223a',borderColor:'#333'}:{}}>
+              <button onClick={()=>setExp(p=>({...p,sec_packing:!p.sec_packing}))} className="w-full px-6 py-5 flex items-center justify-between hover:bg-stone-50 transition-colors">
+                <div className="flex items-center gap-3"><span className="text-2xl">🧳</span><div className="text-left"><h3 className="font-serif text-xl italic" style={{color:B.dg}}>Packing Checklist</h3><p className="text-xs text-stone-500 mt-0.5">{Object.values(checked).filter(Boolean).length} / {PACKING.reduce((s,c)=>s+c.items.length,0)} packed</p></div></div>
+                <Ic.ChD c={`w-5 h-5 text-stone-400 transition-transform ${exp.sec_packing?'rotate-180':''}`}/>
+              </button>
+              {exp.sec_packing&&<div className="px-6 pb-6 border-t border-stone-100 pt-4 space-y-4">
+                {PACKING.map((cat,ci)=>{const catChecked=cat.items.filter((_,ii)=>checked[`${ci}-${ii}`]).length;return(
+                  <div key={ci} className="bg-stone-50 rounded-xl border border-stone-100 overflow-hidden" style={dark?{background:'#2a2a3e',borderColor:'#333'}:{}}>
+                    <div className="px-4 py-2.5 border-b border-stone-100 flex items-center justify-between"><h4 className="font-medium text-stone-800 text-sm">{cat.cat}</h4><span className="text-xs px-2 py-0.5 rounded-full" style={{backgroundColor:catChecked===cat.items.length?'#D1FAE5':dark?'#2a2a3e':'#f5f5f4',color:catChecked===cat.items.length?'#065F46':'#999'}}>{catChecked}/{cat.items.length}</span></div>
+                    <div className="divide-y divide-stone-50">{cat.items.map((item,ii)=>{const k=`${ci}-${ii}`;const done=checked[k];return(
+                      <button key={ii} onClick={()=>togglePack(ci,ii)} className={`w-full px-4 py-2.5 text-left flex items-center gap-3 hover:bg-stone-50 transition-colors ${done?'opacity-60':''}`}>
+                        <div className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 transition-colors ${done?'border-green-500 bg-green-500':'border-stone-300'}`}>{done&&<Ic.Ck c="w-3 h-3 text-white"/>}</div>
+                        <span className={`text-sm ${done?'line-through text-stone-400':'text-stone-700'}`}>{item}</span>
+                      </button>);})}</div>
+                  </div>);})}
+              </div>}
+            </div>
+            <div ref={el=>refs.current['phrases']=el} className="bg-white rounded-2xl border border-stone-200 overflow-hidden" style={dark?{background:'#22223a',borderColor:'#333'}:{}}>
+              <button onClick={()=>setExp(p=>({...p,sec_phrases:!p.sec_phrases}))} className="w-full px-6 py-5 flex items-center justify-between hover:bg-stone-50 transition-colors">
+                <div className="flex items-center gap-3"><span className="text-2xl">🗣️</span><div className="text-left"><h3 className="font-serif text-xl italic" style={{color:B.dg}}>Key French Phrases</h3><p className="text-xs text-stone-500 mt-0.5">{PHRASES.length} essential phrases with pronunciation</p></div></div>
+                <Ic.ChD c={`w-5 h-5 text-stone-400 transition-transform ${exp.sec_phrases?'rotate-180':''}`}/>
+              </button>
+              {exp.sec_phrases&&<div className="px-6 pb-6 border-t border-stone-100 pt-4">
+                <div className="flex justify-center gap-2 mb-4 flex-wrap">{[{id:'all',l:'All'},{id:'basics',l:'Basics'},{id:'useful',l:'Useful'},{id:'dining',l:'Dining'}].map(f=>(<button key={f.id} onClick={()=>setPhraseFilter(f.id)} className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${phraseFilter===f.id?'text-white shadow':'hover:bg-stone-100'}`} style={phraseFilter===f.id?{backgroundColor:B.dg}:{}}>{f.l}</button>))}</div>
+                <div className="grid gap-2">{PHRASES.filter(p=>phraseFilter==='all'||p.cat===phraseFilter).map((p,i)=>(
+                  <div key={i} className="bg-stone-50 rounded-lg p-3 border border-stone-100 flex items-center gap-3" style={dark?{background:'#2a2a3e',borderColor:'#333'}:{}}>
+                    <div className="flex-1"><p className="font-medium text-stone-800 text-sm">{p.en}</p><p className="text-xs text-stone-400 italic">{p.rm}</p></div>
+                    <p className="text-lg shrink-0" style={{color:B.dg}}>{p.fr}</p>
+                  </div>
+                ))}</div>
+              </div>}
+            </div>
+            <div ref={el=>refs.current['transit']=el} className="bg-white rounded-2xl border border-stone-200 overflow-hidden" style={dark?{background:'#22223a',borderColor:'#333'}:{}}>
+              <button onClick={()=>setExp(p=>({...p,sec_transit:!p.sec_transit}))} className="w-full px-6 py-5 flex items-center justify-between hover:bg-stone-50 transition-colors">
+                <div className="flex items-center gap-3"><span className="text-2xl">🚗</span><div className="text-left"><h3 className="font-serif text-xl italic" style={{color:B.dg}}>Getting Around France</h3><p className="text-xs text-stone-500 mt-0.5">{TRANSIT.length} tips for seamless travel</p></div></div>
+                <Ic.ChD c={`w-5 h-5 text-stone-400 transition-transform ${exp.sec_transit?'rotate-180':''}`}/>
+              </button>
+              {exp.sec_transit&&<div className="px-6 pb-6 border-t border-stone-100 pt-4 space-y-3">
+                {TRANSIT.map((s,i)=>(
+                  <div key={i} className="bg-stone-50 rounded-lg p-4 border border-stone-100 flex items-start gap-3" style={dark?{background:'#2a2a3e',borderColor:'#333'}:{}}>
+                    <div className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs shrink-0" style={{backgroundColor:B.dg}}>{s.step}</div>
+                    <div className="flex-1"><div className="flex items-center gap-2 mb-1"><span>{s.icon}</span><h4 className="font-medium text-stone-800 text-sm">{s.title}</h4></div><p className="text-xs text-stone-600 leading-relaxed">{s.desc}</p></div>
+                  </div>
+                ))}
+              </div>}
+            </div>
+          </div>
+        </section>
+        {/* DAILY ITINERARY */}
+        {D.itin.map((day,di)=>(
+          <section key={day.dy} ref={el=>refs.current[`d${day.dy}`]=el} className={`min-h-screen px-6 py-20 ${di%2===0?'bg-white':'bg-stone-50'}`} style={dark?{background:'#1a1a2e'}:{}}>
+            <div className="lg:hidden -mx-6 -mt-20 mb-6 h-48 bg-cover bg-center relative" style={{backgroundImage:`url(${H[day.hk]})`}}><div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent"/></div>
+            <div className="max-w-2xl mx-auto"><div className="text-center mb-10"><p className="text-xs text-stone-400 tracking-widest uppercase mb-1">{day.dt}</p><h2 className="font-serif text-3xl italic" style={{color:B.dg}}>Day {day.dy}</h2><p className="mt-1" style={{color:B.dg}}>{day.loc}</p>{tripStatus.status==='during'&&tripStatus.day===day.dy&&<span className="inline-block mt-2 px-3 py-1 rounded-full text-xs font-bold text-white" style={{backgroundColor:B.dg}}>📍 TODAY</span>}</div>
+              <div className="space-y-4">{day.act.map((a,ai)=>{const isExp=exp[`${di}-${ai}`];const nk=`${di}-${ai}`;const isExperience=a.t==='act';const accInfo=a.t==='acc'&&a.g?D.acc.find(x=>x.g===a.g):null;return(
+                <div key={ai} className={`rounded-xl border transition-all ${isExperience?'bg-gradient-to-br from-white to-stone-50 shadow-sm':a.nt?'bg-amber-50':'bg-white'}`} style={isExperience?{borderColor:B.dg,borderWidth:'1.5px'}:a.nt?{borderColor:'#F59E0B'}:{borderColor:'#e7e5e4'}}>
+                  <div className={`p-4 ${a.t!=='info'?'cursor-pointer':''}`} onClick={()=>a.t!=='info'&&tog(di,ai)}>
+                    <div className="flex items-start gap-3">
+                      <div className={`p-2 rounded-lg shrink-0`} style={{backgroundColor:isExperience?B.dg:a.nt?'#FEF3C7':'#f5f5f4'}}>{getIc(a.i,isExperience?'text-white':'',{color:isExperience?'#fff':a.nt?'#D97706':B.dg})}</div>
+                      <div className="flex-1 min-w-0"><div className="flex items-start justify-between gap-2"><div>{isExperience&&<span className="inline-block text-xs font-medium tracking-wide uppercase px-2 py-0.5 rounded mb-1.5" style={{backgroundColor:B.g,color:B.dk}}>Experience</span>}<h3 className={`font-medium text-stone-800 ${isExperience?'text-base':'text-sm'}`}>{a.ti}</h3>{a.tm&&<p className="text-sm mt-0.5" style={{color:B.dg}}>{a.tm}</p>}{a.loc&&<div className="flex items-center gap-2 mt-0.5"><p className="text-sm text-stone-500">{a.loc}</p>{accInfo&&accInfo.stars&&<span className="text-xs">{'★'.repeat(accInfo.stars)}{'☆'.repeat(5-accInfo.stars)}</span>}</div>}</div>{a.t!=='info'&&<Ic.ChR c={`w-5 h-5 text-stone-400 transition-transform ${isExp?'rotate-90':''}`}/>}</div>{a.nt&&<p className="text-sm mt-2 italic" style={{color:'#92700C'}}>{a.ds}</p>}{a.t==='acc'&&a.ad&&<a href={`https://maps.google.com/search/${encodeURIComponent(a.ad)}`} target="_blank" rel="noopener noreferrer" className="text-sm mt-1 flex items-center gap-1 hover:opacity-70" style={{color:B.dg}}>📍 <span className="truncate">{a.ad}</span></a>}</div>
+                    </div>
+                  </div>
+                  {isExp&&a.t!=='info'&&<div className="px-4 pb-4 border-t border-stone-100 pt-3"><div className="ml-11 space-y-3 text-sm">{isExperience&&a.eds&&<p className="text-stone-600 leading-relaxed">{a.eds}</p>}{!isExperience&&a.ds&&<p className="text-stone-600">{a.ds}</p>}{a.dur&&<div className="flex items-center gap-2 text-stone-500"><Ic.Cl c="w-4 h-4"/>Duration: {a.dur}</div>}{accInfo&&<div className="bg-stone-50 rounded-lg p-3 mt-2"><p className="text-stone-600 text-sm">{accInfo.ds}</p></div>}{a.g&&G[a.g]&&<Gal imgs={G[a.g]} name={isExperience?a.ti:a.loc} isExp={isExperience}/>}{accInfo&&<div className="mt-3 pt-3 border-t border-stone-200"><div className="flex items-center gap-2 mb-1"><Ic.Bd c="w-4 h-4" style={{color:B.dg}}/><span className="text-xs font-medium text-stone-700">Room Category</span></div><p className="text-sm text-stone-800 font-medium">{accInfo.dt}</p><p className="text-xs text-stone-400 mt-0.5 italic">Room photos available upon request</p></div>}</div>{edit&&<div className="ml-11 mt-3 border-2 border-dashed rounded-lg p-3" style={{borderColor:B.dk}}><label className="text-xs font-medium block mb-2" style={{color:B.dk}}>Ops Note</label><textarea value={notes[nk]||''} onChange={e=>setNotes(p=>({...p,[nk]:e.target.value.slice(0,200)}))} placeholder="Add note..." className="w-full text-sm border border-stone-200 rounded-lg p-2 resize-none focus:outline-none" rows={2}/></div>}{!edit&&notes[nk]&&<div className="ml-11 mt-3 bg-amber-50 border-l-4 border-amber-400 rounded-r-lg px-4 py-2.5"><span className="text-sm text-amber-800"><strong>Note:</strong> {notes[nk]}</span></div>}</div>}
+                </div>);})}</div>
+            </div>
+          </section>
+        ))}
+        {/* DINING */}
+        <section ref={el=>refs.current['dining']=el} className="min-h-screen px-6 py-20" style={{background:dark?'#1a1a2e':'linear-gradient(180deg,#F5F0EB,#EDE7DF)'}}>
+          <h2 className="font-serif text-3xl text-center mb-3 italic" style={{color:B.dg}}>Dining Recommendations</h2>
+          <p className="text-center text-stone-500 mb-10">Curated picks near your accommodations</p>
+          <div className="max-w-3xl mx-auto space-y-8">{DINING.map((area,ai)=>(
+            <div key={ai}><h3 className="text-lg font-medium mb-4 flex items-center gap-2" style={{color:B.dg}}><span className="text-2xl">{area.icon}</span>{area.area}</h3>
+              <div className="grid gap-3">{area.recs.map((r,ri)=>(
+                <div key={ri} className="bg-white rounded-xl p-4 border border-stone-200 hover:shadow-sm transition-shadow" style={dark?{background:'#22223a',borderColor:'#333'}:{}}>
+                  <div className="flex items-start justify-between gap-3"><div className="flex-1"><h4 className="font-medium text-stone-800">{r.name}</h4><div className="flex items-center gap-2 mt-1"><span className="text-xs px-2 py-0.5 rounded-full bg-stone-100" style={dark?{background:'#2a2a3e'}:{}}>{r.type}</span><span className="text-xs font-medium" style={{color:B.dg}}>{r.price}</span></div><p className="text-sm text-stone-600 mt-2">{r.desc}</p></div>{r.maps&&<a href={r.maps} target="_blank" rel="noopener noreferrer" className="text-xs shrink-0 px-3 py-1.5 rounded-lg border border-stone-200 hover:bg-stone-50 flex items-center gap-1" style={{color:B.dg}}>📍 Map</a>}</div>
+                </div>
+              ))}</div>
+            </div>
+          ))}</div>
+        </section>
+        {/* EMERGENCY */}
+        <section ref={el=>refs.current['emg']=el} className="min-h-screen px-6 py-20" style={{backgroundColor:'#3A2820'}}>
+          <h2 className="font-serif text-3xl text-white text-center mb-10 italic">Emergency Contacts</h2>
+          <div className="max-w-2xl mx-auto"><div className="bg-white/15 backdrop-blur-sm rounded-xl p-6 space-y-5">
+            <div><h3 className="text-sm tracking-wide uppercase mb-3" style={{color:B.g}}>Your Trip Contact</h3><p className="text-white mb-2">{D.em.tm}</p><a href={`tel:${D.em.tmPh.replace(/\s/g,'')}`} className="inline-flex items-center gap-2 bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg text-white"><Ic.Ph c="w-5 h-5"/>{D.em.tmPh}</a></div>
+            <div className="border-t border-white/30 pt-5"><a href={`https://wa.me/${D.em.wa}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg text-white"><Ic.Wa c="w-5 h-5"/>WhatsApp</a></div>
+            <div className="border-t border-white/30 pt-5"><h3 className="text-sm tracking-wide uppercase mb-3 text-stone-300">Emergency Numbers (France)</h3><div className="space-y-2 text-white/80 text-sm"><p>Firefighters: <a href="tel:18" style={{color:B.g}}>18</a></p><p>Health Emergency (SAMU): <a href="tel:15" style={{color:B.g}}>15</a></p><p>Police: <a href="tel:17" style={{color:B.g}}>17</a></p></div></div>
+          </div></div>
+        </section>
+        {/* PLACES */}
+        <section ref={el=>refs.current['places']=el} className="min-h-screen px-6 py-20" style={{background:dark?'#1a1a2e':'linear-gradient(180deg,#F5F2ED,#E8E4DD)'}}>
+          <h2 className="font-serif text-3xl text-center mb-3 italic" style={{color:B.dg}}>The Places You'll Go</h2>
+          <p className="text-center text-stone-500 mb-10">Discover the magic of France</p>
+          <div className="max-w-3xl mx-auto space-y-4">{D.places.map((place,i)=>{const isOpen=placesOpen[place.id];return(
+            <div key={i} className="bg-white rounded-2xl shadow-sm border border-stone-200 overflow-hidden" style={dark?{background:'#22223a',borderColor:'#333'}:{}}>
+              <button onClick={()=>togPlace(place.id)} className="w-full text-left"><div className="flex items-center gap-4 p-4"><span className="w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-semibold shrink-0" style={{background:B.dg}}>{i+1}</span><div className="flex-1"><h3 className="font-serif text-xl italic" style={{color:B.dg}}>Experience {place.name}</h3></div><Ic.ChD c={`w-5 h-5 text-stone-400 shrink-0 transition-transform ${isOpen?'rotate-180':''}`}/></div></button>
+              {isOpen&&<div className="px-4 pb-4"><div className="w-full h-48 md:h-64 rounded-xl overflow-hidden mb-4"><img src={place.img} alt={place.name} className="w-full h-full object-cover"/></div><p className="text-stone-600">{place.desc}</p></div>}
+            </div>);})}</div>
+        </section>
+        {/* FAQ */}
+        <section ref={el=>refs.current['faq']=el} className="min-h-screen px-6 py-20" style={{background:dark?'#1a1a2e':'linear-gradient(180deg,#FDF8F3,#F5EDE4)'}}>
+          <h2 className="font-serif text-3xl text-center mb-3 italic" style={{color:B.dg}}>Destination FAQ</h2>
+          <p className="text-center text-stone-500 mb-10">Everything about traveling in France</p>
+          <div className="max-w-3xl mx-auto space-y-6">{D.faq.map((cat,ci)=>(
+            <div key={ci} className="bg-white rounded-2xl shadow-sm border border-stone-200 overflow-hidden" style={dark?{background:'#22223a',borderColor:'#333'}:{}}>
+              <div className="px-6 py-4 border-b border-stone-100" style={{background:dark?'#2a2a3e':'linear-gradient(90deg,#FAF5F0,#FFF)'}}><h3 className="font-medium text-lg flex items-center gap-3" style={{color:B.dg}}><span className="text-2xl">{cat.icon}</span>{cat.cat}</h3></div>
+              <div className="divide-y divide-stone-100">{cat.items.map((item,qi)=>{const isOpen=faqOpen[`${ci}-${qi}`];return(<div key={qi}><button onClick={()=>togFaq(ci,qi)} className="w-full px-6 py-4 text-left flex items-start justify-between gap-4 hover:bg-stone-50"><span className="font-medium text-stone-700">{item.q}</span><Ic.ChD c={`w-5 h-5 text-stone-400 shrink-0 transition-transform ${isOpen?'rotate-180':''}`}/></button>{isOpen&&<div className="px-6 pb-4 -mt-2"><p className="text-stone-600 text-sm leading-relaxed pl-4 border-l-2" style={{borderColor:B.dg}}>{item.a}</p></div>}</div>);})}</div>
+            </div>
+          ))}</div>
+        </section>
+        {/* DOCUMENT WALLET */}
+        <section ref={el=>refs.current['docs']=el} className="min-h-screen px-6 py-20 bg-stone-50" style={dark?{background:'#1a1a2e'}:{}}>
+          <h2 className="font-serif text-3xl text-center mb-3 italic" style={{color:B.dg}}>Document Wallet</h2>
+          <p className="text-center text-stone-500 mb-8">Your travel documents at a glance</p>
+          <div className="max-w-2xl mx-auto space-y-3">{DOCS.map((doc,i)=>{
+            const icons={flight:'✈️',hotel:'🏨',ticket:'🎫',insurance:'🛡️',id:'🛂'};
+            const statusColors={confirmed:{bg:'#D1FAE5',text:'#065F46',label:'Confirmed'},upload:{bg:'#f5f5f4',text:'#78716c',label:'Upload'}};
+            const st=statusColors[doc.status];
+            return(<div key={i} className="bg-white rounded-xl p-4 border border-stone-200 flex items-center gap-4" style={dark?{background:'#22223a',borderColor:'#333'}:{}}>
+              <span className="text-2xl">{icons[doc.type]}</span>
+              <div className="flex-1 min-w-0"><h4 className="font-medium text-stone-800 text-sm truncate">{doc.name}</h4></div>
+              <span className="text-xs font-medium px-2.5 py-1 rounded-full shrink-0" style={{backgroundColor:st.bg,color:st.text}}>{st.label}</span>
+            </div>);
+          })}</div>
+          <div className="max-w-2xl mx-auto mt-6 text-center"><p className="text-sm text-stone-500">Need to upload documents? Share them via WhatsApp with your Essentially French contact.</p></div>
+        </section>
+        {/* FOOTER */}
+        <footer className="py-12 px-6 text-center" style={{backgroundColor:B.dg}}>
+          <img src={LOGO} alt="Essentially French" className="h-16 mx-auto mb-4 brightness-0 invert" onError={(e)=>{e.target.style.display='none';}}/>
+          <p className="text-white text-lg font-serif italic mb-2">Share Your Experience</p>
+          <p className="text-white/80 text-sm mb-4">We love seeing France from your perspective!<br/>Tag us in your photos and social media.</p>
+          <p className="text-white/80 text-sm mt-6">© 2025 Essentially French</p>
+          <p className="text-white/60 text-xs mt-1">essentiallyfrench.com | bonjour@essentiallyfrench.com</p>
+        </footer>
+      </div></div>
+      {showWaPanel&&<WhatsAppPanel onClose={()=>setShowWaPanel(false)} wa={D.em.wa} name={D.name}/>}
+      {fullscreenMap&&<TripMap locs={D.locs} fullscreen={true} onToggleFs={()=>setFullscreenMap(false)} onSelect={()=>{}}/>}
+      <button onClick={()=>setShowWaPanel(!showWaPanel)} className={`fixed bottom-5 right-5 text-white px-5 py-2.5 rounded-full shadow-lg hover:scale-105 transition-all flex items-center gap-2 z-30 no-print ${showWaPanel?'':'pulse-ring'}`} style={{backgroundColor:'#25D366'}}><Ic.Wa c="w-5 h-5"/><span className="font-medium">{showWaPanel?'Close':'Chat'}</span></button>
+    </div>
+  );
+}
+ReactDOM.render(<App/>,document.getElementById('root'));
+</script>
+</body>
+</html>
