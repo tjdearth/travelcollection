@@ -1,0 +1,108 @@
+.footer {
+  background: #111;
+  padding: 5rem 5% 2rem;
+  color: rgba(255,255,255,0.6);
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 2fr 1.2fr;
+  gap: 3rem;
+  max-width: 1300px;
+  margin: 0 auto 3rem;
+}
+.footer-brand img {
+  height: 50px;
+  margin-bottom: 1.2rem;
+  filter: brightness(0) invert(1);
+}
+.footer-brand p {
+  font-size: 0.88rem;
+  line-height: 1.7;
+  font-weight: 300;
+}
+.footer h4 {
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 1.2rem;
+}
+.footer-links { list-style: none; }
+.footer-links li { margin-bottom: 0.6rem; }
+.footer-links a {
+  color: rgba(255,255,255,0.6);
+  text-decoration: none;
+  font-size: 0.88rem;
+  font-weight: 300;
+  transition: color 0.3s;
+}
+.footer-links a:hover { color: var(--slate); }
+.footer-dest-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.4rem 1.5rem;
+}
+.footer-dest-grid a {
+  color: rgba(255,255,255,0.6);
+  text-decoration: none;
+  font-size: 0.82rem;
+  font-weight: 300;
+  transition: color 0.3s;
+}
+.footer-dest-grid a:hover { color: var(--slate); }
+.footer-newsletter p {
+  font-size: 0.88rem;
+  font-weight: 300;
+  margin-bottom: 1rem;
+  line-height: 1.7;
+}
+.footer-newsletter-form {
+  display: flex;
+  gap: 0;
+}
+.footer-newsletter-form input {
+  flex: 1;
+  padding: 0.7rem 1rem;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-right: none;
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  border-radius: 0;
+  outline: none;
+}
+.footer-newsletter-form input::placeholder { color: rgba(255,255,255,0.35); }
+.footer-newsletter-form button {
+  padding: 0.7rem 1.3rem;
+  background: var(--slate);
+  color: #fff;
+  border: none;
+  border-radius: 0;
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+.footer-newsletter-form button:hover { background: #6e9ab3; }
+.footer-bottom {
+  border-top: 1px solid rgba(255,255,255,0.08);
+  padding-top: 2rem;
+  text-align: center;
+  font-size: 0.78rem;
+  font-weight: 300;
+  max-width: 1300px;
+  margin: 0 auto;
+}
+
+@media (max-width: 1024px) {
+  .footer-grid { grid-template-columns: 1fr 1fr; gap: 2rem; }
+}
+@media (max-width: 480px) {
+  .footer-grid { grid-template-columns: 1fr; }
+}

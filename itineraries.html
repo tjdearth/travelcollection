@@ -1,0 +1,2350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sample Itineraries | Travel Collection Advisor Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Display:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --navy: #304256;
+  --slate: #5b86a0;
+  --light: #eeeeee;
+  --base: #f9f9f9;
+  --white: #ffffff;
+  --text: #2a2a2a;
+  --text-sec: #6a6a6a;
+  --dark-deep: #1f3044;
+  --font-display: 'Noto Serif Display', Georgia, serif;
+  --font-body: 'Manrope', 'Segoe UI', sans-serif;
+  --shadow: 0 20px 80px rgba(48, 66, 86, 0.06);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  color: var(--text);
+  background: var(--base);
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+/* ============ NAVIGATION ============ */
+.nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  padding: 0 3rem;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  transition: all 0.4s ease;
+}
+.nav-logo { display: flex; align-items: center; text-decoration: none; }
+.nav-logo img {
+  height: 55px;
+  width: auto;
+  transition: filter 0.4s ease;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  list-style: none;
+}
+.nav-links > li { position: relative; }
+.nav-links > li > a {
+  color: var(--navy);
+  text-decoration: none;
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: color 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.5rem 0;
+}
+.nav-links > li > a:hover { color: var(--slate); }
+
+.nav-arrow {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 4px solid currentColor;
+  transition: transform 0.3s;
+}
+
+.nav-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--white);
+  min-width: 220px;
+  padding: 1rem 0;
+  box-shadow: var(--shadow);
+  border-radius: 0;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s, visibility 0.25s;
+  z-index: 1001;
+}
+.nav-dropdown.wide {
+  min-width: 500px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding: 1.5rem;
+  gap: 0;
+}
+.nav-dropdown .dropdown-group-title {
+  font-family: var(--font-body);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--slate);
+  padding: 0.5rem 1.5rem 0.3rem;
+  pointer-events: none;
+}
+.nav-dropdown.wide .dropdown-group-title {
+  padding: 0.5rem 0.75rem 0.3rem;
+}
+.nav-dropdown a {
+  display: block;
+  padding: 0.4rem 1.5rem;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: var(--text);
+  text-decoration: none;
+  transition: color 0.2s;
+  white-space: nowrap;
+}
+.nav-dropdown.wide a {
+  padding: 0.4rem 0.75rem;
+}
+.nav-dropdown a:hover { color: var(--slate); }
+
+.nav-links > li:hover .nav-dropdown,
+.nav-links > li.dropdown-open .nav-dropdown {
+  opacity: 1;
+  visibility: visible;
+}
+
+.nav-links > li > a.nav-cta {
+  background: var(--slate);
+  border: none;
+  color: #fff !important;
+  padding: 0.6rem 1.8rem !important;
+  border-radius: 0;
+  font-family: var(--font-body);
+  font-size: 0.75rem !important;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-decoration: none;
+  display: inline-block;
+}
+.nav.scrolled .nav-links > li > a.nav-cta { background: var(--slate); color: #fff !important; }
+.nav-links > li > a.nav-cta:hover { background: var(--navy); color: #fff !important; }
+
+.nav-toggle {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 30px;
+  height: 24px;
+  position: relative;
+}
+.nav-toggle span {
+  display: block;
+  width: 100%;
+  height: 2px;
+  background: var(--navy);
+  position: absolute;
+  left: 0;
+  transition: all 0.3s;
+}
+.nav-toggle span:nth-child(1) { top: 0; }
+.nav-toggle span:nth-child(2) { top: 11px; }
+.nav-toggle span:nth-child(3) { top: 22px; }
+.nav-toggle.active span:nth-child(1) { top: 11px; transform: rotate(45deg); }
+.nav-toggle.active span:nth-child(2) { opacity: 0; }
+.nav-toggle.active span:nth-child(3) { top: 11px; transform: rotate(-45deg); }
+
+/* Mobile drawer */
+.mobile-drawer {
+  position: fixed;
+  top: 0; right: -100%; width: 100%;
+  height: 100vh;
+  background: var(--white);
+  z-index: 999;
+  padding: 100px 2rem 2rem;
+  transition: right 0.4s ease;
+  overflow-y: auto;
+}
+.mobile-drawer.open { right: 0; }
+.mobile-drawer .mobile-link {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--navy);
+  text-decoration: none;
+  padding: 0.8rem 0;
+  border-bottom: 1px solid var(--light);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.mobile-drawer .mobile-link:hover { color: var(--slate); }
+.mobile-drawer .mobile-sub { padding-left: 1.2rem; }
+.mobile-drawer .mobile-sub a {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  font-weight: 400;
+  color: var(--text-sec);
+  text-decoration: none;
+  padding: 0.45rem 0;
+  text-transform: none;
+  letter-spacing: 0;
+}
+.mobile-drawer .mobile-sub a:hover { color: var(--slate); }
+.mobile-drawer .mobile-sub-title {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--slate);
+  padding: 0.5rem 0 0.2rem;
+}
+.mobile-drawer .mobile-cta {
+  display: block;
+  text-align: center;
+  margin-top: 1.5rem;
+  background: var(--navy);
+  color: #fff;
+  text-decoration: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.mobile-expandable { cursor: pointer; display: flex; align-items: center; justify-content: space-between; }
+.mobile-expandable .mobile-expand-icon { font-size: 1.2rem; transition: transform 0.3s; }
+.mobile-expandable.expanded .mobile-expand-icon { transform: rotate(45deg); }
+.mobile-drawer .mobile-sub { display: none; }
+.mobile-drawer .mobile-sub.open { display: block; }
+
+/* ============ HERO (compact) ============ */
+.hero {
+  position: relative;
+  height: 40vh;
+  min-height: 350px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  overflow: hidden;
+}
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background: url('https://images.unsplash.com/photo-1452421822248-d4c2b47f0c81?w=1920&q=80') center/cover no-repeat;
+}
+.hero-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(48,66,86,0.65) 0%, rgba(31,48,68,0.8) 100%);
+}
+.hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 700px;
+  padding: 0 2rem;
+}
+.hero-label {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.7);
+  margin-bottom: 0.8rem;
+}
+.hero-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-weight: 400;
+  color: #fff;
+  line-height: 1.2;
+  margin-bottom: 1rem;
+}
+.hero-subtitle {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: rgba(255,255,255,0.8);
+  line-height: 1.6;
+  max-width: 550px;
+  margin: 0 auto;
+}
+
+/* ============ BREADCRUMB ============ */
+.breadcrumb {
+  background: var(--white);
+  padding: 0.8rem 5%;
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  color: var(--text-sec);
+}
+.breadcrumb a {
+  color: var(--slate);
+  text-decoration: none;
+  transition: color 0.3s;
+}
+.breadcrumb a:hover { color: var(--navy); }
+.breadcrumb span { margin: 0 0.4rem; }
+
+/* ============ FILTER BAR ============ */
+.filter-bar {
+  position: sticky;
+  top: 80px;
+  z-index: 999;
+  background: var(--white);
+  padding: 1rem 5%;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+}
+.filter-bar-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.filter-group-label {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--slate);
+  min-width: 70px;
+}
+.filter-btn-text {
+  background: none;
+  border: none;
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--text-sec);
+  cursor: pointer;
+  padding: 0.3rem 0.6rem;
+  transition: color 0.3s;
+  position: relative;
+}
+.filter-btn-text:hover { color: var(--navy); }
+.filter-btn-text.active {
+  color: var(--navy);
+  font-weight: 600;
+}
+.filter-btn-text.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0.6rem;
+  right: 0.6rem;
+  height: 2px;
+  background: var(--navy);
+}
+.filter-btn-pill {
+  background: var(--light);
+  border: none;
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--text-sec);
+  cursor: pointer;
+  padding: 0.35rem 0.9rem;
+  border-radius: 0;
+  transition: all 0.3s;
+}
+.filter-btn-pill:hover { background: #ddd; }
+.filter-btn-pill.active {
+  background: var(--navy);
+  color: #fff;
+}
+
+/* ============ ITINERARY GRID ============ */
+.itinerary-section {
+  background: var(--base);
+  padding: 60px 5%;
+}
+.itinerary-section-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.results-count {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: var(--text-sec);
+  margin-bottom: 2rem;
+}
+.itinerary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+}
+
+/* ============ ITINERARY CARD ============ */
+.itin-card-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+.itin-card {
+  background: var(--white);
+  border-radius: 0;
+  overflow: hidden;
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+  cursor: default;
+}
+.itin-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow);
+}
+.itin-card-img {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4/3;
+  overflow: hidden;
+}
+.itin-card-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+.itin-card:hover .itin-card-img img {
+  transform: scale(1.06);
+}
+.itin-card-body {
+  padding: 1.2rem 1.3rem 1.4rem;
+}
+.itin-tags {
+  display: flex;
+  gap: 0.4rem;
+  margin-bottom: 0.6rem;
+  flex-wrap: wrap;
+}
+.itin-tag {
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--slate);
+  background: var(--light);
+  padding: 0.2rem 0.55rem;
+  border-radius: 0;
+}
+.itin-card-title {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 400;
+  color: var(--navy);
+  line-height: 1.3;
+  margin-bottom: 0.3rem;
+}
+.itin-card-styles {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  color: var(--text-sec);
+  margin-bottom: 0.5rem;
+}
+.itin-card-desc {
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  color: var(--text-sec);
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+.itin-card-actions {
+  display: flex;
+  gap: 0.6rem;
+}
+.btn-details {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--navy);
+  background: none;
+  border: 1px solid var(--navy);
+  padding: 0.5rem 1rem;
+  border-radius: 0;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.btn-details:hover { background: var(--navy); color: #fff; }
+.btn-share {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #fff;
+  background: var(--navy);
+  border: 1px solid var(--navy);
+  padding: 0.5rem 1rem;
+  border-radius: 0;
+  cursor: pointer;
+  transition: all 0.3s;
+  position: relative;
+}
+.btn-share:hover { background: var(--slate); border-color: var(--slate); }
+.btn-share .tooltip {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--navy);
+  color: #fff;
+  font-size: 0.72rem;
+  padding: 0.25rem 0.6rem;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+.btn-share .tooltip.show { opacity: 1; }
+
+/* ============ EXPANDED DETAIL ============ */
+.itin-detail {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.5s ease, padding 0.5s ease;
+  background: var(--white);
+}
+.itin-detail.open {
+  max-height: 2000px;
+  padding: 0 1.3rem 1.5rem;
+}
+.itin-detail-inner {
+  padding-top: 1rem;
+  border-top: 1px solid var(--light);
+}
+.day-timeline {
+  position: relative;
+  padding-left: 2rem;
+}
+.day-timeline::before {
+  content: '';
+  position: absolute;
+  left: 5px;
+  top: 8px;
+  bottom: 8px;
+  width: 1px;
+  background: var(--light);
+}
+.day-item {
+  position: relative;
+  padding-bottom: 1rem;
+}
+.day-item:last-child { padding-bottom: 0; }
+.day-item::before {
+  content: '';
+  position: absolute;
+  left: -2rem;
+  top: 6px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--slate);
+  border: 2px solid var(--white);
+  z-index: 1;
+}
+.day-label {
+  font-family: var(--font-body);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--slate);
+  margin-bottom: 0.15rem;
+}
+.day-desc {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: var(--text);
+  line-height: 1.5;
+}
+.day-desc strong {
+  display: block;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--text);
+  margin-bottom: 0.15rem;
+}
+.day-desc span {
+  display: block;
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 0.85rem;
+  color: var(--text-sec);
+  line-height: 1.5;
+}
+.itin-detail-actions {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--light);
+}
+.btn-customize {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #fff;
+  background: var(--navy);
+  border: none;
+  padding: 0.6rem 1.4rem;
+  border-radius: 0;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-decoration: none;
+  display: inline-block;
+}
+.btn-customize:hover { background: var(--slate); }
+.btn-close-detail {
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  color: var(--text-sec);
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-decoration: underline;
+  transition: color 0.3s;
+}
+.btn-close-detail:hover { color: var(--navy); }
+
+/* Card hidden by filter */
+.itin-card-wrapper.hidden { display: none; }
+
+/* Footer styles loaded from components/footer.css */
+
+/* ============ ANIMATIONS & MICRO-ANIMATIONS ============ */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.reveal-stagger > * {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.reveal-stagger.visible > * {
+  opacity: 1;
+  transform: translateY(0);
+}
+.reveal-stagger.visible > *:nth-child(1) { transition-delay: 0s; }
+.reveal-stagger.visible > *:nth-child(2) { transition-delay: 0.08s; }
+.reveal-stagger.visible > *:nth-child(3) { transition-delay: 0.1s; }
+.reveal-stagger.visible > *:nth-child(4) { transition-delay: 0.16s; }
+.reveal-stagger.visible > *:nth-child(5) { transition-delay: 0.22s; }
+.reveal-stagger.visible > *:nth-child(6) { transition-delay: 0.28s; }
+.reveal-stagger.visible > *:nth-child(7) { transition-delay: 0.34s; }
+.reveal-stagger.visible > *:nth-child(8) { transition-delay: 0.40s; }
+.reveal-stagger.visible > *:nth-child(9) { transition-delay: 0.46s; }
+.reveal-stagger.visible > *:nth-child(10) { transition-delay: 0.52s; }
+.reveal-stagger.visible > *:nth-child(11) { transition-delay: 0.58s; }
+.reveal-stagger.visible > *:nth-child(12) { transition-delay: 0.64s; }
+/* Hero entrance */
+.hero-label, .hero-title, .hero-subtitle {
+  animation: fadeSlideUp 1s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.hero-title { animation-delay: 0.15s; }
+.hero-subtitle { animation-delay: 0.3s; }
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+/* Itinerary card hover lift */
+.itin-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.itin-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 48px rgba(0,0,0,0.12);
+}
+
+/* ============ RESPONSIVE ============ */
+@media (max-width: 1024px) {
+  .itinerary-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .nav-toggle { display: block; }
+  .nav { padding: 0 1.5rem; }
+
+  .hero { height: 35vh; min-height: 300px; }
+  .hero-title { font-size: clamp(1.4rem, 5vw, 2rem); }
+
+  .filter-bar {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .filter-group {
+    flex-wrap: nowrap;
+    min-width: max-content;
+  }
+
+  .itinerary-grid { grid-template-columns: 1fr; }
+
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .footer-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 480px) {
+  .itinerary-section { padding: 40px 4%; }
+  .filter-bar { padding: 0.8rem 4%; }
+  .itin-card-body { padding: 1rem; }
+  .itin-card-actions { flex-direction: column; }
+  .itin-card-actions button { width: 100%; }
+}
+
+/* ============ CUSTOMIZE MODAL ============ */
+.cust-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(4px);
+  z-index: 2000;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+.cust-overlay.active { display: flex; }
+.cust-modal {
+  background: var(--white);
+  width: 100%;
+  max-width: 560px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 2.5rem;
+  position: relative;
+}
+.cust-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  font-size: 1.4rem;
+  cursor: pointer;
+  color: var(--text-sec);
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cust-close:hover { color: var(--text); }
+.cust-title {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 400;
+  color: var(--navy);
+  margin-bottom: 0.3rem;
+}
+.cust-itin-info {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: var(--slate);
+  margin-bottom: 0.3rem;
+  font-weight: 500;
+}
+.cust-itin-desc {
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  color: var(--text-sec);
+  line-height: 1.5;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--light);
+}
+.cust-form .cf-group {
+  margin-bottom: 1.2rem;
+}
+.cust-form .cf-group label {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 0.3rem;
+  letter-spacing: 0.02em;
+}
+.cust-form .cf-group input,
+.cust-form .cf-group select,
+.cust-form .cf-group textarea {
+  width: 100%;
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  padding: 0.55rem 0;
+  border: none;
+  border-bottom: 1px solid rgba(48,66,86,0.15);
+  background: transparent;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.3s;
+}
+.cust-form .cf-group input:focus,
+.cust-form .cf-group select:focus,
+.cust-form .cf-group textarea:focus {
+  border-bottom-color: var(--navy);
+}
+.cust-form .cf-group textarea {
+  resize: vertical;
+  min-height: 60px;
+}
+.cust-form .cf-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+.cust-form .cf-interests {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 0.3rem;
+}
+.cust-form .cf-interests label {
+  font-size: 0.82rem;
+  font-weight: 400;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  cursor: pointer;
+}
+.cust-form .cf-interests input {
+  width: auto;
+  border: none;
+  border-bottom: none;
+  padding: 0;
+  accent-color: var(--navy);
+}
+.cust-submit {
+  width: 100%;
+  background: var(--navy);
+  color: #fff;
+  border: none;
+  padding: 0.8rem;
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.3s;
+  margin-top: 0.5rem;
+}
+.cust-submit:hover { background: var(--slate); }
+.cust-success {
+  display: none;
+  text-align: center;
+  padding: 2rem 0;
+}
+.cust-success h3 {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  color: var(--navy);
+  margin-bottom: 0.5rem;
+}
+.cust-success p {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  color: var(--text-sec);
+  line-height: 1.6;
+}
+@media (max-width: 480px) {
+  .cust-modal { padding: 1.5rem; }
+  .cust-form .cf-row { grid-template-columns: 1fr; }
+}
+</style>
+<link rel="stylesheet" href="components/footer.css">
+</head>
+<body>
+
+<!-- ====== NAVIGATION (shared component) ====== -->
+<nav class="nav" id="shared-nav"></nav>
+<div class="mobile-drawer" id="shared-drawer"></div>
+<script src="components/nav-portal.js"></script>
+
+<!-- ====== HERO ====== -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <div class="hero-label">SAMPLE ITINERARIES</div>
+    <h1 class="hero-title">Ready-to-Share Trip Ideas</h1>
+    <p class="hero-subtitle">Browse our curated itineraries, then share them directly with your clients or customize for their perfect trip.</p>
+  </div>
+</section>
+
+<!-- ====== BREADCRUMB ====== -->
+<div class="breadcrumb">
+  <a href="advisor-portal.html">Advisor Portal</a>
+  <span>&rsaquo;</span>
+  Sample Itineraries
+</div>
+
+<!-- ====== FILTER BAR ====== -->
+<div class="filter-bar">
+  <div class="filter-bar-inner">
+    <div class="filter-group">
+      <span class="filter-group-label">Region</span>
+      <button class="filter-btn-text active" data-filter="region" data-value="all">All</button>
+      <button class="filter-btn-text" data-filter="region" data-value="europe">Europe</button>
+      <button class="filter-btn-text" data-filter="region" data-value="africa-mideast">Africa &amp; ME</button>
+      <button class="filter-btn-text" data-filter="region" data-value="asia-pacific">Asia &amp; Pacific</button>
+      <button class="filter-btn-text" data-filter="region" data-value="americas">Americas</button>
+    </div>
+    <div class="filter-group">
+      <span class="filter-group-label">Duration</span>
+      <button class="filter-btn-pill active" data-filter="duration" data-value="all">All</button>
+      <button class="filter-btn-pill" data-filter="duration" data-value="5-7">5&ndash;7 Days</button>
+      <button class="filter-btn-pill" data-filter="duration" data-value="8-10">8&ndash;10 Days</button>
+      <button class="filter-btn-pill" data-filter="duration" data-value="11-14">11&ndash;14 Days</button>
+    </div>
+    <div class="filter-group">
+      <span class="filter-group-label">Style</span>
+      <button class="filter-btn-pill active" data-filter="style" data-value="all">All</button>
+      <button class="filter-btn-pill" data-filter="style" data-value="culture">Culture</button>
+      <button class="filter-btn-pill" data-filter="style" data-value="adventure">Adventure</button>
+      <button class="filter-btn-pill" data-filter="style" data-value="food-wine">Food &amp; Wine</button>
+      <button class="filter-btn-pill" data-filter="style" data-value="family">Family</button>
+      <button class="filter-btn-pill" data-filter="style" data-value="wellness">Wellness</button>
+    </div>
+  </div>
+</div>
+
+<!-- ====== ITINERARY GRID ====== -->
+<section class="itinerary-section">
+  <div class="itinerary-section-inner">
+    <div class="results-count" id="resultsCount">Showing 12 itineraries</div>
+    <div class="itinerary-grid reveal-stagger" id="itineraryGrid">
+
+      <!-- 1. Morocco -->
+      <div class="itin-card-wrapper" data-region="africa-mideast" data-duration="10" data-style="culture">
+        <div class="itin-card reveal">
+          <div class="itin-card-img">
+            <img src="https://images.unsplash.com/photo-1539020140153-e479b8c22e70?w=600&q=80" alt="Morocco Imperial Cities">
+          </div>
+          <div class="itin-card-body">
+            <div class="itin-tags">
+              <span class="itin-tag">Experience Morocco</span>
+              <span class="itin-tag">10 Days</span>
+            </div>
+            <h3 class="itin-card-title">Imperial Cities &amp; Sahara</h3>
+            <div class="itin-card-styles">Culture</div>
+            <p class="itin-card-desc">From the bustling souks of Marrakech to the silence of the Sahara, a journey through Morocco's imperial heart.</p>
+            <div class="itin-card-actions">
+              <button class="btn-details" onclick="toggleDetail(this)">View Details</button>
+              <button class="btn-share" onclick="shareItinerary(this)" data-dest="Morocco" data-title="Imperial Cities & Sahara" data-days="10" data-brand="Experience Morocco">Share with Client<span class="tooltip">Copied!</span></button>
+            </div>
+          </div>
+          <div class="itin-detail">
+            <div class="itin-detail-inner">
+              <div class="day-timeline">
+                <div class="day-item">
+                  <div class="day-label">Day 1</div>
+                  <div class="day-desc">
+                    <strong>Arrive in Casablanca</strong>
+                    <span>Meet your private driver at the airport and transfer to your riad. Evening welcome dinner at a rooftop restaurant overlooking the Hassan II Mosque.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Days 2&ndash;3</div>
+                  <div class="day-desc">
+                    <strong>Explore the Fez Medina</strong>
+                    <span>Two full days in the world's largest car-free urban area. Visit tanneries, medieval madrasas, and artisan workshops with a local historian guide.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Day 4</div>
+                  <div class="day-desc">
+                    <strong>Scenic Drive Through the Middle Atlas</strong>
+                    <span>Wind through cedar forests and Berber villages en route to the Sahara. Stop at Ifrane and the Ziz Valley gorges.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Days 5&ndash;6</div>
+                  <div class="day-desc">
+                    <strong>Sahara Desert Experience</strong>
+                    <span>Camel trek to a luxury desert camp among the Erg Chebbi dunes. Stargazing, Berber drumming, and a sunrise over endless sand.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Days 7&ndash;8</div>
+                  <div class="day-desc">
+                    <strong>Marrakech Immersion</strong>
+                    <span>Private guided tour of the souks, Bahia Palace, and Jardin Majorelle. Rooftop cooking class and an evening in Jemaa el-Fna square.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Day 9</div>
+                  <div class="day-desc">
+                    <strong>Atlas Mountains Day Trip</strong>
+                    <span>Drive to the Ourika Valley for a hike to waterfalls, lunch at a Berber home, and panoramic views of the High Atlas peaks.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Day 10</div>
+                  <div class="day-desc">
+                    <strong>Depart Marrakech</strong>
+                    <span>Farewell breakfast and private transfer to the airport.</span>
+                  </div>
+                </div>
+              </div>
+              <div class="itin-detail-actions">
+                <a href="advisor-portal.html?dest=Morocco" class="btn-customize" onclick="event.preventDefault();openCustomizeModal(this)">Customize This Trip</a>
+                <button class="btn-close-detail" onclick="toggleDetail(this)">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. Italy -->
+      <div class="itin-card-wrapper" data-region="europe" data-duration="8" data-style="food-wine">
+        <div class="itin-card reveal">
+          <div class="itin-card-img">
+            <img src="https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=600&q=80" alt="Italy Amalfi to Tuscany">
+          </div>
+          <div class="itin-card-body">
+            <div class="itin-tags">
+              <span class="itin-tag">Authenticus Italy</span>
+              <span class="itin-tag">8 Days</span>
+            </div>
+            <h3 class="itin-card-title">Amalfi to Tuscany</h3>
+            <div class="itin-card-styles">Food &amp; Wine</div>
+            <p class="itin-card-desc">Coastal glamour meets rolling vineyards — from the Amalfi Coast through the heart of Tuscany.</p>
+            <div class="itin-card-actions">
+              <button class="btn-details" onclick="toggleDetail(this)">View Details</button>
+              <button class="btn-share" onclick="shareItinerary(this)" data-dest="Italy" data-title="Amalfi to Tuscany" data-days="8" data-brand="Authenticus Italy">Share with Client<span class="tooltip">Copied!</span></button>
+            </div>
+          </div>
+          <div class="itin-detail">
+            <div class="itin-detail-inner">
+              <div class="day-timeline">
+                <div class="day-item">
+                  <div class="day-label">Day 1</div>
+                  <div class="day-desc">
+                    <strong>Arrive Naples, Transfer to Amalfi</strong>
+                    <span>Private car along the dramatic coastal road. Check into your clifftop hotel with views over the Tyrrhenian Sea.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Day 2</div>
+                  <div class="day-desc">
+                    <strong>Positano &amp; Ravello</strong>
+                    <span>Wander the pastel-painted streets of Positano, then visit Villa Rufolo's gardens in Ravello with a private guide.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Day 3</div>
+                  <div class="day-desc">
+                    <strong>Pompeii &amp; Local Wine</strong>
+                    <span>Morning guided tour of the ancient ruins, followed by a wine tasting lunch at a family vineyard on Mount Vesuvius slopes.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Day 4</div>
+                  <div class="day-desc">
+                    <strong>Scenic Drive to Tuscany</strong>
+                    <span>Travel north through the Italian countryside, stopping in a hilltop village for lunch. Arrive in the Chianti region by evening.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Day 5</div>
+                  <div class="day-desc">
+                    <strong>Chianti Wine Country</strong>
+                    <span>Full-day tour visiting three estates, tasting Super Tuscans and Chianti Classico, with a farm-to-table lunch among the vines.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Day 6</div>
+                  <div class="day-desc">
+                    <strong>Florence Art &amp; Culture</strong>
+                    <span>Private early-access tour of the Uffizi, followed by the Duomo, Ponte Vecchio, and a leather workshop visit in the Oltrarno.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Day 7</div>
+                  <div class="day-desc">
+                    <strong>Siena &amp; San Gimignano</strong>
+                    <span>Explore Siena's Piazza del Campo and cathedral, then drive to the medieval towers of San Gimignano for gelato and sunset views.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Day 8</div>
+                  <div class="day-desc">
+                    <strong>Depart Florence</strong>
+                    <span>Morning espresso in a local cafe and private transfer to the airport.</span>
+                  </div>
+                </div>
+              </div>
+              <div class="itin-detail-actions">
+                <a href="advisor-portal.html?dest=Italy" class="btn-customize" onclick="event.preventDefault();openCustomizeModal(this)">Customize This Trip</a>
+                <button class="btn-close-detail" onclick="toggleDetail(this)">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Japan -->
+      <div class="itin-card-wrapper" data-region="asia-pacific" data-duration="12" data-style="culture">
+        <div class="itin-card reveal">
+          <div class="itin-card-img">
+            <img src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=600&q=80" alt="Japan Tokyo to Kyoto">
+          </div>
+          <div class="itin-card-body">
+            <div class="itin-tags">
+              <span class="itin-tag">Oshinobi Travel</span>
+              <span class="itin-tag">12 Days</span>
+            </div>
+            <h3 class="itin-card-title">Tokyo to Kyoto Discovery</h3>
+            <div class="itin-card-styles">Culture</div>
+            <p class="itin-card-desc">Ancient temples, neon cities, and everything in between — Japan at its most immersive.</p>
+            <div class="itin-card-actions">
+              <button class="btn-details" onclick="toggleDetail(this)">View Details</button>
+              <button class="btn-share" onclick="shareItinerary(this)" data-dest="Japan" data-title="Tokyo to Kyoto Discovery" data-days="12" data-brand="Oshinobi Travel">Share with Client<span class="tooltip">Copied!</span></button>
+            </div>
+          </div>
+          <div class="itin-detail">
+            <div class="itin-detail-inner">
+              <div class="day-timeline">
+                <div class="day-item">
+                  <div class="day-label">Days 1&ndash;2</div>
+                  <div class="day-desc">
+                    <strong>Tokyo Exploration</strong>
+                    <span>Discover the contrast of Shibuya's neon crossings and Asakusa's ancient Senso-ji temple. Tsukiji outer market food tour and a private sushi omakase dinner.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Day 3</div>
+                  <div class="day-desc">
+                    <strong>Day Trip to Nikko</strong>
+                    <span>Visit the ornate Toshogu Shrine, a UNESCO World Heritage Site, surrounded by towering cedar forests and sacred bridges.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Day 4</div>
+                  <div class="day-desc">
+                    <strong>Hakone &amp; Mount Fuji</strong>
+                    <span>Cruise Lake Ashi with Mount Fuji views, ride the Hakone Ropeway, and soak in a traditional onsen hot spring.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Day 5</div>
+                  <div class="day-desc">
+                    <strong>Bullet Train to Takayama</strong>
+                    <span>Experience the Shinkansen, then explore Takayama's beautifully preserved Edo-era streets and morning markets.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Day 6</div>
+                  <div class="day-desc">
+                    <strong>Shirakawa-go Village</strong>
+                    <span>Visit the UNESCO thatched-roof farmhouses in this remote mountain valley. Lunch with a local family.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Days 7&ndash;8</div>
+                  <div class="day-desc">
+                    <strong>Kanazawa</strong>
+                    <span>Explore Kenroku-en (one of Japan's top three gardens), the samurai district, Omi-cho market, and a gold-leaf workshop experience.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Days 9&ndash;10</div>
+                  <div class="day-desc">
+                    <strong>Kyoto Temples &amp; Traditions</strong>
+                    <span>Private guided visits to Kinkaku-ji, Fushimi Inari, and the bamboo grove. Evening walk through the geisha district of Gion with a tea ceremony.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Day 11</div>
+                  <div class="day-desc">
+                    <strong>Nara Day Trip</strong>
+                    <span>Feed the sacred deer in Nara Park and explore Todai-ji temple, home to the world's largest bronze Buddha.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Day 12</div>
+                  <div class="day-desc">
+                    <strong>Depart from Osaka</strong>
+                    <span>Morning visit to Osaka's Dotonbori food street, then transfer to Kansai Airport.</span>
+                  </div>
+                </div>
+              </div>
+              <div class="itin-detail-actions">
+                <a href="advisor-portal.html?dest=Japan" class="btn-customize" onclick="event.preventDefault();openCustomizeModal(this)">Customize This Trip</a>
+                <button class="btn-close-detail" onclick="toggleDetail(this)">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. France -->
+      <div class="itin-card-wrapper" data-region="europe" data-duration="7" data-style="food-wine">
+        <div class="itin-card reveal">
+          <div class="itin-card-img">
+            <img src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=600&q=80" alt="France Provence and Riviera">
+          </div>
+          <div class="itin-card-body">
+            <div class="itin-tags">
+              <span class="itin-tag">Essentially French</span>
+              <span class="itin-tag">7 Days</span>
+            </div>
+            <h3 class="itin-card-title">Provence &amp; the Riviera</h3>
+            <div class="itin-card-styles">Food &amp; Wine</div>
+            <p class="itin-card-desc">Lavender fields, hilltop villages, and the sparkling Mediterranean — France beyond Paris.</p>
+            <div class="itin-card-actions">
+              <button class="btn-details" onclick="toggleDetail(this)">View Details</button>
+              <button class="btn-share" onclick="shareItinerary(this)" data-dest="France" data-title="Provence & the Riviera" data-days="7" data-brand="Essentially French">Share with Client<span class="tooltip">Copied!</span></button>
+            </div>
+          </div>
+          <div class="itin-detail">
+            <div class="itin-detail-inner">
+              <div class="day-timeline">
+                <div class="day-item">
+                  <div class="day-label">Day 1</div>
+                  <div class="day-desc">
+                    <strong>Arrive in Nice</strong>
+                    <span>Transfer to your boutique hotel on the Promenade des Anglais. Evening stroll through Vieux Nice and dinner at a family-run bistro.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Day 2</div>
+                  <div class="day-desc">
+                    <strong>Monaco &amp; Eze</strong>
+                    <span>Morning in Monte Carlo visiting the palace and casino gardens, then the medieval perfume village of Eze perched above the sea.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Day 3</div>
+                  <div class="day-desc">
+                    <strong>Saint-Tropez</strong>
+                    <span>Boat transfer across the bay. Browse the portside galleries, walk the Sentier du Littoral coastal path, and enjoy a long seafood lunch.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Day 4</div>
+                  <div class="day-desc">
+                    <strong>Drive to Provence</strong>
+                    <span>Travel through lavender fields and the red cliffs of Roussillon. Arrive at your countryside mas by late afternoon for aperitifs.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Day 5</div>
+                  <div class="day-desc">
+                    <strong>Avignon &amp; Pont du Gard</strong>
+                    <span>Visit the Palais des Papes and the ancient Roman aqueduct, followed by a riverside picnic lunch with local cheeses and wines.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Day 6</div>
+                  <div class="day-desc">
+                    <strong>Luberon Villages &amp; Wine</strong>
+                    <span>Explore Gordes, Bonnieux, and Lacoste. Private tasting at a Cotes du Rhone vineyard with the winemaker.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Day 7</div>
+                  <div class="day-desc">
+                    <strong>Depart Marseille</strong>
+                    <span>Morning visit to Aix-en-Provence's markets, then transfer to Marseille for departure.</span>
+                  </div>
+                </div>
+              </div>
+              <div class="itin-detail-actions">
+                <a href="advisor-portal.html?dest=France" class="btn-customize" onclick="event.preventDefault();openCustomizeModal(this)">Customize This Trip</a>
+                <button class="btn-close-detail" onclick="toggleDetail(this)">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. Spain -->
+      <div class="itin-card-wrapper" data-region="europe" data-duration="9" data-style="culture">
+        <div class="itin-card reveal">
+          <div class="itin-card-img">
+            <img src="https://images.unsplash.com/photo-1543783207-ec64e4d95325?w=600&q=80" alt="Spain Andalusia and Barcelona">
+          </div>
+          <div class="itin-card-body">
+            <div class="itin-tags">
+              <span class="itin-tag">Unbox Spain &amp; Portugal</span>
+              <span class="itin-tag">9 Days</span>
+            </div>
+            <h3 class="itin-card-title">Andalusia &amp; Barcelona</h3>
+            <div class="itin-card-styles">Culture</div>
+            <p class="itin-card-desc">Moorish palaces, flamenco rhythms, and Gaudi's masterpieces in one sweeping journey.</p>
+            <div class="itin-card-actions">
+              <button class="btn-details" onclick="toggleDetail(this)">View Details</button>
+              <button class="btn-share" onclick="shareItinerary(this)" data-dest="Spain" data-title="Andalusia & Barcelona" data-days="9" data-brand="Unbox Spain & Portugal">Share with Client<span class="tooltip">Copied!</span></button>
+            </div>
+          </div>
+          <div class="itin-detail">
+            <div class="itin-detail-inner">
+              <div class="day-timeline">
+                <div class="day-item">
+                  <div class="day-label">Day 1</div>
+                  <div class="day-desc">
+                    <strong>Arrive in Madrid</strong>
+                    <span>Check into your hotel near the Retiro Park. Evening tapas crawl through La Latina neighborhood with a local food guide.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Day 2</div>
+                  <div class="day-desc">
+                    <strong>Toledo Day Trip</strong>
+                    <span>Explore this fortified medieval city with its cathedral, Alcazar, and El Greco masterpieces. Lunch in a converted convent.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Day 3</div>
+                  <div class="day-desc">
+                    <strong>High-Speed Train to Seville</strong>
+                    <span>Arrive in the heart of Andalusia. Afternoon walk along the Guadalquivir River and through the Triana district.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Day 4</div>
+                  <div class="day-desc">
+                    <strong>Seville in Depth</strong>
+                    <span>Private tour of the Real Alcazar and Seville Cathedral. Evening private flamenco performance in a traditional tablao.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Day 5</div>
+                  <div class="day-desc">
+                    <strong>Cordoba Excursion</strong>
+                    <span>Day trip to the Mezquita-Cathedral, the Jewish Quarter, and the flower-filled patios. Salmorejo lunch at a courtyard restaurant.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Day 6</div>
+                  <div class="day-desc">
+                    <strong>Granada &amp; the Alhambra</strong>
+                    <span>Private skip-the-line tour of the Alhambra and Generalife gardens. Explore the Albaicin quarter at sunset.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Day 7</div>
+                  <div class="day-desc">
+                    <strong>Fly to Barcelona</strong>
+                    <span>Arrive and settle into your Gothic Quarter hotel. Evening walk down La Rambla and dinner at a Michelin-recommended restaurant.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Day 8</div>
+                  <div class="day-desc">
+                    <strong>Barcelona Highlights</strong>
+                    <span>Private tour of Sagrada Familia (early access), Park Guell, and the Born neighborhood. Vermouth tasting at a century-old bar.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Day 9</div>
+                  <div class="day-desc">
+                    <strong>Depart Barcelona</strong>
+                    <span>Morning stroll through the Boqueria market and transfer to the airport.</span>
+                  </div>
+                </div>
+              </div>
+              <div class="itin-detail-actions">
+                <a href="advisor-portal.html?dest=Spain" class="btn-customize" onclick="event.preventDefault();openCustomizeModal(this)">Customize This Trip</a>
+                <button class="btn-close-detail" onclick="toggleDetail(this)">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6. East Africa -->
+      <div class="itin-card-wrapper" data-region="africa-mideast" data-duration="11" data-style="adventure">
+        <div class="itin-card reveal">
+          <div class="itin-card-img">
+            <img src="https://images.unsplash.com/photo-1516426122078-c23e76319801?w=600&q=80" alt="Kenya Tanzania Safari">
+          </div>
+          <div class="itin-card-body">
+            <div class="itin-tags">
+              <span class="itin-tag">Truly Swahili</span>
+              <span class="itin-tag">11 Days</span>
+            </div>
+            <h3 class="itin-card-title">Kenya &amp; Tanzania Safari</h3>
+            <div class="itin-card-styles">Adventure</div>
+            <p class="itin-card-desc">The great migration, Big Five encounters, and sundowners on the savannah.</p>
+            <div class="itin-card-actions">
+              <button class="btn-details" onclick="toggleDetail(this)">View Details</button>
+              <button class="btn-share" onclick="shareItinerary(this)" data-dest="East Africa" data-title="Kenya & Tanzania Safari" data-days="11" data-brand="Truly Swahili">Share with Client<span class="tooltip">Copied!</span></button>
+            </div>
+          </div>
+          <div class="itin-detail">
+            <div class="itin-detail-inner">
+              <div class="day-timeline">
+                <div class="day-item">
+                  <div class="day-label">Day 1</div>
+                  <div class="day-desc">
+                    <strong>Arrive Nairobi</strong>
+                    <span>Meet your safari coordinator and transfer to a boutique hotel. Briefing on the journey ahead over a welcome dinner.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Days 2&ndash;3</div>
+                  <div class="day-desc">
+                    <strong>Amboseli National Park</strong>
+                    <span>Game drives beneath the shadow of Kilimanjaro. Elephant herds, hippo pools, and sundowners with Africa's tallest peak as your backdrop.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Day 4</div>
+                  <div class="day-desc">
+                    <strong>Fly to the Masai Mara</strong>
+                    <span>Bush plane flight over the Great Rift Valley to Kenya's most iconic game reserve. Afternoon game drive.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Days 5&ndash;6</div>
+                  <div class="day-desc">
+                    <strong>Masai Mara Game Drives</strong>
+                    <span>Morning and afternoon drives tracking lion prides, cheetah hunts, and river crossings. Visit a Maasai village and learn about their traditions.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Day 7</div>
+                  <div class="day-desc">
+                    <strong>Cross into the Serengeti</strong>
+                    <span>Drive across the Tanzania border into the endless plains of the Serengeti. Afternoon game drive as the landscape unfolds.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Days 8&ndash;9</div>
+                  <div class="day-desc">
+                    <strong>Serengeti &amp; the Migration</strong>
+                    <span>Follow the great wildebeest migration across the plains. Hot air balloon safari at dawn, champagne breakfast in the bush.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Day 10</div>
+                  <div class="day-desc">
+                    <strong>Ngorongoro Crater</strong>
+                    <span>Descend into the world's largest volcanic caldera. A full day spotting the Big Five in this natural amphitheater.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Day 11</div>
+                  <div class="day-desc">
+                    <strong>Depart Arusha</strong>
+                    <span>Morning transfer to Arusha, farewell lunch, and departure.</span>
+                  </div>
+                </div>
+              </div>
+              <div class="itin-detail-actions">
+                <a href="advisor-portal.html?dest=East%20Africa" class="btn-customize" onclick="event.preventDefault();openCustomizeModal(this)">Customize This Trip</a>
+                <button class="btn-close-detail" onclick="toggleDetail(this)">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 7. Mexico -->
+      <div class="itin-card-wrapper" data-region="americas" data-duration="8" data-style="culture,food-wine">
+        <div class="itin-card reveal">
+          <div class="itin-card-img">
+            <img src="https://images.unsplash.com/photo-1518638150340-f706e86654de?w=600&q=80" alt="Mexico Oaxaca to Riviera Maya">
+          </div>
+          <div class="itin-card-body">
+            <div class="itin-tags">
+              <span class="itin-tag">Across Mexico</span>
+              <span class="itin-tag">8 Days</span>
+            </div>
+            <h3 class="itin-card-title">Oaxaca to Riviera Maya</h3>
+            <div class="itin-card-styles">Culture &middot; Food &amp; Wine</div>
+            <p class="itin-card-desc">From Oaxaca's mezcal valleys to the turquoise cenotes of the Yucatan.</p>
+            <div class="itin-card-actions">
+              <button class="btn-details" onclick="toggleDetail(this)">View Details</button>
+              <button class="btn-share" onclick="shareItinerary(this)" data-dest="Mexico" data-title="Oaxaca to Riviera Maya" data-days="8" data-brand="Across Mexico">Share with Client<span class="tooltip">Copied!</span></button>
+            </div>
+          </div>
+          <div class="itin-detail">
+            <div class="itin-detail-inner">
+              <div class="day-timeline">
+                <div class="day-item">
+                  <div class="day-label">Day 1</div>
+                  <div class="day-desc">
+                    <strong>Arrive in Oaxaca</strong>
+                    <span>Transfer to your boutique hotel in the historic center. Evening mezcal tasting and street food walk through the zocalo.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Day 2</div>
+                  <div class="day-desc">
+                    <strong>Monte Alban &amp; Mezcal</strong>
+                    <span>Morning visit to the Zapotec ruins overlooking the valley, followed by a private tour of artisan mezcal distilleries.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Day 3</div>
+                  <div class="day-desc">
+                    <strong>Oaxacan Cooking Class</strong>
+                    <span>Market visit to source ingredients, then a hands-on class mastering mole negro with a local chef. Afternoon at leisure.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Day 4</div>
+                  <div class="day-desc">
+                    <strong>Fly to Merida</strong>
+                    <span>Arrive in the Yucatan capital. Walking tour of the pastel-colonial centro and dinner at a restored hacienda.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Day 5</div>
+                  <div class="day-desc">
+                    <strong>Uxmal Archaeological Site</strong>
+                    <span>Guided exploration of the Puuc-style Mayan ruins, considered more impressive than Chichen Itza by many archaeologists.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Day 6</div>
+                  <div class="day-desc">
+                    <strong>Cenotes &amp; Hacienda</strong>
+                    <span>Swim in crystal-clear cenotes surrounded by jungle, then enjoy a five-course Yucatecan lunch at a century-old hacienda.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Day 7</div>
+                  <div class="day-desc">
+                    <strong>Tulum &amp; the Caribbean Coast</strong>
+                    <span>Explore the clifftop Mayan ruins overlooking the turquoise Caribbean. Afternoon at a beachfront restaurant.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Day 8</div>
+                  <div class="day-desc">
+                    <strong>Depart Cancun</strong>
+                    <span>Morning beach time and private transfer to the airport.</span>
+                  </div>
+                </div>
+              </div>
+              <div class="itin-detail-actions">
+                <a href="advisor-portal.html?dest=Mexico" class="btn-customize" onclick="event.preventDefault();openCustomizeModal(this)">Customize This Trip</a>
+                <button class="btn-close-detail" onclick="toggleDetail(this)">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 8. Greece -->
+      <div class="itin-card-wrapper" data-region="europe" data-duration="10" data-style="culture">
+        <div class="itin-card reveal">
+          <div class="itin-card-img">
+            <img src="https://images.unsplash.com/photo-1533105079780-92b9be482077?w=600&q=80" alt="Greece Athens and Islands">
+          </div>
+          <div class="itin-card-body">
+            <div class="itin-tags">
+              <span class="itin-tag">Nostos Greece</span>
+              <span class="itin-tag">10 Days</span>
+            </div>
+            <h3 class="itin-card-title">Athens &amp; the Islands</h3>
+            <div class="itin-card-styles">Culture</div>
+            <p class="itin-card-desc">Acropolis sunsets, Santorini caldera views, and island-hopping at its finest.</p>
+            <div class="itin-card-actions">
+              <button class="btn-details" onclick="toggleDetail(this)">View Details</button>
+              <button class="btn-share" onclick="shareItinerary(this)" data-dest="Greece" data-title="Athens & the Islands" data-days="10" data-brand="Nostos Greece">Share with Client<span class="tooltip">Copied!</span></button>
+            </div>
+          </div>
+          <div class="itin-detail">
+            <div class="itin-detail-inner">
+              <div class="day-timeline">
+                <div class="day-item">
+                  <div class="day-label">Days 1&ndash;2</div>
+                  <div class="day-desc">
+                    <strong>Athens Discovery</strong>
+                    <span>Private guided tour of the Acropolis and Acropolis Museum. Explore the Plaka neighborhood, Monastiraki flea market, and an evening rooftop dinner with Parthenon views.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Day 3</div>
+                  <div class="day-desc">
+                    <strong>Ferry to Mykonos</strong>
+                    <span>Morning fast ferry to the Cyclades. Settle into your boutique hotel and explore Mykonos Town's whitewashed lanes and Little Venice.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Days 4&ndash;5</div>
+                  <div class="day-desc">
+                    <strong>Mykonos Experience</strong>
+                    <span>Day trip to the sacred island of Delos with a private archaeologist guide. Beach day at Elia or Super Paradise, sunset cocktails at 180 Sunset Bar.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Day 6</div>
+                  <div class="day-desc">
+                    <strong>Ferry to Santorini</strong>
+                    <span>Scenic crossing to the most dramatic island in the Aegean. Check into your caldera-view hotel in Oia.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Days 7&ndash;8</div>
+                  <div class="day-desc">
+                    <strong>Santorini Highlights</strong>
+                    <span>Wine tasting tour of volcanic vineyards. Sunset catamaran cruise around the caldera with dinner on board. Morning hike from Fira to Oia along the cliff path.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Day 9</div>
+                  <div class="day-desc">
+                    <strong>Return to Athens</strong>
+                    <span>Evening flight back. Farewell dinner in the Psyrri neighborhood.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Day 10</div>
+                  <div class="day-desc">
+                    <strong>Depart Athens</strong>
+                    <span>Final morning stroll and transfer to the airport.</span>
+                  </div>
+                </div>
+              </div>
+              <div class="itin-detail-actions">
+                <a href="advisor-portal.html?dest=Greece" class="btn-customize" onclick="event.preventDefault();openCustomizeModal(this)">Customize This Trip</a>
+                <button class="btn-close-detail" onclick="toggleDetail(this)">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 9. Thailand -->
+      <div class="itin-card-wrapper" data-region="asia-pacific" data-duration="9" data-style="wellness">
+        <div class="itin-card reveal">
+          <div class="itin-card-img">
+            <img src="https://images.unsplash.com/photo-1528181304800-259b08848526?w=600&q=80" alt="Thailand Bangkok to Chiang Mai">
+          </div>
+          <div class="itin-card-body">
+            <div class="itin-tags">
+              <span class="itin-tag">Nira Thailand</span>
+              <span class="itin-tag">9 Days</span>
+            </div>
+            <h3 class="itin-card-title">Bangkok to Chiang Mai</h3>
+            <div class="itin-card-styles">Wellness</div>
+            <p class="itin-card-desc">Temple serenity, Thai massage traditions, and wellness retreats in the northern hills.</p>
+            <div class="itin-card-actions">
+              <button class="btn-details" onclick="toggleDetail(this)">View Details</button>
+              <button class="btn-share" onclick="shareItinerary(this)" data-dest="Thailand" data-title="Bangkok to Chiang Mai" data-days="9" data-brand="Nira Thailand">Share with Client<span class="tooltip">Copied!</span></button>
+            </div>
+          </div>
+          <div class="itin-detail">
+            <div class="itin-detail-inner">
+              <div class="day-timeline">
+                <div class="day-item">
+                  <div class="day-label">Days 1&ndash;2</div>
+                  <div class="day-desc">
+                    <strong>Bangkok Exploration</strong>
+                    <span>Private longtail boat tour of the klongs, Grand Palace and Wat Pho visits, Chatuchak weekend market, and a rooftop dinner overlooking the Chao Phraya River.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Day 3</div>
+                  <div class="day-desc">
+                    <strong>Ayutthaya Day Trip</strong>
+                    <span>Explore the ancient Siamese capital's temple ruins by bicycle and boat. Lunch at a riverside restaurant before returning to Bangkok.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Day 4</div>
+                  <div class="day-desc">
+                    <strong>Fly to Chiang Mai</strong>
+                    <span>Arrive in Thailand's northern cultural capital. Afternoon walk through the old walled city and its temples. Evening at the Night Bazaar.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Day 5</div>
+                  <div class="day-desc">
+                    <strong>Doi Suthep &amp; Craftsmen</strong>
+                    <span>Morning visit to the hilltop Doi Suthep temple with panoramic city views. Afternoon visit to Baan Tawai handicraft village.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Day 6</div>
+                  <div class="day-desc">
+                    <strong>Elephant Nature Park</strong>
+                    <span>Full day at an ethical elephant sanctuary. Feed, bathe, and walk with rescued elephants in a forested river valley.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Day 7</div>
+                  <div class="day-desc">
+                    <strong>Thai Cooking Masterclass</strong>
+                    <span>Morning market tour sourcing ingredients, then a full-day cooking class learning five dishes with a celebrated local chef.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Day 8</div>
+                  <div class="day-desc">
+                    <strong>Spa &amp; Wellness Day</strong>
+                    <span>Traditional Thai massage at a luxury spa, followed by a herbal steam bath and meditation session at a forest temple.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Day 9</div>
+                  <div class="day-desc">
+                    <strong>Depart Chiang Mai</strong>
+                    <span>Final morning at the Warorot Market for souvenirs and transfer to the airport.</span>
+                  </div>
+                </div>
+              </div>
+              <div class="itin-detail-actions">
+                <a href="advisor-portal.html?dest=Thailand" class="btn-customize" onclick="event.preventDefault();openCustomizeModal(this)">Customize This Trip</a>
+                <button class="btn-close-detail" onclick="toggleDetail(this)">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 10. Indonesia -->
+      <div class="itin-card-wrapper" data-region="asia-pacific" data-duration="7" data-style="wellness,adventure">
+        <div class="itin-card reveal">
+          <div class="itin-card-img">
+            <img src="https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=600&q=80" alt="Bali Indonesia">
+          </div>
+          <div class="itin-card-body">
+            <div class="itin-tags">
+              <span class="itin-tag">Kembali Indonesia</span>
+              <span class="itin-tag">7 Days</span>
+            </div>
+            <h3 class="itin-card-title">Bali &amp; Beyond</h3>
+            <div class="itin-card-styles">Wellness &middot; Adventure</div>
+            <p class="itin-card-desc">Rice terraces, volcano sunrises, and spiritual retreats on the Island of the Gods.</p>
+            <div class="itin-card-actions">
+              <button class="btn-details" onclick="toggleDetail(this)">View Details</button>
+              <button class="btn-share" onclick="shareItinerary(this)" data-dest="Indonesia" data-title="Bali & Beyond" data-days="7" data-brand="Kembali Indonesia">Share with Client<span class="tooltip">Copied!</span></button>
+            </div>
+          </div>
+          <div class="itin-detail">
+            <div class="itin-detail-inner">
+              <div class="day-timeline">
+                <div class="day-item">
+                  <div class="day-label">Day 1</div>
+                  <div class="day-desc">
+                    <strong>Arrive in Ubud</strong>
+                    <span>Transfer through the rice paddies to your jungle retreat. Welcome Balinese blessing ceremony and dinner overlooking the Ayung River valley.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Day 2</div>
+                  <div class="day-desc">
+                    <strong>Ubud Culture &amp; Nature</strong>
+                    <span>Morning walk through Tegallalang rice terraces, visit the Sacred Monkey Forest, and explore Ubud's artisan galleries and cafes.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Day 3</div>
+                  <div class="day-desc">
+                    <strong>Mount Batur Sunrise Trek</strong>
+                    <span>Pre-dawn hike to the active volcano summit for a spectacular sunrise above the clouds. Soak in natural hot springs afterward.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Day 4</div>
+                  <div class="day-desc">
+                    <strong>Transfer to Seminyak</strong>
+                    <span>Travel to Bali's stylish south coast. Afternoon at a beach club and sunset dinner at a seaside restaurant.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Day 5</div>
+                  <div class="day-desc">
+                    <strong>Uluwatu Temple &amp; Kecak Dance</strong>
+                    <span>Visit the clifftop sea temple perched 70 meters above the Indian Ocean. Evening Kecak fire dance performance at sunset.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Day 6</div>
+                  <div class="day-desc">
+                    <strong>Nusa Penida Day Trip</strong>
+                    <span>Speedboat to the island for snorkeling with manta rays at Manta Point and visiting Kelingking Beach's dinosaur-head cliff.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Day 7</div>
+                  <div class="day-desc">
+                    <strong>Depart Bali</strong>
+                    <span>Final morning yoga session and Balinese spa treatment before transfer to the airport.</span>
+                  </div>
+                </div>
+              </div>
+              <div class="itin-detail-actions">
+                <a href="advisor-portal.html?dest=Indonesia" class="btn-customize" onclick="event.preventDefault();openCustomizeModal(this)">Customize This Trip</a>
+                <button class="btn-close-detail" onclick="toggleDetail(this)">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 11. Peru -->
+      <div class="itin-card-wrapper" data-region="americas" data-duration="10" data-style="adventure,culture">
+        <div class="itin-card reveal">
+          <div class="itin-card-img">
+            <img src="https://images.unsplash.com/photo-1526392060635-9d6019884377?w=600&q=80" alt="Peru Machu Picchu">
+          </div>
+          <div class="itin-card-body">
+            <div class="itin-tags">
+              <span class="itin-tag">Awaken Peru</span>
+              <span class="itin-tag">10 Days</span>
+            </div>
+            <h3 class="itin-card-title">Lima, Cusco &amp; Machu Picchu</h3>
+            <div class="itin-card-styles">Adventure &middot; Culture</div>
+            <p class="itin-card-desc">Andean peaks, Incan citadels, and world-class ceviche — Peru from coast to clouds.</p>
+            <div class="itin-card-actions">
+              <button class="btn-details" onclick="toggleDetail(this)">View Details</button>
+              <button class="btn-share" onclick="shareItinerary(this)" data-dest="Peru" data-title="Lima, Cusco & Machu Picchu" data-days="10" data-brand="Awaken Peru">Share with Client<span class="tooltip">Copied!</span></button>
+            </div>
+          </div>
+          <div class="itin-detail">
+            <div class="itin-detail-inner">
+              <div class="day-timeline">
+                <div class="day-item">
+                  <div class="day-label">Days 1&ndash;2</div>
+                  <div class="day-desc">
+                    <strong>Lima Discovery</strong>
+                    <span>Explore the bohemian Barranco district and upscale Miraflores. Private ceviche and pisco sour masterclass. Visit the Larco Museum and dinner at a top-ranked restaurant.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Day 3</div>
+                  <div class="day-desc">
+                    <strong>Fly to Cusco</strong>
+                    <span>Arrive in the ancient Inca capital at 3,400m. Gentle acclimatization walk, coca tea, and evening at a colonial courtyard hotel.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Day 4</div>
+                  <div class="day-desc">
+                    <strong>Cusco City Tour</strong>
+                    <span>Private guided visit to Sacsayhuaman fortress, Qorikancha sun temple, San Pedro market, and the artisan quarter of San Blas.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Day 5</div>
+                  <div class="day-desc">
+                    <strong>Sacred Valley Exploration</strong>
+                    <span>Full day visiting Ollantaytambo's terraced ruins, Pisac's hilltop fortress, and a traditional weaving community.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Days 6&ndash;7</div>
+                  <div class="day-desc">
+                    <strong>Machu Picchu</strong>
+                    <span>Train through the Urubamba gorge to Aguas Calientes. Private guided sunrise tour of the citadel, optional Huayna Picchu hike, and overnight near the ruins.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Day 8</div>
+                  <div class="day-desc">
+                    <strong>Cusco Textile Workshop</strong>
+                    <span>Hands-on workshop with Quechua weavers learning ancestral dyeing and weaving techniques using natural pigments.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Day 9</div>
+                  <div class="day-desc">
+                    <strong>Lake Titicaca Day Trip</strong>
+                    <span>Fly to Puno and cruise to the floating Uros reed islands. Meet the islanders and learn about their way of life on the world's highest navigable lake.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Day 10</div>
+                  <div class="day-desc">
+                    <strong>Depart</strong>
+                    <span>Morning transfer and farewell.</span>
+                  </div>
+                </div>
+              </div>
+              <div class="itin-detail-actions">
+                <a href="advisor-portal.html?dest=Peru" class="btn-customize" onclick="event.preventDefault();openCustomizeModal(this)">Customize This Trip</a>
+                <button class="btn-close-detail" onclick="toggleDetail(this)">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 12. Colombia -->
+      <div class="itin-card-wrapper" data-region="americas" data-duration="8" data-style="culture,food-wine">
+        <div class="itin-card reveal">
+          <div class="itin-card-img">
+            <img src="https://images.unsplash.com/photo-1533282960533-51328aa49826?w=600&q=80" alt="Colombia Bogota to Cartagena">
+          </div>
+          <div class="itin-card-body">
+            <div class="itin-tags">
+              <span class="itin-tag">Vista Colombia</span>
+              <span class="itin-tag">8 Days</span>
+            </div>
+            <h3 class="itin-card-title">Bogota to Cartagena</h3>
+            <div class="itin-card-styles">Culture &middot; Food &amp; Wine</div>
+            <p class="itin-card-desc">Emerald-green coffee hills, colonial streets, and Caribbean warmth.</p>
+            <div class="itin-card-actions">
+              <button class="btn-details" onclick="toggleDetail(this)">View Details</button>
+              <button class="btn-share" onclick="shareItinerary(this)" data-dest="Colombia" data-title="Bogota to Cartagena" data-days="8" data-brand="Vista Colombia">Share with Client<span class="tooltip">Copied!</span></button>
+            </div>
+          </div>
+          <div class="itin-detail">
+            <div class="itin-detail-inner">
+              <div class="day-timeline">
+                <div class="day-item">
+                  <div class="day-label">Days 1&ndash;2</div>
+                  <div class="day-desc">
+                    <strong>Bogota Exploration</strong>
+                    <span>Walking tour of La Candelaria's street art and colonial plazas. Funicular ride to Monserrate for city views. Private food tour through Paloquemao market and local eateries.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Day 3</div>
+                  <div class="day-desc">
+                    <strong>Fly to the Coffee Region</strong>
+                    <span>Arrive in Armenia and transfer to a traditional coffee finca surrounded by green mountains. Afternoon at leisure by the pool.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Day 4</div>
+                  <div class="day-desc">
+                    <strong>Coffee Farm Experience</strong>
+                    <span>Full day learning the bean-to-cup process at a working farm. Pick, roast, and taste your own blend with a master barista.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Day 5</div>
+                  <div class="day-desc">
+                    <strong>Cocora Valley Hike</strong>
+                    <span>Trek through the cloud forest among the towering wax palms (Colombia's national tree, reaching 60 meters). Lunch at a trout farm in the valley.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Day 6</div>
+                  <div class="day-desc">
+                    <strong>Fly to Cartagena</strong>
+                    <span>Arrive in the Caribbean gem. Settle into your boutique hotel in the walled old city. Sunset drinks on the city walls.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Day 7</div>
+                  <div class="day-desc">
+                    <strong>Cartagena &amp; Rosario Islands</strong>
+                    <span>Morning walking tour of the old city's balconied streets, churches, and plazas. Afternoon speedboat to the Rosario Islands for snorkeling and a seafood lunch.</span>
+                  </div>
+                </div>
+                <div class="day-item">
+                  <div class="day-label">Day 8</div>
+                  <div class="day-desc">
+                    <strong>Depart Cartagena</strong>
+                    <span>Final morning coffee in Plaza Santo Domingo and transfer to the airport.</span>
+                  </div>
+                </div>
+              </div>
+              <div class="itin-detail-actions">
+                <a href="advisor-portal.html?dest=Colombia" class="btn-customize" onclick="event.preventDefault();openCustomizeModal(this)">Customize This Trip</a>
+                <button class="btn-close-detail" onclick="toggleDetail(this)">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ====== CUSTOMIZE MODAL ====== -->
+<div class="cust-overlay" id="custOverlay">
+  <div class="cust-modal">
+    <button class="cust-close" id="custClose">&times;</button>
+    <div class="cust-title">Customize This Trip</div>
+    <div class="cust-itin-info" id="custItinInfo"></div>
+    <div class="cust-itin-desc" id="custItinDesc"></div>
+    <!-- HubSpot form embed: Replace this form with HubSpot JS embed. Portal ID: TBD, Form ID: TBD -->
+    <form class="cust-form" id="custForm">
+      <div class="cf-row">
+        <div class="cf-group">
+          <label for="cf-date-from">Preferred Travel Dates From</label>
+          <input type="date" id="cf-date-from" name="travel_date_from">
+        </div>
+        <div class="cf-group">
+          <label for="cf-date-to">To</label>
+          <input type="date" id="cf-date-to" name="travel_date_to">
+        </div>
+      </div>
+      <div class="cf-row">
+        <div class="cf-group">
+          <label for="cf-travelers">Number of Travelers</label>
+          <input type="number" id="cf-travelers" name="number_of_travelers" min="1" placeholder="2">
+        </div>
+        <div class="cf-group">
+          <label for="cf-hotel">Hotel Tier</label>
+          <select id="cf-hotel" name="hotel_tier">
+            <option value="">Select</option>
+            <option value="Luxury">Luxury</option>
+            <option value="Premium">Premium</option>
+            <option value="Boutique">Boutique</option>
+          </select>
+        </div>
+      </div>
+      <div class="cf-group">
+        <label>Interests</label>
+        <div class="cf-interests">
+          <label><input type="checkbox" name="interests" value="Culture"> Culture</label>
+          <label><input type="checkbox" name="interests" value="Food & Wine"> Food &amp; Wine</label>
+          <label><input type="checkbox" name="interests" value="Adventure"> Adventure</label>
+          <label><input type="checkbox" name="interests" value="Wellness"> Wellness</label>
+          <label><input type="checkbox" name="interests" value="Family"> Family</label>
+        </div>
+      </div>
+      <div class="cf-group">
+        <label for="cf-notes">Customization Notes</label>
+        <textarea id="cf-notes" name="customization_notes" rows="3" placeholder="Any changes to the itinerary? Different pace, extra days, specific hotels, special occasions..."></textarea>
+      </div>
+      <div class="cf-row">
+        <div class="cf-group">
+          <label for="cf-name">Your Name *</label>
+          <input type="text" id="cf-name" name="advisor_name" required>
+        </div>
+        <div class="cf-group">
+          <label for="cf-email">Your Email *</label>
+          <input type="email" id="cf-email" name="advisor_email" required>
+        </div>
+      </div>
+      <div class="cf-group">
+        <label for="cf-agency">Agency Name</label>
+        <input type="text" id="cf-agency" name="agency_name">
+      </div>
+      <button type="submit" class="cust-submit">Send to Our Team</button>
+    </form>
+    <div class="cust-success" id="custSuccess">
+      <h3>Request Submitted</h3>
+      <p>Our destination GM will review your customization request and get back to you within 24 hours with a tailored proposal and pricing.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ====== FOOTER (shared component) ====== -->
+<div id="shared-footer"></div>
+<script src="components/footer.js"></script>
+
+<script>
+(function() {
+  // Nav handled by components/nav-portal.js
+
+  // ====== FILTER LOGIC ======
+  var activeFilters = { region: 'all', duration: 'all', style: 'all' };
+  var cards = document.querySelectorAll('.itin-card-wrapper');
+  var countEl = document.getElementById('resultsCount');
+
+  function getDurationBucket(days) {
+    var d = parseInt(days, 10);
+    if (d >= 5 && d <= 7) return '5-7';
+    if (d >= 8 && d <= 10) return '8-10';
+    if (d >= 11 && d <= 14) return '11-14';
+    return '';
+  }
+
+  function applyFilters() {
+    var visible = 0;
+    cards.forEach(function(card) {
+      var region = card.getAttribute('data-region');
+      var duration = card.getAttribute('data-duration');
+      var styles = card.getAttribute('data-style').split(',');
+      var bucket = getDurationBucket(duration);
+
+      var matchRegion = activeFilters.region === 'all' || region === activeFilters.region;
+      var matchDuration = activeFilters.duration === 'all' || bucket === activeFilters.duration;
+      var matchStyle = activeFilters.style === 'all' || styles.indexOf(activeFilters.style) !== -1;
+
+      if (matchRegion && matchDuration && matchStyle) {
+        card.classList.remove('hidden');
+        visible++;
+      } else {
+        card.classList.add('hidden');
+        // Close any open details when hiding
+        var detail = card.querySelector('.itin-detail');
+        if (detail) detail.classList.remove('open');
+      }
+    });
+    countEl.textContent = 'Showing ' + visible + ' itinerar' + (visible === 1 ? 'y' : 'ies');
+  }
+
+  document.querySelectorAll('[data-filter]').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var filterType = btn.getAttribute('data-filter');
+      var filterValue = btn.getAttribute('data-value');
+      activeFilters[filterType] = filterValue;
+
+      // Update active state for this filter group
+      btn.parentNode.querySelectorAll('[data-filter="' + filterType + '"]').forEach(function(b) {
+        b.classList.remove('active');
+      });
+      btn.classList.add('active');
+
+      applyFilters();
+    });
+  });
+
+  // ====== VIEW DETAILS TOGGLE ======
+  window.toggleDetail = function(btn) {
+    var card = btn.closest('.itin-card');
+    var detail = card.querySelector('.itin-detail');
+    if (detail) {
+      detail.classList.toggle('open');
+      // Update button text if it's the View Details button
+      if (btn.classList.contains('btn-details')) {
+        btn.textContent = detail.classList.contains('open') ? 'Hide Details' : 'View Details';
+      }
+      // If closing from the close button, reset the View Details button text
+      if (btn.classList.contains('btn-close-detail')) {
+        var detailsBtn = card.querySelector('.btn-details');
+        if (detailsBtn) detailsBtn.textContent = 'View Details';
+      }
+    }
+  };
+
+  // ====== SHARE WITH CLIENT ======
+  window.shareItinerary = function(btn) {
+    var dest = btn.getAttribute('data-dest');
+    var title = btn.getAttribute('data-title');
+    var days = btn.getAttribute('data-days');
+    var brand = btn.getAttribute('data-brand');
+
+    // Get the card wrapper and find the description + day-by-day details
+    var card = btn.closest('.itin-card');
+    var descEl = card.querySelector('.itin-card-desc');
+    var description = descEl ? descEl.textContent.trim() : '';
+    var stylesEl = card.querySelector('.itin-card-styles');
+    var styles = stylesEl ? stylesEl.textContent.trim() : '';
+
+    // Build day-by-day section from the detail timeline
+    var dayItems = card.querySelectorAll('.day-item');
+    var dayLines = [];
+    dayItems.forEach(function(item) {
+      var label = item.querySelector('.day-label').textContent.trim();
+      var descStrong = item.querySelector('.day-desc strong');
+      var descSpan = item.querySelector('.day-desc span');
+      var dayTitle = descStrong ? descStrong.textContent.trim() : '';
+      var dayDesc = descSpan ? descSpan.textContent.trim() : '';
+      if (dayTitle && dayDesc) {
+        dayLines.push(label.toUpperCase() + ': ' + dayTitle + '\n' + dayDesc);
+      } else if (dayTitle) {
+        dayLines.push(label.toUpperCase() + ': ' + dayTitle);
+      }
+    });
+
+    var divider = '————————————————————————';
+
+    var text = title.toUpperCase() + '\n'
+      + dest + ' | ' + days + ' Days | ' + styles + '\n'
+      + 'Operated by ' + brand + '\n\n'
+      + divider + '\n\n'
+      + description + '\n\n'
+      + divider + '\n\n'
+      + 'DAY-BY-DAY ITINERARY\n\n'
+      + dayLines.join('\n\n')
+      + '\n\n' + divider + '\n\n'
+      + 'This itinerary is fully customizable — dates, hotels, pace, and activities can all be tailored to your client\'s preferences. Let me know if you\'d like me to put together a personalized proposal.';
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function() {
+        showTooltip(btn);
+      });
+    } else {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.left = '-9999px';
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      showTooltip(btn);
+    }
+  };
+
+  function showTooltip(btn) {
+    var tooltip = btn.querySelector('.tooltip');
+    if (tooltip) {
+      tooltip.classList.add('show');
+      setTimeout(function() { tooltip.classList.remove('show'); }, 1500);
+    }
+  }
+
+  // ====== SCROLL REVEAL ======
+  var revealEls = document.querySelectorAll('.reveal, .reveal-stagger');
+  var revealObserver = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry, i) {
+      if (entry.isIntersecting) {
+        // Stagger cards
+        var wrapper = entry.target.closest('.itin-card-wrapper');
+        var siblings = Array.from(document.querySelectorAll('.itin-card-wrapper:not(.hidden) .reveal'));
+        var idx = siblings.indexOf(entry.target);
+        var delay = idx >= 0 ? idx * 80 : 0;
+        setTimeout(function() {
+          entry.target.classList.add('visible');
+        }, Math.min(delay, 400));
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  revealEls.forEach(function(el) { revealObserver.observe(el); });
+
+  // ====== CUSTOMIZE MODAL ======
+  var custOverlay = document.getElementById('custOverlay');
+  var custClose = document.getElementById('custClose');
+  var custInfo = document.getElementById('custItinInfo');
+  var custDesc = document.getElementById('custItinDesc');
+  var custForm = document.getElementById('custForm');
+  var custSuccess = document.getElementById('custSuccess');
+
+  window.openCustomizeModal = function(btn) {
+    // Walk up to the itin-card to read all the details
+    var card = btn.closest('.itin-card');
+    var wrapper = btn.closest('.itin-card-wrapper');
+    if (!card) return;
+
+    var title = card.querySelector('.itin-card-title') ? card.querySelector('.itin-card-title').textContent.trim() : '';
+    var tags = card.querySelectorAll('.itin-tag');
+    var brand = tags.length > 0 ? tags[0].textContent.trim() : '';
+    var days = tags.length > 1 ? tags[1].textContent.trim() : '';
+    var styles = card.querySelector('.itin-card-styles') ? card.querySelector('.itin-card-styles').textContent.trim() : '';
+    var desc = card.querySelector('.itin-card-desc') ? card.querySelector('.itin-card-desc').textContent.trim() : '';
+    var dest = '';
+    if (wrapper) {
+      var shareBtn = card.querySelector('.btn-share');
+      if (shareBtn) dest = shareBtn.getAttribute('data-dest') || '';
+    }
+
+    custInfo.textContent = title + ' \u2014 ' + brand + ' \u00b7 ' + days + ' \u00b7 ' + styles;
+    custDesc.textContent = desc;
+
+    // Reset form
+    custForm.reset();
+    custForm.style.display = '';
+    custSuccess.style.display = 'none';
+
+    // Store the itinerary info on the form for submission
+    custForm.setAttribute('data-itin-title', title);
+    custForm.setAttribute('data-itin-brand', brand);
+    custForm.setAttribute('data-itin-dest', dest);
+    custForm.setAttribute('data-itin-days', days);
+
+    custOverlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  };
+
+  function closeCustModal() {
+    custOverlay.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  custClose.addEventListener('click', closeCustModal);
+  custOverlay.addEventListener('click', function(e) {
+    if (e.target === custOverlay) closeCustModal();
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && custOverlay.classList.contains('active')) closeCustModal();
+  });
+
+  custForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    var nameInput = document.getElementById('cf-name');
+    var emailInput = document.getElementById('cf-email');
+    var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    // Basic validation
+    var valid = true;
+    if (!nameInput.value.trim()) {
+      nameInput.style.borderBottomColor = '#c44';
+      valid = false;
+    } else {
+      nameInput.style.borderBottomColor = '';
+    }
+    if (!emailInput.value.trim() || !emailRegex.test(emailInput.value.trim())) {
+      emailInput.style.borderBottomColor = '#c44';
+      valid = false;
+    } else {
+      emailInput.style.borderBottomColor = '';
+    }
+    if (!valid) return;
+
+    // In production, submit to HubSpot here
+    custForm.style.display = 'none';
+    custSuccess.style.display = 'block';
+  });
+
+})();
+</script>
+
+</body>
+</html>

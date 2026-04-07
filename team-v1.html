@@ -1,0 +1,1314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Team | Travel Collection</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --navy: #304256;
+            --slate: #5b86a0;
+            --light: #eeeeee;
+            --surface: #f9f9f9;
+            --white: #ffffff;
+            --text: #2a2a2a;
+            --text-secondary: #6a6a6a;
+            --dark-footer: #111111;
+            --shadow-ambient: 0 20px 80px rgba(48, 66, 86, 0.06);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Manrope', sans-serif;
+            color: var(--text);
+            background: var(--white);
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        /* ===== NAVIGATION ===== */
+        .nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 1000;
+            padding: 0 3rem;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            transition: all 0.4s ease;
+        }
+        .nav-logo { display: flex; align-items: center; text-decoration: none; }
+        .nav-logo img {
+            height: 55px;
+            width: auto;
+        }
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2.5rem;
+            list-style: none;
+        }
+        .nav-links a {
+            color: var(--navy);
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            transition: color 0.3s;
+        }
+        .nav-links a:hover { color: var(--slate); }
+        .nav-links > li > a.nav-cta {
+            background: var(--slate);
+            border: none;
+            color: #fff !important;
+            padding: 0.6rem 1.8rem !important;
+            border-radius: 0;
+            font-family: var(--font-body);
+            font-size: 0.75rem !important;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .nav.scrolled .nav-links > li > a.nav-cta { background: var(--slate); color: #fff !important; }
+        .nav-links > li > a.nav-cta:hover { background: var(--navy); color: #fff !important; }
+        .nav-toggle {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            width: 30px;
+            height: 24px;
+            position: relative;
+        }
+        .nav-toggle span {
+            display: block;
+            width: 100%;
+            height: 2px;
+            background: var(--navy);
+            position: absolute;
+            left: 0;
+            transition: all 0.3s;
+        }
+        .nav-toggle span:nth-child(1) { top: 0; }
+        .nav-toggle span:nth-child(2) { top: 11px; }
+        .nav-toggle span:nth-child(3) { top: 22px; }
+        .nav-toggle.active span:nth-child(1) { top: 11px; transform: rotate(45deg); }
+        .nav-toggle.active span:nth-child(2) { opacity: 0; }
+        .nav-toggle.active span:nth-child(3) { top: 11px; transform: rotate(-45deg); }
+        .mobile-drawer {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: var(--navy);
+            z-index: 999;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+        }
+        .mobile-drawer.open { display: flex; }
+        .mobile-drawer a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 1.2rem;
+            font-weight: 400;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            font-family: var(--font-body);
+        }
+        .mobile-drawer a:hover { color: var(--slate); }
+
+        /* ===== HERO ===== */
+        .hero {
+            position: relative;
+            height: 50vh;
+            min-height: 420px;
+            display: flex;
+            align-items: flex-end;
+            overflow: hidden;
+            background: var(--navy);
+        }
+
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            background-image: url('https://images.unsplash.com/photo-1489749798305-4fea3ae63d43?w=1600&q=80');
+            background-size: cover;
+            background-position: center 30%;
+            opacity: 0.5;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(15, 25, 35, 0.85) 0%, rgba(48, 66, 86, 0.3) 60%, transparent 100%);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            padding: 0 48px 56px;
+            max-width: 1400px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .hero-line {
+            width: 40px;
+            height: 1px;
+            background: var(--light);
+            margin-bottom: 20px;
+        }
+
+        .hero-label {
+            font-family: 'Manrope', sans-serif;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--slate);
+            margin-bottom: 12px;
+        }
+
+        .hero h1 {
+            font-family: 'Noto Serif Display', serif;
+            font-size: 3.5rem;
+            font-weight: 600;
+            color: var(--white);
+            line-height: 1.1;
+            max-width: 700px;
+        }
+
+        .hero-subtitle {
+            font-family: 'Manrope', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 400;
+            color: rgba(238, 238, 238, 0.75);
+            margin-top: 16px;
+            max-width: 500px;
+            line-height: 1.6;
+        }
+
+        /* ===== BREADCRUMB ===== */
+        .breadcrumb {
+            background: var(--surface);
+            padding: 16px 48px;
+        }
+
+        .breadcrumb-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+            font-family: 'Manrope', sans-serif;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+        }
+
+        .breadcrumb-inner a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .breadcrumb-inner a:hover {
+            color: var(--navy);
+        }
+
+        .breadcrumb-inner span {
+            margin: 0 8px;
+            opacity: 0.4;
+        }
+
+        /* ===== TEAM INTRO ===== */
+        .team-intro {
+            padding: 100px 48px;
+            background: var(--white);
+        }
+
+        .team-intro-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: flex-start;
+            gap: 32px;
+            margin-left: 10%;
+        }
+
+        .team-intro-line {
+            width: 1px;
+            min-height: 60px;
+            background: var(--slate);
+            flex-shrink: 0;
+            margin-top: 6px;
+        }
+
+        .team-intro-text {
+            max-width: 700px;
+        }
+
+        .team-intro-text p {
+            font-family: 'Noto Serif Display', serif;
+            font-size: 1.35rem;
+            font-style: italic;
+            font-weight: 400;
+            color: var(--text);
+            line-height: 1.75;
+        }
+
+        /* ===== FILTER ===== */
+        .filter-section {
+            padding: 0 48px 60px;
+            background: var(--white);
+        }
+
+        .filter-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 32px;
+            align-items: center;
+        }
+
+        .filter-btn {
+            font-family: 'Manrope', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px 0;
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        .filter-btn::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--slate);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .filter-btn:hover {
+            color: var(--navy);
+        }
+
+        .filter-btn.active {
+            color: var(--navy);
+        }
+
+        .filter-btn.active::after {
+            transform: scaleX(1);
+        }
+
+        /* ===== TEAM GRID ===== */
+        .team-grid-section {
+            padding: 0 48px 120px;
+            background: var(--surface);
+        }
+
+        .team-grid-section-pad {
+            padding-top: 80px;
+        }
+
+        .team-grid {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 28px;
+        }
+
+        .team-card {
+            background: var(--white);
+            border-radius: 0;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.4s ease;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .team-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .team-card.stagger-offset {
+            margin-top: 40px;
+        }
+
+        .team-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-ambient);
+        }
+
+        .team-card.stagger-offset:hover {
+            transform: translateY(calc(40px - 4px));
+        }
+
+        .team-card-img {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 3 / 4;
+            overflow: hidden;
+            background: var(--light);
+        }
+
+        .team-card-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .team-card:hover .team-card-img img {
+            transform: scale(1.03);
+        }
+
+        .team-card-badge {
+            position: absolute;
+            bottom: 12px;
+            left: 12px;
+            font-family: 'Manrope', sans-serif;
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--slate);
+            background: var(--light);
+            padding: 5px 10px;
+            border-radius: 0;
+        }
+
+        .team-card-info {
+            padding: 20px 20px 24px;
+        }
+
+        .team-card-name {
+            font-family: 'Noto Serif Display', serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--navy);
+            margin-bottom: 4px;
+        }
+
+        .team-card-role {
+            font-family: 'Manrope', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--slate);
+            margin-bottom: 6px;
+        }
+
+        .team-card-dest {
+            font-family: 'Manrope', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 400;
+            color: var(--text-secondary);
+        }
+
+        /* ===== MODAL ===== */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 2000;
+            background: rgba(15, 25, 35, 0.6);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            opacity: 0;
+            transition: opacity 0.35s ease;
+        }
+
+        .modal-overlay.open {
+            display: flex;
+        }
+
+        .modal-overlay.visible {
+            opacity: 1;
+        }
+
+        .modal {
+            background: var(--white);
+            border-radius: 0;
+            max-width: 750px;
+            width: 100%;
+            max-height: 85vh;
+            overflow-y: auto;
+            position: relative;
+            transform: translateY(20px);
+            transition: transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .modal-overlay.visible .modal {
+            transform: translateY(0);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 16px;
+            right: 20px;
+            font-size: 1.6rem;
+            font-weight: 300;
+            color: var(--text-secondary);
+            background: none;
+            border: none;
+            cursor: pointer;
+            z-index: 10;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.2s;
+        }
+
+        .modal-close:hover {
+            color: var(--navy);
+        }
+
+        .modal-img {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            overflow: hidden;
+            background: var(--light);
+        }
+
+        .modal-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center 20%;
+            display: block;
+        }
+
+        .modal-body {
+            padding: 36px 40px 44px;
+        }
+
+        .modal-name {
+            font-family: 'Noto Serif Display', serif;
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: var(--navy);
+            margin-bottom: 6px;
+        }
+
+        .modal-role {
+            font-family: 'Manrope', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--slate);
+            margin-bottom: 4px;
+        }
+
+        .modal-dest {
+            font-family: 'Manrope', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 400;
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+        }
+
+        .modal-bio {
+            font-family: 'Manrope', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 400;
+            color: var(--text);
+            line-height: 1.75;
+        }
+
+        /* ===== CTA SECTION ===== */
+        .cta-section {
+            background: var(--navy);
+            padding: 100px 48px;
+            text-align: center;
+        }
+
+        .cta-section .cta-label {
+            font-family: 'Manrope', sans-serif;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--slate);
+            margin-bottom: 16px;
+        }
+
+        .cta-section h2 {
+            font-family: 'Noto Serif Display', serif;
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: var(--light);
+            max-width: 600px;
+            margin: 0 auto 16px;
+            line-height: 1.2;
+        }
+
+        .cta-section p {
+            font-family: 'Manrope', sans-serif;
+            font-size: 1rem;
+            color: rgba(238, 238, 238, 0.65);
+            max-width: 500px;
+            margin: 0 auto 32px;
+            line-height: 1.6;
+        }
+
+        .cta-button {
+            display: inline-block;
+            font-family: 'Manrope', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--white);
+            background: var(--slate);
+            padding: 14px 36px;
+            border-radius: 0;
+            text-decoration: none;
+            transition: background 0.25s ease;
+        }
+
+        .cta-button:hover {
+            background: #4a7589;
+        }
+
+        /* Footer styles loaded from components/footer.css */
+
+        /* ===== ANIMATIONS & MICRO-ANIMATIONS ===== */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        /* Staggered children reveal */
+        .reveal-stagger > * {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        .reveal-stagger.visible > * {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .reveal-stagger.visible > *:nth-child(1) { transition-delay: 0s; }
+        .reveal-stagger.visible > *:nth-child(2) { transition-delay: 0.06s; }
+        .reveal-stagger.visible > *:nth-child(3) { transition-delay: 0.12s; }
+        .reveal-stagger.visible > *:nth-child(4) { transition-delay: 0.18s; }
+        .reveal-stagger.visible > *:nth-child(5) { transition-delay: 0.24s; }
+        .reveal-stagger.visible > *:nth-child(6) { transition-delay: 0.30s; }
+        .reveal-stagger.visible > *:nth-child(7) { transition-delay: 0.36s; }
+        .reveal-stagger.visible > *:nth-child(8) { transition-delay: 0.42s; }
+        /* Team card hover lift */
+        .team-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .team-card:hover {
+            transform: translateY(-4px) !important;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.1);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1024px) {
+            .team-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 24px;
+            }
+            .team-card.stagger-offset {
+                margin-top: 0;
+            }
+            .team-card.stagger-offset:hover {
+                transform: translateY(-4px);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav {
+                padding: 0 1.5rem;
+            }
+            .nav-links {
+                display: none;
+            }
+            .nav-toggle {
+                display: block;
+            }
+            .hero {
+                min-height: 360px;
+            }
+            .hero h1 {
+                font-size: 2.4rem;
+            }
+            .hero-content {
+                padding: 0 24px 40px;
+            }
+            .breadcrumb {
+                padding: 16px 24px;
+            }
+            .team-intro {
+                padding: 60px 24px;
+            }
+            .team-intro-inner {
+                margin-left: 0;
+            }
+            .team-intro-text p {
+                font-size: 1.15rem;
+            }
+            .filter-section {
+                padding: 0 24px 40px;
+            }
+            .filter-inner {
+                gap: 20px;
+            }
+            .team-grid-section {
+                padding: 0 24px 80px;
+            }
+            .team-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+            }
+            .team-card.stagger-offset {
+                margin-top: 0;
+            }
+            .team-card.stagger-offset:hover {
+                transform: translateY(-4px);
+            }
+            .cta-section {
+                padding: 60px 24px;
+            }
+            .cta-section h2 {
+                font-size: 2rem;
+            }
+            .footer-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            .modal-overlay {
+                padding: 20px;
+            }
+            .modal-body {
+                padding: 24px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 1.9rem;
+            }
+            .team-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            .filter-inner {
+                gap: 16px;
+            }
+            .footer-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+    <link rel="stylesheet" href="components/footer.css">
+</head>
+<body>
+
+    <!-- NAVIGATION (shared component) -->
+    <nav class="nav" id="shared-nav"></nav>
+    <div class="mobile-drawer" id="shared-drawer"></div>
+    <script src="components/nav-main.js"></script>
+
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <div class="hero-line"></div>
+            <div class="hero-label">Our People</div>
+            <h1>Meet the Team Behind the Collection</h1>
+            <p class="hero-subtitle">The leaders and local experts who craft extraordinary travel experiences across four continents and 22 destinations.</p>
+        </div>
+    </section>
+
+    <!-- BREADCRUMB -->
+    <div class="breadcrumb">
+        <div class="breadcrumb-inner">
+            <a href="#">Home</a>
+            <span>/</span>
+            <a href="#">About</a>
+            <span>/</span>
+            Our Team
+        </div>
+    </div>
+
+    <!-- TEAM INTRO -->
+    <section class="team-intro fade-in">
+        <div class="team-intro-inner">
+            <div class="team-intro-line"></div>
+            <div class="team-intro-text">
+                <p>From our co-founders and leadership team to the General Managers who live and breathe their destinations, every member of Travel Collection brings world-class expertise and an unshakeable passion for their corner of the globe. They are the architects of every journey we craft.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- FILTER -->
+    <div class="filter-section fade-in">
+        <div class="filter-inner">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="leadership">Leadership</button>
+            <button class="filter-btn" data-filter="africa-mideast">Africa &amp; Middle East</button>
+            <button class="filter-btn" data-filter="europe">Europe</button>
+            <button class="filter-btn" data-filter="asia-pacific">Asia &amp; Pacific</button>
+            <button class="filter-btn" data-filter="americas">Americas</button>
+        </div>
+    </div>
+
+    <!-- TEAM GRID -->
+    <section class="team-grid-section team-grid-section-pad">
+        <div class="team-grid reveal-stagger" id="teamGrid">
+
+            <!-- LEADERSHIP -->
+            <div class="team-card" data-category="leadership"
+                data-name="Hicham Alaoui" data-role="Co-Founder" data-dest=""
+                data-img="https://cdn.prod.website-files.com/645dce8d3cf060ba152e3ed6/646c6fd93e244b8b05148aa9_Hicham.png"
+                data-bio="Hicham grew up in bustling Casablanca before leaving Morocco to pursue his bachelor's degree from Princeton University. He then joined Google where he spent four years in Product and Sales Marketing before moving to Boston to complete his MBA at Harvard. His passion for drumming is equaled only by his love of Moroccan mint tea.">
+                <div class="team-card-img">
+                    <img src="https://cdn.prod.website-files.com/645dce8d3cf060ba152e3ed6/646c6fd93e244b8b05148aa9_Hicham.png" alt="Hicham Alaoui" loading="lazy">
+                    <span class="team-card-badge">Leadership</span>
+                </div>
+                <div class="team-card-info">
+                    <div class="team-card-name">Hicham Alaoui</div>
+                    <div class="team-card-role">Co-Founder</div>
+                </div>
+            </div>
+
+            <div class="team-card" data-category="leadership"
+                data-name="Ghassan Rachid" data-role="Co-Founder" data-dest=""
+                data-img="https://cdn.prod.website-files.com/645dce8d3cf060ba152e3ed6/646c6fa621d9bb039375db1e_Ghassan.png"
+                data-bio="Ghassan grew up in Rabat and has explored every corner of Morocco along with over 60 countries. He received his master's from Mines Paris and then worked at Morgan Stanley and McKinsey &amp; Co. He went on to pursue his MBA at Harvard as a Fulbright scholar. A consummate nerd and cinephile, Ghassan enjoys solving puzzles and is a big fan of auteur films.">
+                <div class="team-card-img">
+                    <img src="https://cdn.prod.website-files.com/645dce8d3cf060ba152e3ed6/646c6fa621d9bb039375db1e_Ghassan.png" alt="Ghassan Rachid" loading="lazy">
+                    <span class="team-card-badge">Leadership</span>
+                </div>
+                <div class="team-card-info">
+                    <div class="team-card-name">Ghassan Rachid</div>
+                    <div class="team-card-role">Co-Founder</div>
+                </div>
+            </div>
+
+            <div class="team-card" data-category="leadership"
+                data-name="Tucker J Dearth" data-role="COO" data-dest=""
+                data-img="https://cdn.prod.website-files.com/645dce8d3cf060ba152e3ed6/646c70f593afedae7e324b78_TJD.jpg"
+                data-bio="Tucker grew up in Alabama with a love for travel since a young age. He received his MBA at IESE in Spain and then worked at Morgan Stanley in London. Tucker has since held CFO roles and led fundraisings totalling more than $100m in equity and venture debt as well as private company exits. A traveller to over 70 countries, Tucker is always seeking out the most exotic destinations.">
+                <div class="team-card-img">
+                    <img src="https://cdn.prod.website-files.com/645dce8d3cf060ba152e3ed6/646c70f593afedae7e324b78_TJD.jpg" alt="Tucker J Dearth" loading="lazy">
+                    <span class="team-card-badge">Leadership</span>
+                </div>
+                <div class="team-card-info">
+                    <div class="team-card-name">Tucker J Dearth</div>
+                    <div class="team-card-role">COO</div>
+                </div>
+            </div>
+
+            <div class="team-card" data-category="leadership"
+                data-name="Ihab El Alami" data-role="CTO" data-dest="Global"
+                data-img="https://cdn.prod.website-files.com/645dce8d3cf060ba152e3ed6/6478379e458c23ab13f5259c_Ihab.png"
+                data-bio="Ihab grew up in Morocco and graduated from Ecoles des Mines de Nancy in France. He started his career in Silicon Valley as an IT consultant before discovering his passion for product management. He has worked in several American and French technology startups designing their products. Ihab is an avid tennis player, as well as a classical and arabic music fan.">
+                <div class="team-card-img">
+                    <img src="https://cdn.prod.website-files.com/645dce8d3cf060ba152e3ed6/6478379e458c23ab13f5259c_Ihab.png" alt="Ihab El Alami" loading="lazy">
+                    <span class="team-card-badge">Leadership</span>
+                </div>
+                <div class="team-card-info">
+                    <div class="team-card-name">Ihab El Alami</div>
+                    <div class="team-card-role">CTO</div>
+                    <div class="team-card-dest">Global</div>
+                </div>
+            </div>
+
+            <div class="team-card" data-category="leadership"
+                data-name="Giulia Marri" data-role="Chief of Staff" data-dest="Global"
+                data-img="https://cdn.prod.website-files.com/645dce8d3cf060ba152e3ed6/66d57eb037cb3e640b458c07_Giulia%20Marri%20crop.jpg"
+                data-bio="Giulia, Italian by birth, is a country-hopping citizen and an accomplished travel professional. Her career flourished in London, working for online travel companies like Voyage Priv&eacute; and Expedia Group. She managed hotel portfolios and advised on pricing and revenue strategies. Her expertise lies in enhancing financial outcomes and client relationships. With an academic background in tourism, Giulia recently completed her MBA at IESE Business School in Barcelona. Fluent in English, Italian, and Spanish, she loves exploring local cuisines, engaging in outdoor activities, skiing and playing padel.">
+                <div class="team-card-img">
+                    <img src="https://cdn.prod.website-files.com/645dce8d3cf060ba152e3ed6/66d57eb037cb3e640b458c07_Giulia%20Marri%20crop.jpg" alt="Giulia Marri" loading="lazy">
+                    <span class="team-card-badge">Leadership</span>
+                </div>
+                <div class="team-card-info">
+                    <div class="team-card-name">Giulia Marri</div>
+                    <div class="team-card-role">Chief of Staff</div>
+                    <div class="team-card-dest">Global</div>
+                </div>
+            </div>
+
+            <div class="team-card" data-category="leadership"
+                data-name="Milena Stancati" data-role="Director of Business Development" data-dest="United States"
+                data-img="https://cdn.prod.website-files.com/645dce8d3cf060ba152e3ed6/68a5c277ad3f594c8b18d70b_Screenshot%202025-08-19%20at%208.23.41%E2%80%AFAM.png"
+                data-bio="Milena grew up in the suburbs of New York, the daughter of an Italian immigrant father whose heritage first sparked her love of travel. That passion led her abroad during college, where she studied across Europe and discovered the thrill of exploring new cultures. With more than a decade in the travel industry, she has built her career in B2B sales and travel advisor partnerships, becoming a trusted advocate for advisors and is based in the U.S. A passionate globetrotter and aspiring motivational speaker, Milena thrives on building connections and inspiring others. An avid runner and NYC Marathon finisher, she brings the same dedication to her professional life and travels, having visited over 60 countries to date.">
+                <div class="team-card-img">
+                    <img src="https://cdn.prod.website-files.com/645dce8d3cf060ba152e3ed6/68a5c277ad3f594c8b18d70b_Screenshot%202025-08-19%20at%208.23.41%E2%80%AFAM.png" alt="Milena Stancati" loading="lazy">
+                    <span class="team-card-badge">Leadership</span>
+                </div>
+                <div class="team-card-info">
+                    <div class="team-card-name">Milena Stancati</div>
+                    <div class="team-card-role">Director of Business Development</div>
+                    <div class="team-card-dest">United States</div>
+                </div>
+            </div>
+
+            <!-- AFRICA & MIDDLE EAST -->
+            <div class="team-card" data-category="africa-mideast"
+                data-name="Maryama El Adama" data-role="General Manager" data-dest="Experience Morocco"
+                data-img="https://cdn.prod.website-files.com/645dce8d3cf060ba152e3ed6/646c70e86e5bc7de46bc76e0_Maryama.jpg"
+                data-bio="Maryama stepped up to the GM role after leading EM's Business Development efforts for four years. She started her hospitality career at Kerzner before joining Four Seasons Hotels &amp; Resorts. Combining her love for travel and her unique experience in the luxury hospitality industry, she oversees all departments and operations at EM. Her main goal is to ensure each EM guest is leaving Morocco with unforgettable memories.">
+                <div class="team-card-img">
+                    <img src="https://cdn.prod.website-files.com/645dce8d3cf060ba152e3ed6/646c70e86e5bc7de46bc76e0_Maryama.jpg" alt="Maryama El Adama" loading="lazy">
+                    <span class="team-card-badge">Africa &amp; Middle East</span>
+                </div>
+                <div class="team-card-info">
+                    <div class="team-card-name">Maryama El Adama</div>
+                    <div class="team-card-role">General Manager</div>
+                    <div class="team-card-dest">Experience Morocco</div>
+                </div>
+            </div>
+
+            <div class="team-card" data-category="africa-mideast"
+                data-name="Melvin Mapetla" data-role="General Manager" data-dest="Truly Swahili &middot; East Africa"
+                data-img="https://cdn.prod.website-files.com/645dce8d3cf060ba152e3ed6/657720b079cf8f0fbd91a1e0_MM2.png"
+                data-bio="Melvin's career, deeply rooted in East Africa where he was born and raised, began in the travel industry in Uganda. He then moved to Andela overseeing travel in East Africa and Egypt. At Sama he led a significant AI project for one of the world's biggest autonomous vehicle companies. With a background in Physics and an MBA from Edinburgh Napier University, he's as comfortable with formulas as he is with travel itineraries. In his downtime, he is a self-described non-cooking foodie and a passionate traveler, always seeking new cultural adventures.">
+                <div class="team-card-img">
+                    <img src="https://cdn.prod.website-files.com/645dce8d3cf060ba152e3ed6/657720b079cf8f0fbd91a1e0_MM2.png" alt="Melvin Mapetla" loading="lazy">
+                    <span class="team-card-badge">Africa &amp; Middle East</span>
+                </div>
+                <div class="team-card-info">
+                    <div class="team-card-name">Melvin Mapetla</div>
+                    <div class="team-card-role">General Manager</div>
+                    <div class="team-card-dest">Truly Swahili &middot; East Africa</div>
+                </div>
+            </div>
+
+            <div class="team-card" data-category="africa-mideast"
+                data-name="Radia Tehitahe" data-role="General Manager" data-dest="Majlis Retreats &middot; UAE"
+                data-img="https://cdn.prod.website-files.com/645dce8d3cf060ba152e3ed6/66750e43eed4c1f1d21f1c99_RT2.jpg"
+                data-bio="Radia is a seasoned professional with a degree in Business Management and a robust background in the luxury travel industry. She has accumulated considerable experience across sales, operations, product management, and business development. Radia's expertise is exemplified by her previous role at Experience Morocco, where she successfully led the sales team, driving significant growth. Beyond her professional endeavors, she is passionate about traveling, Latin dancing, and savoring culinary experiences.">
+                <div class="team-card-img">
+                    <img src="https://cdn.prod.website-files.com/645dce8d3cf060ba152e3ed6/66750e43eed4c1f1d21f1c99_RT2.jpg" alt="Radia Tehitahe" loading="lazy">
+                    <span class="team-card-badge">Africa &amp; Middle East</span>
+                </div>
+                <div class="team-card-info">
+                    <div class="team-card-name">Radia Tehitahe</div>
+                    <div class="team-card-role">General Manager</div>
+                    <div class="team-card-dest">Majlis Retreats &middot; UAE</div>
+                </div>
+            </div>
+
+            <!-- EUROPE -->
+            <div class="team-card" data-category="europe"
+                data-name="Alberto Buzzanca" data-role="General Manager" data-dest="Authenticus Italy"
+                data-img="https://cdn.prod.website-files.com/645dce8d3cf060ba152e3ed6/646c706285a2b93646e0a2fb_Alberto.png"
+                data-bio="Born and raised in Palermo, Sicily, Alberto received his bachelor's and master's degree in management from Universit&agrave; Cattolica in Milan. He started his career at Accenture and then worked at J.P. Morgan in Milan and New York, before obtaining his MBA from INSEAD in Fontainebleau. Addicted to the sea, on his time off, you will likely find Alberto windsurfing in his native Gulf of Mondello.">
+                <div class="team-card-img">
+                    <img src="https://cdn.prod.website-files.com/645dce8d3cf060ba152e3ed6/646c706285a2b93646e0a2fb_Alberto.png" alt="Alberto Buzzanca" loading="lazy">
+                    <span class="team-card-badge">Europe</span>
+                </div>
+                <div class="team-card-info">
+                    <div class="team-card-name">Alberto Buzzanca</div>
+                    <div class="team-card-role">General Manager</div>
+                    <div class="team-card-dest">Authenticus Italy</div>
+                </div>
+            </div>
+
+            <div class="team-card" data-category="europe"
+                data-name="Juan Gonzalez Mu&ntilde;oz-Yusta" data-role="General Manager" data-dest="Unbox Spain &amp; Portugal"
+                data-img="https://cdn.prod.website-files.com/645dce8d3cf060ba152e3ed6/657701860295fc5759c44ff6_Gonzalez%2C%20Juan%5B1943%5D.JPG"
+                data-bio="Juan was born in Madrid but raised in Southern Brazil, London, and Dubai before relocating to the USA to complete his bachelor's degree in International Business. He then joined Mercedes-Benz in the Middle East as a Business Development Executive before returning to Spain to work in Investment Banking at BBVA and pursue his MBA at IESE Business School. He loves to play tennis but his affection for a seaside paella in Ibiza is equally profound.">
+                <div class="team-card-img">
+                    <img src="https://cdn.prod.website-files.com/645dce8d3cf060ba152e3ed6/657701860295fc5759c44ff6_Gonzalez%2C%20Juan%5B1943%5D.JPG" alt="Juan Gonzalez" loading="lazy">
+                    <span class="team-card-badge">Europe</span>
+                </div>
+                <div class="team-card-info">
+                    <div class="team-card-name">Juan Gonzalez Mu&ntilde;oz-Yusta</div>
+                    <div class="team-card-role">General Manager</div>
+                    <div class="team-card-dest">Unbox Spain &amp; Portugal</div>
+                </div>
+            </div>
+
+            <div class="team-card" data-category="europe"
+                data-name="Karen Gee" data-role="General Manager" data-dest="Crown Journey &middot; United Kingdom"
+                data-img="https://cdn.prod.website-files.com/645dce8d3cf060ba152e3ed6/66750d79058d39433a5a8acb_KG.jpg"
+                data-bio="With a BA Honours in International Marketing, Karen has over 30 years experience in the UK travel industry, holding leadership positions in escorted tour, beach, rail and cruise companies such as Kuoni, Shearings, First Choice, Thomas Cook and Airtours, and winning industry awards for her travel marketing campaigns. She is now focusing on the UK as a destination, showcasing all it has to offer overseas visitors with an exceptional range of innovative and creative itineraries. Despite being a frequent flyer, she has yet to master the art of travelling light.">
+                <div class="team-card-img">
+                    <img src="https://cdn.prod.website-files.com/645dce8d3cf060ba152e3ed6/66750d79058d39433a5a8acb_KG.jpg" alt="Karen Gee" loading="lazy">
+                    <span class="team-card-badge">Europe</span>
+                </div>
+                <div class="team-card-info">
+                    <div class="team-card-name">Karen Gee</div>
+                    <div class="team-card-role">General Manager</div>
+                    <div class="team-card-dest">Crown Journey &middot; United Kingdom</div>
+                </div>
+            </div>
+
+            <div class="team-card" data-category="europe"
+                data-name="Hazan Sucu" data-role="General Manager" data-dest="SAR T&uuml;rkiye"
+                data-img="https://cdn.prod.website-files.com/645dce8d3cf060ba152e3ed6/695382f4ce7fea9340be2974_Hazan3.jpg"
+                data-bio="Born and raised in T&uuml;rkiye, Hazan studied Economics and Political Science at Middlebury College and earned her MBA from Harvard Business School. After building a career in finance and sustainability in London and New York, she returned to her roots with a vision: to reveal T&uuml;rkiye not as a destination to be checked off, but as a living story to be embraced again and again. As General Manager of SAR T&uuml;rkiye, she weaves heritage, culture, and comfort into journeys that welcome travelers not as outsiders, but as part of the story.">
+                <div class="team-card-img">
+                    <img src="https://cdn.prod.website-files.com/645dce8d3cf060ba152e3ed6/695382f4ce7fea9340be2974_Hazan3.jpg" alt="Hazan Sucu" loading="lazy">
+                    <span class="team-card-badge">Europe</span>
+                </div>
+                <div class="team-card-info">
+                    <div class="team-card-name">Hazan Sucu</div>
+                    <div class="team-card-role">General Manager</div>
+                    <div class="team-card-dest">SAR T&uuml;rkiye</div>
+                </div>
+            </div>
+
+            <div class="team-card" data-category="europe"
+                data-name="Aris Mitropoulos" data-role="General Manager" data-dest="Nostos Greece"
+                data-img="https://cdn.prod.website-files.com/645dce8d3cf060ba152e3ed6/695383d83652d900b2522f6a_Aris4.jpg"
+                data-bio="Aris was born and raised in Athens, Greece, where he spent summers exploring the Greek islands and countryside. He studied Industrial and Operations Engineering at the University of Michigan and earned an MBA from London Business School. He began his career as a consultant with EY in Chicago, gaining experience in client service and project management. While living abroad, Aris often shared the history and culture of Greece with friends and organized their trips back home. Today, he combines international business experience with a passion for hospitality, creating authentic and memorable experiences in his homeland.">
+                <div class="team-card-img">
+                    <img src="https://cdn.prod.website-files.com/645dce8d3cf060ba152e3ed6/695383d83652d900b2522f6a_Aris4.jpg" alt="Aris Mitropoulos" loading="lazy">
+                    <span class="team-card-badge">Europe</span>
+                </div>
+                <div class="team-card-info">
+                    <div class="team-card-name">Aris Mitropoulos</div>
+                    <div class="team-card-role">General Manager</div>
+                    <div class="team-card-dest">Nostos Greece</div>
+                </div>
+            </div>
+
+            <div class="team-card" data-category="europe"
+                data-name="Livy Leroy" data-role="General Manager" data-dest="Essentially French"
+                data-img="https://cdn.prod.website-files.com/645dce8d3cf060ba152e3ed6/67f39e7df2b4535ec159f02c_Livy%20C.jpg"
+                data-bio="Livy grew up in the French Caribbean, where she developed a passion for exploration. With over a decade in the travel industry, she worked with some of the most prestigious names in luxury, crafting unforgettable experiences for discerning travelers and renowned brands. From tasting Bordeaux's finest vintages to curating exclusive dinners, or arranging private encounters with master craftsmen; she has created moments to remember.">
+                <div class="team-card-img">
+                    <img src="https://cdn.prod.website-files.com/645dce8d3cf060ba152e3ed6/67f39e7df2b4535ec159f02c_Livy%20C.jpg" alt="Livy Leroy" loading="lazy">
+                    <span class="team-card-badge">Europe</span>
+                </div>
+                <div class="team-card-info">
+                    <div class="team-card-name">Livy Leroy</div>
+                    <div class="team-card-role">General Manager</div>
+                    <div class="team-card-dest">Essentially French</div>
+                </div>
+            </div>
+
+            <!-- ASIA & PACIFIC -->
+            <div class="team-card" data-category="asia-pacific"
+                data-name="Hiroshi Tsuji" data-role="General Manager" data-dest="Oshinobi Travel &middot; Japan"
+                data-img="https://cdn.prod.website-files.com/645dce8d3cf060ba152e3ed6/66750db5f55bb4247fd97349_HT.jpg"
+                data-bio="Hiroshi is a business professional dedicated to delivering the highest quality to customers. Born and raised in Japan, he graduated from Waseda University and began his banking career at Mizuho Bank, honing his analytical acumen, executive communication skills, and professionalism. He obtained his MBA from UCLA Anderson seeking global exposure. During his MBA, he organized a Japan Trek for over 200 participants with a tailor-made itinerary, which ignited his passion for travel. Fluent in English and Japanese, Hiroshi enjoys discovering excellent ramen restaurants and exploring scenic countryside by train.">
+                <div class="team-card-img">
+                    <img src="https://cdn.prod.website-files.com/645dce8d3cf060ba152e3ed6/66750db5f55bb4247fd97349_HT.jpg" alt="Hiroshi Tsuji" loading="lazy">
+                    <span class="team-card-badge">Asia &amp; Pacific</span>
+                </div>
+                <div class="team-card-info">
+                    <div class="team-card-name">Hiroshi Tsuji</div>
+                    <div class="team-card-role">General Manager</div>
+                    <div class="team-card-dest">Oshinobi Travel &middot; Japan</div>
+                </div>
+            </div>
+
+            <div class="team-card" data-category="asia-pacific"
+                data-name="Chloe Ong" data-role="General Manager" data-dest="Kembali Asia"
+                data-img="https://cdn.prod.website-files.com/645dce8d3cf060ba152e3ed6/66757901e4adb34c4d24ec62_CO3.JPG"
+                data-bio="Chloe has had a lifelong connection to Bali. With degrees in Geology and Accounting from UNSW, her post-graduate thesis explored the impacts of tourism on Balinese society. Chloe has over five years in C-level executive roles, excelling in business development, finance, marketing, and sales. She has successfully launched and scaled brands in real estate, fashion and hospitality, managed substantial marketing budgets, and led diverse global teams. Chloe loves all things to do with anthropology, biohacking, environmentalism and the arts.">
+                <div class="team-card-img">
+                    <img src="https://cdn.prod.website-files.com/645dce8d3cf060ba152e3ed6/66757901e4adb34c4d24ec62_CO3.JPG" alt="Chloe Ong" loading="lazy">
+                    <span class="team-card-badge">Asia &amp; Pacific</span>
+                </div>
+                <div class="team-card-info">
+                    <div class="team-card-name">Chloe Ong</div>
+                    <div class="team-card-role">General Manager</div>
+                    <div class="team-card-dest">Kembali Asia</div>
+                </div>
+            </div>
+
+            <div class="team-card" data-category="asia-pacific"
+                data-name="Aaron Hocking" data-role="General Manager" data-dest="Elura Australia"
+                data-img="https://cdn.prod.website-files.com/645dce8d3cf060ba152e3ed6/69538303d8e7404f6a7004c4_Aaron2.jpg"
+                data-bio="Aaron grew up in Australia, where his love for discovery and connection with people shaped a lifelong passion for travel. With over 15 years in the travel industry, he has explored more than 55 countries and lived and worked across Europe, North America, and the Asia Pacific, giving him a truly global perspective.">
+                <div class="team-card-img">
+                    <img src="https://cdn.prod.website-files.com/645dce8d3cf060ba152e3ed6/69538303d8e7404f6a7004c4_Aaron2.jpg" alt="Aaron Hocking" loading="lazy">
+                    <span class="team-card-badge">Asia &amp; Pacific</span>
+                </div>
+                <div class="team-card-info">
+                    <div class="team-card-name">Aaron Hocking</div>
+                    <div class="team-card-role">General Manager</div>
+                    <div class="team-card-dest">Elura Australia</div>
+                </div>
+            </div>
+
+            <div class="team-card" data-category="asia-pacific"
+                data-name="Nick Sakunworaratana" data-role="General Manager" data-dest="Nira Thailand"
+                data-img="https://cdn.prod.website-files.com/645dce8d3cf060ba152e3ed6/69538234c9481d60eaaa53c2_Nick.jpg"
+                data-bio="Raised in Bangkok, Thailand, Nick combined his roots with a love of discovery to build a career that bridges cultures and travel. After earning a degree in Economics from Chulalongkorn University, spending a semester abroad in Sweden, and completing an MBA at Columbia Business School, he gained experience in consulting, driving strategic and operational improvements across Thailand and the U.S. Today, he channels this global perspective into crafting immersive travel experiences that reveal Thailand as a living story. He has visited more than 50 countries and continues to explore new destinations.">
+                <div class="team-card-img">
+                    <img src="https://cdn.prod.website-files.com/645dce8d3cf060ba152e3ed6/69538234c9481d60eaaa53c2_Nick.jpg" alt="Nick Sakunworaratana" loading="lazy">
+                    <span class="team-card-badge">Asia &amp; Pacific</span>
+                </div>
+                <div class="team-card-info">
+                    <div class="team-card-name">Nick Sakunworaratana</div>
+                    <div class="team-card-role">General Manager</div>
+                    <div class="team-card-dest">Nira Thailand</div>
+                </div>
+            </div>
+
+            <!-- AMERICAS -->
+            <div class="team-card" data-category="americas"
+                data-name="Cintli Chac&oacute;n Ramos" data-role="General Manager" data-dest="Across Mexico"
+                data-img="https://cdn.prod.website-files.com/645dce8d3cf060ba152e3ed6/66750cd1387dbedb91c02696_CCR.jpeg"
+                data-bio="Cintli, an Economics graduate from Mexico City, discovered her passion for traveling during an exchange program in Italy. She later earned an MBA from ESADE in Spain and participated in an exchange at Booth in Chicago. With a successful career spanning finance to commercial roles in companies like Merck and J&amp;J, Cintli is now excited to apply her knowledge to create transformative travel experiences. You'll frequently find her exploring culinary delights and enjoying serene beaches.">
+                <div class="team-card-img">
+                    <img src="https://cdn.prod.website-files.com/645dce8d3cf060ba152e3ed6/66750cd1387dbedb91c02696_CCR.jpeg" alt="Cintli Chacon Ramos" loading="lazy">
+                    <span class="team-card-badge">Americas</span>
+                </div>
+                <div class="team-card-info">
+                    <div class="team-card-name">Cintli Chac&oacute;n Ramos</div>
+                    <div class="team-card-role">General Manager</div>
+                    <div class="team-card-dest">Across Mexico</div>
+                </div>
+            </div>
+
+            <div class="team-card" data-category="americas"
+                data-name="Santiago Sabogal" data-role="General Manager" data-dest="Vista Colombia"
+                data-img="https://cdn.prod.website-files.com/645dce8d3cf060ba152e3ed6/6953842d688e50587d853b03_Santi.png"
+                data-bio="Santiago was born and raised in Bogot&aacute;, Colombia, where he developed a deep appreciation for his country and its culture. He studied Business Administration at CESA and later earned his MBA at INSEAD. Along the way, his natural curiosity grew into a passion for exploring new places and cultures, a journey that has taken him to more than 45 countries. His career in consulting, startups and venture capital across Latin America and Europe have given him broad international experience and a talent for connecting with diverse people. Today, he blends this global background with his passion for Colombia to craft memorable journeys with Vista Colombia.">
+                <div class="team-card-img">
+                    <img src="https://cdn.prod.website-files.com/645dce8d3cf060ba152e3ed6/6953842d688e50587d853b03_Santi.png" alt="Santiago Sabogal" loading="lazy">
+                    <span class="team-card-badge">Americas</span>
+                </div>
+                <div class="team-card-info">
+                    <div class="team-card-name">Santiago Sabogal</div>
+                    <div class="team-card-role">General Manager</div>
+                    <div class="team-card-dest">Vista Colombia</div>
+                </div>
+            </div>
+
+            <div class="team-card" data-category="americas"
+                data-name="Diego Nieto" data-role="General Manager" data-dest="Awaken Peru"
+                data-img="https://cdn.prod.website-files.com/645dce8d3cf060ba152e3ed6/6953847b135f9da97d15d11f_Diego.jpg"
+                data-bio="Diego comes from a rural family from the Andes mountains that settled in Lima, Peru's vibrant coastal capital. He studied Economics at the University of Lima and later earned his MBA at IMD Business School in Switzerland. Diego has built his career as both a finance expert and an entrepreneur. His drive and autonomy have taken him across many regions of Peru, where being close to nature and people connects him with sacred sources of energy. Diego is addicted to road trips and surfing hidden gems. Today, he combines his deep knowledge of his country with his passion for hospitality to share the Peruvian spirit.">
+                <div class="team-card-img">
+                    <img src="https://cdn.prod.website-files.com/645dce8d3cf060ba152e3ed6/6953847b135f9da97d15d11f_Diego.jpg" alt="Diego Nieto" loading="lazy">
+                    <span class="team-card-badge">Americas</span>
+                </div>
+                <div class="team-card-info">
+                    <div class="team-card-name">Diego Nieto</div>
+                    <div class="team-card-role">General Manager</div>
+                    <div class="team-card-dest">Awaken Peru</div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- CTA SECTION -->
+    <section class="cta-section fade-in">
+        <div class="cta-label">Work With Us</div>
+        <h2>Ready to craft your next journey?</h2>
+        <p>Connect with our team of local experts and let us design the trip of a lifetime.</p>
+        <a href="#" class="cta-button">Get In Touch</a>
+    </section>
+
+    <!-- FOOTER (shared component) -->
+    <div id="shared-footer"></div>
+    <script src="components/footer.js"></script>
+
+    <!-- MODAL -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal" id="modal">
+            <button class="modal-close" id="modalClose">&times;</button>
+            <div class="modal-img">
+                <img id="modalImg" src="" alt="">
+            </div>
+            <div class="modal-body">
+                <div class="modal-name" id="modalName"></div>
+                <div class="modal-role" id="modalRole"></div>
+                <div class="modal-dest" id="modalDest"></div>
+                <div class="modal-bio" id="modalBio"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===== FILTER =====
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const teamCards = document.querySelectorAll('.team-card');
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                const filter = btn.dataset.filter;
+
+                // Hide all cards first
+                teamCards.forEach(card => {
+                    card.style.transition = 'none';
+                    card.classList.remove('visible');
+                    card.classList.remove('stagger-offset');
+                });
+
+                // Small delay then show filtered
+                setTimeout(() => {
+                    let visibleIndex = 0;
+                    teamCards.forEach(card => {
+                        const category = card.dataset.category;
+                        if (filter === 'all' || category === filter) {
+                            card.style.display = '';
+                            // Apply stagger offset on desktop
+                            if (window.innerWidth > 1024) {
+                                const row = Math.floor(visibleIndex / 3);
+                                const col = visibleIndex % 3;
+                                if (row % 2 === 1 && col === 1) {
+                                    card.classList.add('stagger-offset');
+                                }
+                            }
+                            visibleIndex++;
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+
+                    // Staggered animation
+                    let animIndex = 0;
+                    teamCards.forEach(card => {
+                        if (card.style.display !== 'none') {
+                            setTimeout(() => {
+                                card.style.transition = 'opacity 0.5s ease, transform 0.5s ease, box-shadow 0.4s ease';
+                                card.classList.add('visible');
+                            }, animIndex * 60);
+                            animIndex++;
+                        }
+                    });
+                }, 50);
+            });
+        });
+
+        // ===== STAGGER ON LOAD =====
+        function applyStagger() {
+            const visible = Array.from(teamCards).filter(c => c.style.display !== 'none');
+            visible.forEach((card, i) => {
+                card.classList.remove('stagger-offset');
+                if (window.innerWidth > 1024) {
+                    const row = Math.floor(i / 3);
+                    const col = i % 3;
+                    if (row % 2 === 1 && col === 1) {
+                        card.classList.add('stagger-offset');
+                    }
+                }
+            });
+        }
+
+        window.addEventListener('resize', applyStagger);
+
+        // Initial load animation
+        window.addEventListener('DOMContentLoaded', () => {
+            applyStagger();
+            teamCards.forEach((card, i) => {
+                setTimeout(() => {
+                    card.style.transition = 'opacity 0.5s ease, transform 0.5s ease, box-shadow 0.4s ease';
+                    card.classList.add('visible');
+                }, 100 + i * 60);
+            });
+        });
+
+        // ===== MODAL =====
+        const modalOverlay = document.getElementById('modalOverlay');
+        const modal = document.getElementById('modal');
+        const modalClose = document.getElementById('modalClose');
+        const modalImg = document.getElementById('modalImg');
+        const modalName = document.getElementById('modalName');
+        const modalRole = document.getElementById('modalRole');
+        const modalDest = document.getElementById('modalDest');
+        const modalBio = document.getElementById('modalBio');
+
+        teamCards.forEach(card => {
+            card.addEventListener('click', () => {
+                modalImg.src = card.dataset.img;
+                modalImg.alt = card.dataset.name;
+                modalName.textContent = card.dataset.name;
+                modalRole.textContent = card.dataset.role;
+                modalDest.textContent = card.dataset.dest || '';
+                modalBio.innerHTML = card.dataset.bio;
+                modalOverlay.classList.add('open');
+                document.body.style.overflow = 'hidden';
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        modalOverlay.classList.add('visible');
+                    });
+                });
+            });
+        });
+
+        function closeModal() {
+            modalOverlay.classList.remove('visible');
+            document.body.style.overflow = '';
+            setTimeout(() => {
+                modalOverlay.classList.remove('open');
+            }, 350);
+        }
+
+        modalClose.addEventListener('click', closeModal);
+        modalOverlay.addEventListener('click', (e) => {
+            if (e.target === modalOverlay) closeModal();
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+        });
+
+        // ===== SCROLL FADE-IN =====
+        const fadeEls = document.querySelectorAll('.fade-in, .reveal-stagger');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.15 });
+
+        fadeEls.forEach(el => observer.observe(el));
+    </script>
+</body>
+</html>

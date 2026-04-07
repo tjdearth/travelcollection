@@ -1,0 +1,1505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Travel Collection | Elevate Global Travel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Display:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --navy: #304256;
+  --slate: #5b86a0;
+  --light: #eeeeee;
+  --base: #f9f9f9;
+  --white: #ffffff;
+  --text: #2a2a2a;
+  --text-sec: #6a6a6a;
+  --dark-deep: #1f3044;
+  --charcoal: #2a2a2a;
+  --font-display: 'Noto Serif Display', Georgia, serif;
+  --font-body: 'Manrope', 'Segoe UI', sans-serif;
+  --shadow: 0 20px 80px rgba(48, 66, 86, 0.06);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  color: var(--text);
+  background: var(--base);
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+/* ============ NAVIGATION ============ */
+.nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  padding: 0 3rem;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: all 0.4s ease;
+}
+.nav.scrolled {
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+.nav-logo { display: flex; align-items: center; text-decoration: none; }
+.nav-logo img {
+  height: 55px;
+  width: auto;
+  transition: filter 0.4s ease;
+  filter: brightness(0) invert(1);
+}
+.nav.scrolled .nav-logo img { filter: brightness(1); }
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 2.5rem;
+  list-style: none;
+}
+.nav-links a {
+  color: rgba(255,255,255,0.9);
+  text-decoration: none;
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: color 0.3s;
+}
+.nav.scrolled .nav-links a { color: var(--navy); }
+.nav-links a:hover { color: var(--slate); }
+.nav-links > li > a.nav-cta {
+  background: var(--slate);
+  border: none;
+  color: #fff !important;
+  padding: 0.6rem 1.8rem !important;
+  border-radius: 0;
+  font-family: var(--font-body);
+  font-size: 0.75rem !important;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-decoration: none;
+  display: inline-block;
+}
+.nav.scrolled .nav-links > li > a.nav-cta { background: var(--slate); color: #fff !important; }
+.nav-links > li > a.nav-cta:hover { background: var(--navy); color: #fff !important; }
+
+/* Mobile nav */
+.nav-toggle {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 30px;
+  height: 24px;
+  position: relative;
+}
+.nav-toggle span {
+  display: block;
+  width: 100%;
+  height: 2px;
+  background: #fff;
+  position: absolute;
+  left: 0;
+  transition: all 0.3s;
+}
+.nav.scrolled .nav-toggle span { background: var(--navy); }
+.nav-toggle span:nth-child(1) { top: 0; }
+.nav-toggle span:nth-child(2) { top: 11px; }
+.nav-toggle span:nth-child(3) { top: 22px; }
+.nav-toggle.active span:nth-child(1) { top: 11px; transform: rotate(45deg); }
+.nav-toggle.active span:nth-child(2) { opacity: 0; }
+.nav-toggle.active span:nth-child(3) { top: 11px; transform: rotate(-45deg); }
+
+.mobile-drawer {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: var(--navy);
+  z-index: 999;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+}
+.mobile-drawer.open { display: flex; }
+.mobile-drawer a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 1.2rem;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-family: var(--font-body);
+}
+.mobile-drawer a:hover { color: var(--slate); }
+
+/* ============ HERO ============ */
+.hero {
+  position: relative;
+  height: 100vh;
+  min-height: 600px;
+  overflow: hidden;
+}
+.hero-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 1.8s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 0;
+}
+.hero-slide.active { opacity: 1; z-index: 1; }
+.hero-slide-bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  will-change: transform;
+}
+/* Varied Ken Burns — each slide gets a different cinematic motion */
+.hero-slide[data-kb="zoom-in"] .hero-slide-bg {
+  animation: kbZoomIn 18s ease-in-out forwards;
+}
+.hero-slide[data-kb="pan-left"] .hero-slide-bg {
+  animation: kbPanLeft 18s ease-in-out forwards;
+}
+.hero-slide[data-kb="zoom-out"] .hero-slide-bg {
+  animation: kbZoomOut 18s ease-in-out forwards;
+}
+.hero-slide[data-kb="pan-right"] .hero-slide-bg {
+  animation: kbPanRight 18s ease-in-out forwards;
+}
+@keyframes kbZoomIn {
+  0% { transform: scale(1) translate(0, 0); }
+  100% { transform: scale(1.15) translate(-1%, -1%); }
+}
+@keyframes kbPanLeft {
+  0% { transform: scale(1.12) translate(2%, 0); }
+  100% { transform: scale(1.05) translate(-2%, 1%); }
+}
+@keyframes kbZoomOut {
+  0% { transform: scale(1.18) translate(0, -2%); }
+  100% { transform: scale(1.02) translate(1%, 0); }
+}
+@keyframes kbPanRight {
+  0% { transform: scale(1.08) translate(-3%, 1%); }
+  100% { transform: scale(1.12) translate(2%, -1%); }
+}
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(48, 66, 86, 0.2) 0%,
+    rgba(48, 66, 86, 0.05) 40%,
+    rgba(48, 66, 86, 0.6) 100%
+  );
+}
+.hero-content {
+  position: absolute;
+  bottom: 12%;
+  left: 5%;
+  max-width: 700px;
+  color: #fff;
+  z-index: 2;
+}
+.hero-content h1 {
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 6vw, 4.5rem);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin-bottom: 1.2rem;
+}
+.hero-content p {
+  font-size: 1rem;
+  font-weight: 300;
+  opacity: 0.85;
+  max-width: 480px;
+  line-height: 1.7;
+  margin-bottom: 1.5rem;
+}
+.hero-line {
+  width: 100%;
+  max-width: 480px;
+  height: 1px;
+  background: var(--light);
+  margin-bottom: 1.5rem;
+  opacity: 0.5;
+}
+.hero-btn {
+  display: inline-block;
+  padding: 0.85rem 2.5rem;
+  background: transparent;
+  color: #fff;
+  text-decoration: none;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border: 1px solid #fff;
+  border-radius: 0;
+  transition: all 0.3s;
+  font-family: var(--font-body);
+}
+.hero-btn:hover { background: rgba(255,255,255,0.15); }
+.hero-counter {
+  position: absolute;
+  bottom: 3rem;
+  right: 5%;
+  color: rgba(255,255,255,0.7);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 300;
+  letter-spacing: 0.15em;
+  z-index: 5;
+}
+
+/* ============ INTRO ============ */
+.intro {
+  padding: 120px 5%;
+  background: var(--base);
+}
+.intro-inner {
+  max-width: 700px;
+  margin-left: 10%;
+}
+.intro-line {
+  width: 40px;
+  height: 1px;
+  background: var(--slate);
+  margin-bottom: 2rem;
+}
+.intro-inner p {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 400;
+  font-style: italic;
+  line-height: 1.7;
+  color: var(--text);
+}
+.intro-inner p em {
+  color: var(--slate);
+  font-style: normal;
+  font-weight: 600;
+}
+
+/* ============ CURATOR LABEL ============ */
+.curator-label {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 600;
+  margin-bottom: 0.8rem;
+}
+
+/* ============ HALLMARKS ============ */
+.hallmarks {
+  padding: 100px 5%;
+  background: var(--navy);
+}
+.hallmarks .curator-label { color: var(--slate); margin-left: 10%; }
+.hallmarks-title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  color: var(--light);
+  margin-bottom: 4rem;
+  margin-left: 10%;
+}
+.hallmarks-list {
+  max-width: 900px;
+  margin-left: 10%;
+}
+.hallmark-row {
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  gap: 2rem;
+  align-items: start;
+  padding: 2rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.hallmark-row:first-child { border-top: 1px solid rgba(255,255,255,0.08); }
+.hallmark-num {
+  font-family: var(--font-display);
+  font-size: 3rem;
+  font-weight: 400;
+  color: var(--slate);
+  line-height: 1;
+}
+.hallmark-text h4 {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 500;
+  color: var(--light);
+  margin-bottom: 0.5rem;
+}
+.hallmark-text p {
+  font-size: 0.95rem;
+  font-weight: 300;
+  color: rgba(255,255,255,0.6);
+  line-height: 1.7;
+}
+
+/* ============ DESTINATIONS ============ */
+.destinations {
+  padding: 100px 5%;
+  background: var(--light);
+}
+.destinations .curator-label { color: var(--text-sec); margin-left: 10%; }
+.destinations-title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  color: var(--navy);
+  margin-bottom: 3.5rem;
+  margin-left: 10%;
+}
+.dest-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(6, 200px);
+  gap: 6px;
+  max-width: 1300px;
+  margin: 0 auto;
+}
+.dest-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 0;
+  cursor: pointer;
+}
+.dest-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+.dest-card:hover img { transform: scale(1.05); }
+.dest-card-overlay {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  padding: 1.2rem 1.4rem;
+  background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 100%);
+  color: #fff;
+}
+.dest-card-overlay h3 {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin-bottom: 0.15rem;
+}
+.dest-card-overlay span {
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+/* Featured cards span 2 rows */
+.dest-card.tall { grid-row: span 2; }
+/* Wide cards span 2 columns */
+.dest-card.wide { grid-column: span 2; }
+.dest-card.tall .dest-card-overlay h3 { font-size: 1.5rem; }
+.dest-card.wide .dest-card-overlay h3 { font-size: 1.4rem; }
+
+/* dest-hidden and toggle removed — all destinations shown */
+
+/* ============ QUOTE ============ */
+.quote-section {
+  padding: 100px 5%;
+  background: var(--base);
+}
+.quote-inner {
+  max-width: 800px;
+  margin-left: 10%;
+  display: flex;
+  gap: 2rem;
+}
+.quote-vline {
+  width: 1px;
+  min-height: 80px;
+  background: var(--slate);
+  flex-shrink: 0;
+}
+.quote-text blockquote {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
+  font-weight: 400;
+  font-style: italic;
+  line-height: 1.5;
+  color: var(--text);
+  margin-bottom: 1.5rem;
+}
+.quote-text cite {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-sec);
+  font-style: normal;
+}
+
+/* ============ SERVICES ============ */
+.services {
+  padding: 100px 5%;
+  background: var(--base);
+}
+.services .curator-label { color: var(--text-sec); margin-left: 10%; }
+.services-title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  color: var(--navy);
+  margin-bottom: 4rem;
+  margin-left: 10%;
+}
+.service-row {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: start;
+  padding: 3rem 5%;
+}
+.service-row:nth-child(even) { direction: rtl; }
+.service-row:nth-child(even) > * { direction: ltr; }
+.service-row:nth-child(odd) { background: var(--light); }
+.service-left .service-num {
+  font-family: var(--font-display);
+  font-size: 3rem;
+  font-weight: 400;
+  color: var(--slate);
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+.service-left h3 {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 500;
+  color: var(--navy);
+}
+.service-right p {
+  font-size: 1rem;
+  color: var(--text-sec);
+  line-height: 1.7;
+  font-weight: 300;
+}
+
+/* ============ TESTIMONIALS ============ */
+.testimonials {
+  padding: 100px 5%;
+  background: var(--light);
+}
+.testimonials .curator-label { color: var(--text-sec); text-align: center; }
+.testimonials-title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  color: var(--navy);
+  margin-bottom: 4rem;
+  text-align: center;
+}
+.testimonial-container {
+  max-width: 800px;
+  margin: 0 auto;
+  position: relative;
+  min-height: 200px;
+}
+.testimonial-slide {
+  display: none;
+}
+.testimonial-slide.active { display: block; }
+.testimonial-slide blockquote {
+  font-family: var(--font-display);
+  font-size: clamp(1.2rem, 2.5vw, 1.6rem);
+  font-weight: 400;
+  font-style: italic;
+  line-height: 1.7;
+  color: var(--text);
+  margin-bottom: 2rem;
+}
+.testimonial-author {
+  text-align: right;
+}
+.testimonial-author .name {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--navy);
+}
+.testimonial-author .role {
+  font-size: 0.82rem;
+  color: var(--text-sec);
+  font-weight: 300;
+}
+.testimonial-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-top: 3rem;
+}
+.test-arrow {
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--navy);
+  background: transparent;
+  color: var(--navy);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1rem;
+  border-radius: 0;
+  transition: all 0.3s;
+}
+.test-arrow:hover { background: var(--navy); color: #fff; }
+.test-counter {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: var(--text-sec);
+  letter-spacing: 0.15em;
+  font-weight: 300;
+  min-width: 60px;
+  text-align: center;
+}
+
+/* ============ PHILOSOPHY ============ */
+.philosophy {
+  padding: 100px 5%;
+  background: linear-gradient(to bottom, var(--navy), var(--dark-deep));
+}
+.philosophy-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 55% 45%;
+  gap: 4rem;
+  align-items: start;
+}
+.philosophy-text .curator-label { color: var(--slate); }
+.philosophy-text h2 {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  color: var(--light);
+  margin-bottom: 2rem;
+}
+.philosophy-tabs {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+.phil-tab {
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.5);
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  padding: 0.4rem 0;
+  border-bottom: 2px solid transparent;
+  transition: all 0.3s;
+}
+.phil-tab.active {
+  color: var(--light);
+  border-bottom-color: var(--slate);
+}
+.phil-tab:hover { color: var(--light); }
+.phil-content {
+  display: none;
+}
+.phil-content.active { display: block; }
+.phil-content p {
+  font-size: 1rem;
+  color: rgba(255,255,255,0.7);
+  line-height: 1.7;
+  font-weight: 300;
+}
+.philosophy-images {
+  position: relative;
+  height: 450px;
+}
+.philosophy-images img {
+  position: absolute;
+  border-radius: 0;
+  object-fit: cover;
+  box-shadow: var(--shadow);
+}
+.philosophy-images img:first-child {
+  width: 75%;
+  height: 320px;
+  top: 0;
+  right: 0;
+  z-index: 1;
+}
+.philosophy-images img:last-child {
+  width: 55%;
+  height: 250px;
+  bottom: 0;
+  left: 0;
+  z-index: 2;
+}
+
+/* ============ SUSTAINABILITY ============ */
+.sustainability {
+  padding: 100px 5%;
+  background: var(--base);
+}
+.sustain-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+}
+.sustain-text .curator-label { color: var(--text-sec); }
+.sustain-text h2 {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 3.5vw, 2.8rem);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  color: var(--navy);
+  margin-bottom: 1.5rem;
+}
+.sustain-text p {
+  font-size: 1rem;
+  color: var(--text-sec);
+  line-height: 1.7;
+  font-weight: 300;
+  margin-bottom: 1.2rem;
+}
+.sustain-inset {
+  position: relative;
+  background: var(--light);
+  padding: 40px 0 40px 40px;
+}
+.sustain-inset img {
+  display: block;
+  width: calc(100% + 40px);
+  height: 400px;
+  object-fit: cover;
+  border-radius: 0;
+}
+
+/* ============ WHERE TO NEXT ============ */
+.where-next {
+  padding: 100px 0;
+  background: var(--charcoal);
+  overflow: hidden;
+}
+.where-next-inner {
+  display: flex;
+  align-items: flex-start;
+  gap: 4rem;
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 0 5%;
+}
+.where-next-text {
+  flex: 0 0 28%;
+  min-width: 260px;
+  color: #fff;
+  position: sticky;
+  top: 120px;
+}
+.where-next-text .curator-label { color: var(--slate); }
+.where-next-text h2 {
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 3.5vw, 3.2rem);
+  font-weight: 400;
+  font-style: italic;
+  letter-spacing: -0.02em;
+  margin-bottom: 1.2rem;
+  line-height: 1.15;
+  color: var(--light);
+}
+.where-next-text p {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: rgba(255,255,255,0.6);
+  margin-bottom: 2rem;
+  font-weight: 300;
+}
+.wn-btn {
+  display: inline-block;
+  padding: 0.7rem 1.8rem;
+  background: var(--navy);
+  color: #fff;
+  text-decoration: none;
+  font-size: 0.8rem;
+  font-family: var(--font-body);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: all 0.3s;
+  cursor: pointer;
+  border: none;
+  border-radius: 0;
+}
+.wn-btn:hover { background: var(--slate); }
+.where-next-scroll {
+  flex: 1;
+  overflow-x: auto;
+  overflow-y: hidden;
+  cursor: grab;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.where-next-scroll::-webkit-scrollbar { display: none; }
+.where-next-scroll.grabbing { cursor: grabbing; }
+.wn-track {
+  display: flex;
+  gap: 12px;
+  padding-right: 5%;
+}
+.wn-card {
+  flex: 0 0 280px;
+  height: 400px;
+  border-radius: 0;
+  overflow: hidden;
+  position: relative;
+  background: #1a1a1a;
+}
+.wn-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease, opacity 0.3s;
+  opacity: 0.85;
+}
+.wn-card:hover img { transform: scale(1.05); opacity: 1; }
+.wn-card-info {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  padding: 1.5rem;
+  background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 100%);
+  color: #fff;
+}
+.wn-card-info h3 {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+}
+.wn-card-info p {
+  font-size: 0.78rem;
+  font-weight: 300;
+  opacity: 0.7;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* ============ CTA ============ */
+.cta-section {
+  padding: 100px 5%;
+  background: var(--navy);
+  text-align: center;
+}
+.cta-section h2 {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  color: var(--light);
+  margin-bottom: 1.2rem;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.cta-section p {
+  font-size: 1rem;
+  color: rgba(255,255,255,0.6);
+  margin-bottom: 2.5rem;
+  font-weight: 300;
+}
+.cta-btn {
+  display: inline-block;
+  padding: 0.9rem 2.5rem;
+  background: var(--slate);
+  color: #fff;
+  text-decoration: none;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border-radius: 0;
+  transition: all 0.3s;
+  font-family: var(--font-body);
+  border: none;
+}
+.cta-btn:hover { background: #6e9ab3; }
+
+/* Footer styles loaded from components/footer.css */
+
+/* ============ SCROLL ANIMATIONS & MICRO-ANIMATIONS ============ */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+/* Staggered children reveal */
+.reveal-stagger > * {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.reveal-stagger.visible > * {
+  opacity: 1;
+  transform: translateY(0);
+}
+.reveal-stagger.visible > *:nth-child(1) { transition-delay: 0s; }
+.reveal-stagger.visible > *:nth-child(2) { transition-delay: 0.08s; }
+.reveal-stagger.visible > *:nth-child(3) { transition-delay: 0.16s; }
+.reveal-stagger.visible > *:nth-child(4) { transition-delay: 0.24s; }
+.reveal-stagger.visible > *:nth-child(5) { transition-delay: 0.32s; }
+.reveal-stagger.visible > *:nth-child(6) { transition-delay: 0.40s; }
+.reveal-stagger.visible > *:nth-child(7) { transition-delay: 0.48s; }
+.reveal-stagger.visible > *:nth-child(8) { transition-delay: 0.56s; }
+/* Hero content entrance animation */
+.hero-slide.active .hero-content {
+  animation: heroContentIn 1.2s cubic-bezier(0.22, 1, 0.36, 1) 0.4s both;
+}
+@keyframes heroContentIn {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+/* Card lift on hover */
+.dest-card { transition: box-shadow 0.4s ease; }
+.dest-card:hover { box-shadow: 0 16px 48px rgba(0,0,0,0.15); }
+/* Hallmark row slide-in */
+.hallmark-row {
+  opacity: 0;
+  transform: translateX(-20px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.hallmarks.visible .hallmark-row { opacity: 1; transform: translateX(0); }
+.hallmarks.visible .hallmark-row:nth-child(1) { transition-delay: 0s; }
+.hallmarks.visible .hallmark-row:nth-child(2) { transition-delay: 0.1s; }
+.hallmarks.visible .hallmark-row:nth-child(3) { transition-delay: 0.2s; }
+.hallmarks.visible .hallmark-row:nth-child(4) { transition-delay: 0.3s; }
+.hallmarks.visible .hallmark-row:nth-child(5) { transition-delay: 0.4s; }
+.hallmarks.visible .hallmark-row:nth-child(6) { transition-delay: 0.5s; }
+
+/* ============ RESPONSIVE ============ */
+@media (max-width: 1024px) {
+  .dest-grid {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: auto;
+    grid-auto-rows: 200px;
+  }
+  .dest-card.tall { grid-row: span 1 !important; }
+  .dest-card.wide { grid-column: span 1 !important; }
+  .dest-card[style] { grid-column: auto !important; grid-row: auto !important; }
+  .philosophy-inner { grid-template-columns: 1fr; }
+  .philosophy-images {
+    height: 350px;
+    margin-top: 2rem;
+  }
+  .sustain-inner { grid-template-columns: 1fr; }
+  .sustain-inset { margin-top: 2rem; }
+}
+
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .nav-toggle { display: block; }
+  .nav { padding: 0 1.5rem; }
+  .hero-content h1 { font-size: clamp(2.2rem, 6vw, 3rem); }
+  .intro { padding: 80px 5%; }
+  .intro-inner { margin-left: 5%; }
+  .hallmarks { padding: 80px 5%; }
+  .hallmarks .curator-label,
+  .hallmarks-title { margin-left: 5%; }
+  .hallmarks-list { margin-left: 5%; }
+  .hallmark-row {
+    grid-template-columns: 60px 1fr;
+    gap: 1rem;
+  }
+  .hallmark-num { font-size: 2.2rem; }
+  .destinations { padding: 80px 5%; }
+  .destinations .curator-label,
+  .destinations-title { margin-left: 5%; }
+  .dest-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+  }
+  .dest-card[style] { grid-column: auto !important; grid-row: auto !important; }
+  .dest-grid .dest-card { min-height: 200px; }
+  .quote-section { padding: 80px 5%; }
+  .quote-inner { margin-left: 5%; }
+  .services { padding: 80px 5%; }
+  .services .curator-label,
+  .services-title { margin-left: 5%; }
+  .service-row {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  .service-row:nth-child(even) { direction: ltr; }
+  .where-next { padding: 80px 0; }
+  .where-next-inner {
+    flex-direction: column;
+    gap: 2rem;
+    padding: 0 5%;
+  }
+  .where-next-text {
+    position: static;
+    flex: none;
+    min-width: auto;
+  }
+  .wn-card { flex: 0 0 240px; height: 340px; }
+  .footer-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 480px) {
+  .hero-content { left: 5%; right: 5%; bottom: 10%; }
+  .hallmark-row {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+  .hallmark-num { font-size: 1.8rem; }
+  .philosophy-images { height: 280px; }
+  .sustain-inset img { height: 280px; }
+}
+</style>
+<link rel="stylesheet" href="components/footer.css">
+</head>
+<body>
+
+<!-- NAVIGATION (shared component) -->
+<nav class="nav" id="shared-nav"></nav>
+<div class="mobile-drawer" id="shared-drawer"></div>
+<script src="components/nav-main.js"></script>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero-slide active" data-index="0" data-kb="zoom-in">
+    <div class="hero-slide-bg" style="background-image: url('https://images.unsplash.com/photo-1489749798305-4fea3ae63d43?w=1920&q=80')"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <h1>Where the World Feels Personal</h1>
+      <p>Bespoke journeys crafted by local experts across 22 destinations, designed around the way you want to travel.</p>
+      <div class="hero-line"></div>
+      <a href="#destinations" class="hero-btn">Explore Destinations</a>
+    </div>
+  </div>
+  <div class="hero-slide" data-index="1" data-kb="pan-left">
+    <div class="hero-slide-bg" style="background-image: url('https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?w=1920&q=80')"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <h1>Curated by Those Who Call It Home</h1>
+      <p>Our destination management companies are led by locals with deep roots, ensuring every experience is authentic and meaningful.</p>
+      <div class="hero-line"></div>
+      <a href="#hallmarks" class="hero-btn">Our Promise</a>
+    </div>
+  </div>
+  <div class="hero-slide" data-index="2" data-kb="zoom-out">
+    <div class="hero-slide-bg" style="background-image: url('https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=1920&q=80')"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <h1>22 Countries. One Standard of Excellence.</h1>
+      <p>From the temples of Japan to the coasts of Colombia, Travel Collection delivers seamless luxury through a family of specialist DMCs.</p>
+      <div class="hero-line"></div>
+      <a href="#services" class="hero-btn">Our Services</a>
+    </div>
+  </div>
+  <div class="hero-slide" data-index="3" data-kb="pan-right">
+    <div class="hero-slide-bg" style="background-image: url('https://images.unsplash.com/photo-1518548419970-58e3b4079ab2?w=1920&q=80')"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <h1>Every Detail, Personally Crafted</h1>
+      <p>Curated stays, private experiences, and gastronomic journeys — every element thoughtfully designed by those who know it best.</p>
+      <div class="hero-line"></div>
+      <a href="advisor-portal.html" class="hero-btn">Advisor Portal</a>
+    </div>
+  </div>
+  <div class="hero-counter" id="heroCounter">01 / 04</div>
+</section>
+
+<!-- INTRO -->
+<section class="intro reveal">
+  <div class="intro-inner">
+    <div class="intro-line"></div>
+    <p>Travel Collection is a <em>global family of destination management companies</em>, each led by local experts who transform journeys into deeply personal experiences. Across 22 countries, our specialists craft travel that goes beyond the expected&mdash;connecting guests with the soul of each destination through curated stays, cultural immersion, and seamless delivery.</p>
+  </div>
+</section>
+
+<!-- HALLMARKS -->
+<section class="hallmarks reveal" id="hallmarks">
+  <div class="curator-label">Our Promise</div>
+  <h2 class="hallmarks-title">What Sets Us Apart</h2>
+  <div class="hallmarks-list">
+    <div class="hallmark-row">
+      <div class="hallmark-num">01</div>
+      <div class="hallmark-text">
+        <h4>Local Expertise</h4>
+        <p>Each destination is managed by a locally-based team with deep cultural knowledge, established networks, and years of on-the-ground experience that no outsider can replicate.</p>
+      </div>
+    </div>
+    <div class="hallmark-row">
+      <div class="hallmark-num">02</div>
+      <div class="hallmark-text">
+        <h4>Cultural Immersion</h4>
+        <p>We go beyond the surface. Our journeys are designed to connect travellers with the living culture of each destination through authentic encounters, local artisans, and meaningful exchanges.</p>
+      </div>
+    </div>
+    <div class="hallmark-row">
+      <div class="hallmark-num">03</div>
+      <div class="hallmark-text">
+        <h4>Seamless Delivery</h4>
+        <p>From the first inquiry to the final farewell, every detail is coordinated with precision. Our operations teams ensure flawless logistics so guests can focus entirely on the experience.</p>
+      </div>
+    </div>
+    <div class="hallmark-row">
+      <div class="hallmark-num">04</div>
+      <div class="hallmark-text">
+        <h4>Curated Stays</h4>
+        <p>We handpick accommodations that reflect the character of each destination&mdash;from boutique riads and heritage villas to design-forward lodges and iconic luxury hotels.</p>
+      </div>
+    </div>
+    <div class="hallmark-row">
+      <div class="hallmark-num">05</div>
+      <div class="hallmark-text">
+        <h4>Responsible Travel</h4>
+        <p>Sustainability is woven into everything we do. We partner with local communities, support conservation efforts, and design itineraries that leave a positive footprint on every destination.</p>
+      </div>
+    </div>
+    <div class="hallmark-row">
+      <div class="hallmark-num">06</div>
+      <div class="hallmark-text">
+        <h4>Gastronomic Discovery</h4>
+        <p>Food is a gateway to culture. Our culinary experiences range from market tours with local chefs to private dining in hidden gems, creating unforgettable moments around the table.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DESTINATIONS -->
+<section class="destinations reveal" id="destinations">
+  <div class="curator-label">The Collection</div>
+  <h2 class="destinations-title">Our Destinations</h2>
+
+  <!-- Visible bento grid -->
+  <!-- First 8: 4-col grid, rows 1-2: Morocco tall-left, Italy+France top-right, Spain+EastAfrica bottom-right. Rows 3-4: Mexico+Indonesia+UK flat, then expand -->
+  <div class="dest-grid reveal-stagger" id="destGrid">
+    <a href="https://www.experiencemorocco.com" target="_blank" class="dest-card tall" style="grid-column:1;grid-row:1/3">
+      <img src="https://images.unsplash.com/photo-1539020140153-e479b8c22e70?w=600&q=80" alt="Morocco" loading="lazy">
+      <div class="dest-card-overlay"><h3>Morocco</h3><span>Experience Morocco</span></div>
+    </a>
+    <a href="https://www.authenticusitaly.it" target="_blank" class="dest-card" style="grid-column:2;grid-row:1">
+      <img src="https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=600&q=80" alt="Italy" loading="lazy">
+      <div class="dest-card-overlay"><h3>Italy</h3><span>Authenticus Italy</span></div>
+    </a>
+    <a href="https://www.unboxspainandportugal.com" target="_blank" class="dest-card" style="grid-column:2;grid-row:2">
+      <img src="https://images.unsplash.com/photo-1543783207-ec64e4d95325?w=600&q=80" alt="Spain &amp; Portugal" loading="lazy">
+      <div class="dest-card-overlay"><h3>Spain &amp; Portugal</h3><span>Unbox Spain &amp; Portugal</span></div>
+    </a>
+    <a href="https://www.essentiallyfrench.com" target="_blank" class="dest-card tall" style="grid-column:3;grid-row:1/3">
+      <img src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=600&q=80" alt="France" loading="lazy">
+      <div class="dest-card-overlay"><h3>France</h3><span>Essentially French</span></div>
+    </a>
+    <a href="https://www.trulyswahili.com" target="_blank" class="dest-card" style="grid-column:4;grid-row:1">
+      <img src="https://images.unsplash.com/photo-1516426122078-c23e76319801?w=600&q=80" alt="East Africa" loading="lazy">
+      <div class="dest-card-overlay"><h3>East Africa</h3><span>Truly Swahili</span></div>
+    </a>
+    <a href="https://www.acrossmexico.com" target="_blank" class="dest-card" style="grid-column:4;grid-row:2">
+      <img src="https://images.unsplash.com/photo-1518638150340-f706e86654de?w=600&q=80" alt="Mexico" loading="lazy">
+      <div class="dest-card-overlay"><h3>Mexico</h3><span>Across Mexico</span></div>
+    </a>
+    <a href="https://www.kembaliasia.com" target="_blank" class="dest-card wide" style="grid-column:1/3;grid-row:3">
+      <img src="https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=600&q=80" alt="Indonesia" loading="lazy">
+      <div class="dest-card-overlay"><h3>Indonesia</h3><span>Kembali Asia</span></div>
+    </a>
+    <a href="https://www.crownjourney.com" target="_blank" class="dest-card wide" style="grid-column:3/5;grid-row:3">
+      <img src="https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=600&q=80" alt="United Kingdom" loading="lazy">
+      <div class="dest-card-overlay"><h3>United Kingdom</h3><span>Crown Journey</span></div>
+    </a>
+    <!-- Row 4-5 -->
+    <a href="https://www.oshinobitravel.com" target="_blank" class="dest-card" style="grid-column:1;grid-row:4">
+      <img src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=600&q=80" alt="Japan" loading="lazy">
+      <div class="dest-card-overlay"><h3>Japan</h3><span>Oshinobi Travel</span></div>
+    </a>
+    <a href="https://www.majlisretreats.com" target="_blank" class="dest-card tall" style="grid-column:2;grid-row:4/6">
+      <img src="https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=600&q=80" alt="UAE" loading="lazy">
+      <div class="dest-card-overlay"><h3>UAE</h3><span>Majlis Retreats</span></div>
+    </a>
+    <a href="https://www.nostosgreece.com" target="_blank" class="dest-card tall" style="grid-column:3;grid-row:4/6">
+      <img src="https://images.unsplash.com/photo-1533105079780-92b9be482077?w=600&q=80" alt="Greece" loading="lazy">
+      <div class="dest-card-overlay"><h3>Greece</h3><span>Nostos Greece</span></div>
+    </a>
+    <a href="https://www.eluraaustralia.com" target="_blank" class="dest-card" style="grid-column:4;grid-row:4">
+      <img src="https://images.unsplash.com/photo-1523482580672-f109ba8cb9be?w=600&q=80" alt="Australia" loading="lazy">
+      <div class="dest-card-overlay"><h3>Australia</h3><span>Elura Australia</span></div>
+    </a>
+    <a href="https://www.nirathailand.com" target="_blank" class="dest-card" style="grid-column:1;grid-row:5">
+      <img src="https://images.unsplash.com/photo-1528181304800-259b08848526?w=600&q=80" alt="Thailand" loading="lazy">
+      <div class="dest-card-overlay"><h3>Thailand</h3><span>Nira Thailand</span></div>
+    </a>
+    <a href="https://www.sarturkiye.com" target="_blank" class="dest-card" style="grid-column:4;grid-row:5">
+      <img src="https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=600&q=80" alt="T&uuml;rkiye" loading="lazy">
+      <div class="dest-card-overlay"><h3>T&uuml;rkiye</h3><span>Sar T&uuml;rkiye</span></div>
+    </a>
+    <!-- Row 6 -->
+    <a href="https://www.vistacolombia.com" target="_blank" class="dest-card wide" style="grid-column:1/3;grid-row:6">
+      <img src="https://images.unsplash.com/photo-1533282960533-51328aa49826?w=600&q=80" alt="Colombia" loading="lazy">
+      <div class="dest-card-overlay"><h3>Colombia</h3><span>Vista Colombia</span></div>
+    </a>
+    <a href="https://www.awakenperu.com" target="_blank" class="dest-card wide" style="grid-column:3/5;grid-row:6">
+      <img src="https://images.unsplash.com/photo-1526392060635-9d6019884377?w=600&q=80" alt="Peru" loading="lazy">
+      <div class="dest-card-overlay"><h3>Peru</h3><span>Awaken Peru</span></div>
+    </a>
+  </div>
+</section>
+
+<!-- QUOTE -->
+<section class="quote-section reveal">
+  <div class="quote-inner">
+    <div class="quote-vline"></div>
+    <div class="quote-text">
+      <blockquote>Travel, at its finest, is not about the destination alone&mdash;it is about the people who reveal its secrets, the stories that bring it to life, and the moments that linger long after the journey ends.</blockquote>
+      <cite>&mdash; Travel Collection Philosophy</cite>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="services reveal" id="services">
+  <div class="curator-label">What We Do</div>
+  <h2 class="services-title">Our Services</h2>
+
+  <div class="service-row">
+    <div class="service-left">
+      <div class="service-num">01</div>
+      <h3>Tailored Travel</h3>
+    </div>
+    <div class="service-right">
+      <p>Every journey begins with a conversation. Our specialists design fully bespoke itineraries based on your interests, pace, and style&mdash;whether it's a romantic escape through the Amalfi Coast, a cultural deep-dive into Kyoto, or a multi-generational adventure across East Africa. No templates, no shortcuts&mdash;just travel designed around you.</p>
+    </div>
+  </div>
+
+  <div class="service-row">
+    <div class="service-left">
+      <div class="service-num">02</div>
+      <h3>Affinity Travel</h3>
+    </div>
+    <div class="service-right">
+      <p>For groups united by shared passions&mdash;wine enthusiasts, art collectors, wellness seekers, or alumni associations&mdash;we create group journeys that combine expert-led programming with the intimacy of personalised travel. Every detail is managed, from private museum openings to vineyard dinners under the stars.</p>
+    </div>
+  </div>
+
+  <div class="service-row">
+    <div class="service-left">
+      <div class="service-num">03</div>
+      <h3>Corporate &amp; Events</h3>
+    </div>
+    <div class="service-right">
+      <p>From executive retreats and incentive programmes to product launches and gala dinners, we bring the same level of creativity and precision to corporate travel. Our local teams handle logistics, venues, entertainment, and every detail in between&mdash;so your event delivers impact and your guests feel truly valued.</p>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials reveal">
+  <div class="curator-label">Guest Voices</div>
+  <h2 class="testimonials-title">What They Say</h2>
+
+  <div class="testimonial-container">
+    <div class="testimonial-slide active" data-test="0">
+      <blockquote>&ldquo;From the moment we arrived, every detail was flawless. Our guide in Morocco wasn&rsquo;t just knowledgeable&mdash;he was passionate. He showed us a side of Marrakech we never could have found on our own. This is travel at its most personal.&rdquo;</blockquote>
+      <div class="testimonial-author">
+        <div class="name">Gina D.</div>
+        <div class="role">Morocco Private Tour</div>
+      </div>
+    </div>
+    <div class="testimonial-slide" data-test="1">
+      <blockquote>&ldquo;We&rsquo;ve travelled extensively, but Travel Collection redefined what luxury means to us. It&rsquo;s not about the thread count&mdash;it&rsquo;s about being welcomed into a local chef&rsquo;s home for dinner, or having a private sunset picnic arranged on a clifftop in Santorini.&rdquo;</blockquote>
+      <div class="testimonial-author">
+        <div class="name">Jan W.</div>
+        <div class="role">Greece &amp; Italy Journey</div>
+      </div>
+    </div>
+    <div class="testimonial-slide" data-test="2">
+      <blockquote>&ldquo;Planning a group trip for 30 people felt overwhelming until we connected with Travel Collection. They handled everything with grace and creativity. The cultural experiences they arranged in Japan were beyond anything we imagined.&rdquo;</blockquote>
+      <div class="testimonial-author">
+        <div class="name">Leslie F.</div>
+        <div class="role">Japan Group Experience</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="testimonial-controls">
+    <button class="test-arrow" onclick="changeTestimonial(-1)">&#8592;</button>
+    <span class="test-counter" id="testCounter">01 / 03</span>
+    <button class="test-arrow" onclick="changeTestimonial(1)">&#8594;</button>
+  </div>
+</section>
+
+<!-- PHILOSOPHY -->
+<section class="philosophy reveal" id="philosophy">
+  <div class="philosophy-inner">
+    <div class="philosophy-text">
+      <div class="curator-label">Our Approach</div>
+      <h2>The Travel Collection Philosophy</h2>
+      <div class="philosophy-tabs">
+        <button class="phil-tab active" data-tab="0">Local First</button>
+        <button class="phil-tab" data-tab="1">Craft Over Scale</button>
+        <button class="phil-tab" data-tab="2">Lasting Impact</button>
+      </div>
+      <div class="phil-content active" data-content="0">
+        <p>We believe the best travel experiences come from those who call a destination home. Each of our 15 DMC brands is led by local teams with deep cultural knowledge, personal relationships, and an insider's understanding of what makes their corner of the world special. This isn't tourism managed from afar&mdash;it's hospitality rooted in place.</p>
+      </div>
+      <div class="phil-content" data-content="1">
+        <p>In an industry that often prioritises volume, we choose craft. Every itinerary is designed from scratch, every experience is personally vetted, and every guest receives the undivided attention of a dedicated specialist. We don't do cookie-cutter. We do one-of-a-kind.</p>
+      </div>
+      <div class="phil-content" data-content="2">
+        <p>Travel should enrich both the traveller and the destination. We actively invest in local communities, support conservation initiatives, and design experiences that create economic value where it's needed most. Our goal is travel that leaves every place better than we found it.</p>
+      </div>
+    </div>
+    <div class="philosophy-images">
+      <img src="https://images.unsplash.com/photo-1549893072-4bc678117f45?w=500&q=80" alt="Morocco riad courtyard" loading="lazy" id="philImg1">
+      <img src="https://images.unsplash.com/photo-1534008897995-27a23e859048?w=500&q=80" alt="Santorini sunset" loading="lazy" id="philImg2">
+    </div>
+  </div>
+</section>
+
+<!-- SUSTAINABILITY -->
+<section class="sustainability reveal" id="sustainability">
+  <div class="sustain-inner">
+    <div class="sustain-text">
+      <div class="curator-label">Our Responsibility</div>
+      <h2>Travelling with Purpose</h2>
+      <p>Sustainability isn't a programme&mdash;it's a principle that guides every decision we make. From sourcing local suppliers to reducing single-use plastics across our operations, we're committed to travel that respects both people and planet.</p>
+      <p>Our DMC partners work directly with indigenous communities, family-owned businesses, and conservation projects to ensure tourism benefits those who need it most. We believe that responsible travel and extraordinary experiences aren't just compatible&mdash;they're inseparable.</p>
+    </div>
+    <div class="sustain-inset">
+      <img src="https://images.unsplash.com/photo-1516426122078-c23e76319801?w=800&q=80" alt="Sustainability" loading="lazy">
+    </div>
+  </div>
+</section>
+
+<!-- WHERE TO NEXT -->
+<section class="where-next" id="whereNext">
+  <div class="where-next-inner">
+    <div class="where-next-text">
+      <div class="curator-label">Inspiration</div>
+      <h2>Where to Next?</h2>
+      <p>Explore our collection of destinations across four continents. Each one is managed by a specialist team with deep local roots and a passion for creating unforgettable journeys.</p>
+      <a href="#destinations" class="wn-btn">View All Destinations</a>
+    </div>
+    <div class="where-next-scroll" id="wnScroll">
+      <div class="wn-track" id="wnTrack">
+        <div class="wn-card">
+          <img src="https://images.unsplash.com/photo-1539020140153-e479b8c22e70?w=600&q=80" alt="Morocco" loading="lazy">
+          <div class="wn-card-info"><h3>Morocco</h3><p>Experience Morocco</p></div>
+        </div>
+        <div class="wn-card">
+          <img src="https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=600&q=80" alt="Italy" loading="lazy">
+          <div class="wn-card-info"><h3>Italy</h3><p>Authenticus Italy</p></div>
+        </div>
+        <div class="wn-card">
+          <img src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=600&q=80" alt="France" loading="lazy">
+          <div class="wn-card-info"><h3>France</h3><p>Essentially French</p></div>
+        </div>
+        <div class="wn-card">
+          <img src="https://images.unsplash.com/photo-1543783207-ec64e4d95325?w=600&q=80" alt="Spain" loading="lazy">
+          <div class="wn-card-info"><h3>Spain &amp; Portugal</h3><p>Unbox Spain &amp; Portugal</p></div>
+        </div>
+        <div class="wn-card">
+          <img src="https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=600&q=80" alt="East Africa" loading="lazy">
+          <div class="wn-card-info"><h3>East Africa</h3><p>Truly Swahili</p></div>
+        </div>
+        <div class="wn-card">
+          <img src="https://images.unsplash.com/photo-1518638150340-f706e86654de?w=600&q=80" alt="Mexico" loading="lazy">
+          <div class="wn-card-info"><h3>Mexico</h3><p>Across Mexico</p></div>
+        </div>
+        <div class="wn-card">
+          <img src="https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=600&q=80" alt="Indonesia" loading="lazy">
+          <div class="wn-card-info"><h3>Indonesia</h3><p>Kembali Asia</p></div>
+        </div>
+        <div class="wn-card">
+          <img src="https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=600&q=80" alt="UK" loading="lazy">
+          <div class="wn-card-info"><h3>United Kingdom</h3><p>Crown Journey</p></div>
+        </div>
+        <div class="wn-card">
+          <img src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=600&q=80" alt="Japan" loading="lazy">
+          <div class="wn-card-info"><h3>Japan</h3><p>Oshinobi Travel</p></div>
+        </div>
+        <div class="wn-card">
+          <img src="https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=600&q=80" alt="UAE" loading="lazy">
+          <div class="wn-card-info"><h3>UAE</h3><p>Majlis Retreats</p></div>
+        </div>
+        <div class="wn-card">
+          <img src="https://images.unsplash.com/photo-1523482580672-f109ba8cb9be?w=600&q=80" alt="Australia" loading="lazy">
+          <div class="wn-card-info"><h3>Australia</h3><p>Elura Australia</p></div>
+        </div>
+        <div class="wn-card">
+          <img src="https://images.unsplash.com/photo-1528181304800-259b08848526?w=600&q=80" alt="Thailand" loading="lazy">
+          <div class="wn-card-info"><h3>Thailand</h3><p>Nira Thailand</p></div>
+        </div>
+        <div class="wn-card">
+          <img src="https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=600&q=80" alt="Turkiye" loading="lazy">
+          <div class="wn-card-info"><h3>T&uuml;rkiye</h3><p>Sar T&uuml;rkiye</p></div>
+        </div>
+        <div class="wn-card">
+          <img src="https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?w=600&q=80" alt="Greece" loading="lazy">
+          <div class="wn-card-info"><h3>Greece</h3><p>Nostos Greece</p></div>
+        </div>
+        <div class="wn-card">
+          <img src="https://images.unsplash.com/photo-1533050487297-09b450131914?w=600&q=80" alt="Colombia" loading="lazy">
+          <div class="wn-card-info"><h3>Colombia</h3><p>Vista Colombia</p></div>
+        </div>
+        <div class="wn-card">
+          <img src="https://images.unsplash.com/photo-1526392060635-9d6019884377?w=600&q=80" alt="Peru" loading="lazy">
+          <div class="wn-card-info"><h3>Peru</h3><p>Awaken Peru</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section reveal" id="contact">
+  <h2>Begin Your Journey with Travel Collection</h2>
+  <p>Let our local experts craft an experience designed entirely around you.</p>
+  <a href="mailto:info@travelcollection.com" class="cta-btn">Get in Touch</a>
+</section>
+
+<!-- FOOTER (shared component) -->
+<div id="shared-footer"></div>
+<script src="components/footer.js"></script>
+
+<script>
+// ============ HERO CAROUSEL (Ken Burns) ============
+const heroSlides = document.querySelectorAll('.hero-slide');
+const heroCounter = document.getElementById('heroCounter');
+let heroIndex = 0;
+let heroInterval;
+
+function showHeroSlide(i) {
+  heroSlides.forEach(s => {
+    s.classList.remove('active');
+    // Reset animation so it replays on next activation
+    var bg = s.querySelector('.hero-slide-bg');
+    if (bg) { bg.style.animation = 'none'; bg.offsetHeight; bg.style.animation = ''; }
+  });
+  heroIndex = (i + heroSlides.length) % heroSlides.length;
+  heroSlides[heroIndex].classList.add('active');
+  heroCounter.textContent = String(heroIndex + 1).padStart(2, '0') + ' / ' + String(heroSlides.length).padStart(2, '0');
+}
+
+function startHeroAuto() {
+  heroInterval = setInterval(() => showHeroSlide(heroIndex + 1), 8000);
+}
+startHeroAuto();
+
+// ============ DESTINATIONS TOGGLE ============
+// toggleDestinations removed — all 16 destinations shown at once
+
+// ============ TESTIMONIALS ============
+const testSlides = document.querySelectorAll('.testimonial-slide');
+const testCounter = document.getElementById('testCounter');
+let testIndex = 0;
+
+function changeTestimonial(dir) {
+  testSlides[testIndex].classList.remove('active');
+  testIndex = (testIndex + dir + testSlides.length) % testSlides.length;
+  testSlides[testIndex].classList.add('active');
+  testCounter.textContent = String(testIndex + 1).padStart(2, '0') + ' / ' + String(testSlides.length).padStart(2, '0');
+}
+
+// Auto-advance testimonials
+setInterval(() => changeTestimonial(1), 10000);
+
+// ============ PHILOSOPHY TABS ============
+const philTabs = document.querySelectorAll('.phil-tab');
+const philContents = document.querySelectorAll('.phil-content');
+const philImages = [
+  ['https://images.unsplash.com/photo-1549893072-4bc678117f45?w=500&q=80', 'https://images.unsplash.com/photo-1534008897995-27a23e859048?w=500&q=80'],
+  ['https://images.unsplash.com/photo-1555400038-63f5ba517a47?w=500&q=80', 'https://images.unsplash.com/photo-1545569341-9eb8b30979d9?w=500&q=80'],
+  ['https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=500&q=80', 'https://images.unsplash.com/photo-1551632811-561732d1e306?w=500&q=80']
+];
+
+philTabs.forEach(tab => {
+  tab.addEventListener('click', () => {
+    const idx = parseInt(tab.dataset.tab);
+    philTabs.forEach(t => t.classList.remove('active'));
+    philContents.forEach(c => c.classList.remove('active'));
+    tab.classList.add('active');
+    document.querySelector(`.phil-content[data-content="${idx}"]`).classList.add('active');
+    document.getElementById('philImg1').src = philImages[idx][0];
+    document.getElementById('philImg2').src = philImages[idx][1];
+  });
+});
+
+// ============ WHERE TO NEXT DRAG SCROLL ============
+const wnScroll = document.getElementById('wnScroll');
+let isDown = false, startX, scrollLeft;
+
+wnScroll.addEventListener('mousedown', e => {
+  isDown = true;
+  wnScroll.classList.add('grabbing');
+  startX = e.pageX - wnScroll.offsetLeft;
+  scrollLeft = wnScroll.scrollLeft;
+});
+wnScroll.addEventListener('mouseleave', () => { isDown = false; wnScroll.classList.remove('grabbing'); });
+wnScroll.addEventListener('mouseup', () => { isDown = false; wnScroll.classList.remove('grabbing'); });
+wnScroll.addEventListener('mousemove', e => {
+  if (!isDown) return;
+  e.preventDefault();
+  const x = e.pageX - wnScroll.offsetLeft;
+  wnScroll.scrollLeft = scrollLeft - (x - startX) * 1.5;
+});
+
+// Touch support
+wnScroll.addEventListener('touchstart', e => {
+  startX = e.touches[0].pageX - wnScroll.offsetLeft;
+  scrollLeft = wnScroll.scrollLeft;
+});
+wnScroll.addEventListener('touchmove', e => {
+  const x = e.touches[0].pageX - wnScroll.offsetLeft;
+  wnScroll.scrollLeft = scrollLeft - (x - startX);
+});
+
+// ============ SCROLL REVEAL ============
+const reveals = document.querySelectorAll('.reveal, .reveal-stagger');
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+reveals.forEach(el => revealObserver.observe(el));
+</script>
+</body>
+</html>
