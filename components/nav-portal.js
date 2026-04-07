@@ -11,7 +11,7 @@
   var page = window.location.pathname.split('/').pop() || '';
 
   navEl.innerHTML =
-    '<a href="advisor-portal.html" class="nav-logo">' +
+    '<a href="travel-collection-v1.html" class="nav-logo">' +
       '<img src="' + logoPrimary + '" alt="Travel Collection" onerror="this.onerror=null;this.src=\'' + logoFallback + '\';">' +
     '</a>' +
     '<ul class="nav-links">' +
