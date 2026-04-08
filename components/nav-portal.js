@@ -91,7 +91,7 @@
       '</div>' +
       '<div class="mobile-expandable mobile-link" data-target="mob-marketing">Marketing Hub <span class="mobile-expand-icon">+</span></div>' +
       '<div class="mobile-sub" id="mob-marketing">' +
-        '<a href="#">Social Media Kit</a><a href="culinary-guides.html">Culinary Guides</a><a href="#">Destination Playlists</a><a href="#">Destination One-Pagers</a><a href="advisor-portal.html#compare">Destination Comparison</a>' +
+        '<a href="#">Social Media Kit</a><a href="culinary-guides.html">Culinary Guides</a><a href="destination-playlists.html">Destination Playlists</a><a href="#">Destination One-Pagers</a><a href="advisor-portal.html#compare">Destination Comparison</a>' +
       '</div>' +
       '<a href="advisor-portal.html#team" class="mobile-link">Meet Our Team</a>' +
       '<a href="advisor-portal.html#signup" class="mobile-cta">Submit a Request</a>';
@@ -120,6 +120,14 @@
       toggle.classList.remove('active');
       document.body.style.overflow = '';
     };
+
+    // Close drawer when ANY link inside it is clicked (including sub-links)
+    drawer.querySelectorAll('a').forEach(function(link) {
+      link.addEventListener('click', function() {
+        // Small delay to allow navigation to start
+        setTimeout(function() { closeMobileNav(); }, 100);
+      });
+    });
 
     // Mobile expandable sections
     drawer.querySelectorAll('.mobile-expandable').forEach(function(exp) {
