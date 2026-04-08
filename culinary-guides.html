@@ -497,7 +497,7 @@ body {
   border-radius: 0;
 }
 .guide-expanded.open {
-  max-height: 2000px;
+  max-height: 12000px;
   padding: 2.5rem;
 }
 .guide-expanded-inner {
@@ -518,23 +518,71 @@ body {
   margin-bottom: 1.8rem;
 }
 
+/* City sections */
+.city-section { margin-top: 2.5rem; }
+.city-section:first-child { margin-top: 0; }
+.city-name {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 400;
+  color: var(--navy);
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 0.5rem;
+  margin-bottom: 0;
+}
+.tier-label {
+  font-family: var(--font-body);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-weight: 700;
+  margin: 1.4rem 0 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.tier-icons .tier-label { color: var(--navy); }
+.tier-secrets .tier-label { color: var(--slate); }
+.tier-secrets {
+  background: #faf8f5;
+  margin: 1rem -2.5rem 0;
+  padding: 0.2rem 2.5rem 1.2rem;
+}
+
 .restaurant-entry {
   margin-bottom: 20px;
 }
 .restaurant-entry:last-child { margin-bottom: 0; }
+.restaurant-name-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
 .restaurant-name {
   font-family: var(--font-display);
   font-size: 1.05rem;
   font-weight: 400;
   color: var(--navy);
-  margin-bottom: 0.15rem;
+  margin-bottom: 0;
+}
+.restaurant-vibe {
+  display: inline-block;
+  font-family: var(--font-body);
+  font-size: 0.6rem;
+  font-weight: 600;
+  background: var(--light);
+  padding: 2px 8px;
+  color: var(--text-sec);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
 }
 .restaurant-meta {
   font-family: var(--font-body);
   font-size: 0.78rem;
   font-weight: 500;
   color: var(--slate);
-  margin-bottom: 0.3rem;
+  margin: 0.15rem 0 0.3rem;
 }
 .restaurant-desc {
   font-family: var(--font-body);
@@ -542,18 +590,22 @@ body {
   font-weight: 400;
   color: var(--text-sec);
   line-height: 1.5;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
 }
-.restaurant-location {
+.restaurant-gm-order {
   font-family: var(--font-body);
-  font-size: 0.78rem;
-  font-weight: 400;
+  font-size: 0.82rem;
   font-style: italic;
-  color: var(--text-sec);
-  margin-top: 0.25rem;
+  color: var(--navy);
+  margin-top: 0.4rem;
+  line-height: 1.4;
+}
+.restaurant-insider {
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-style: italic;
+  color: var(--slate);
+  margin-top: 0.2rem;
+  line-height: 1.4;
 }
 
 .guide-expanded-actions {
@@ -1008,65 +1060,220 @@ body {
       destination: 'Morocco',
       brand: 'Experience Morocco',
       image: 'https://images.unsplash.com/photo-1539020140153-e479b8c22e70?w=600&q=80',
-      intro: "Maryama's picks \u2014 from rooftop riads to hidden medina gems. These are the restaurants we send our own guests to, the places where the chef knows our name and the table is always ready.",
-      restaurants: [
-        { name: 'La Maison Arabe', cuisine: 'Moroccan Fine Dining', price: '$$$', desc: 'One of Marrakech\'s most storied dining rooms, set in a beautifully restored 1946 riad. The seven-course Moroccan degustation is a showpiece \u2014 expect slow-cooked lamb tagine with preserved lemons, pastilla layered with saffron-dusted almonds, and a rose-petal dessert. Reserve the courtyard table by the fountain for a truly magical evening.', location: 'Medina, Marrakech' },
-        { name: 'Nomad', cuisine: 'Modern Moroccan', price: '$$', desc: 'A three-story rooftop restaurant where young Moroccan chefs reimagine traditional dishes with seasonal twists. The lamb kefta with harissa yogurt and the cauliflower zaalouk are standouts. The top terrace has sweeping views over the souk rooftops to the Atlas Mountains \u2014 arrive before sunset for the full experience.', location: 'Jemaa el-Fna, Marrakech' },
-        { name: 'Le Jardin', cuisine: 'Garden Restaurant', price: '$$', desc: 'Hidden behind an unmarked door in the northern medina, this secret garden restaurant feels like stepping into another world. Banana palms, bougainvillea, and the sound of trickling water surround candlelit tables. The menu is light and fresh \u2014 grilled fish with chermoula, orange blossom salads, and mint tea served with ceremony.', location: 'Medina, Marrakech' },
-        { name: 'Cafe Clock', cuisine: 'Fusion', price: '$', desc: 'A cultural institution as much as a restaurant, Cafe Clock is where travelers and locals collide over the famous camel burger. Spread across a multi-level riad, it hosts live Gnawa music sessions, storytelling nights, and calligraphy workshops. The rooftop is the place to be on Thursday evenings. Don\'t miss the date milkshake.', location: 'Fez Medina' },
-        { name: "Rick's Cafe", cuisine: 'International', price: '$$$', desc: "Built in 2004 as a loving homage to the 1942 film, Rick\'s Cafe occupies a grand courtyard mansion on the Casablanca waterfront. Live jazz piano fills the Art Deco interior while guests dine on Moroccan-French fusion \u2014 think lamb shank with ras el hanout jus and seared tuna with harissa. The cocktail bar is excellent, and the atmosphere is unforgettable.", location: 'Casablanca' }
+      intro: 'Maryama has spent years eating her way through Morocco\'s medinas, riads, and coastal fish shacks \u2014 and she still finds something new every trip. This list is what she actually sends to friends visiting for the first time, and what she returns to herself. Forget the hotel recommendations. These are the places that make Morocco unforgettable.',
+      cities: [
+        {
+          name: 'Marrakech',
+          icons: [
+            { name: 'Le Jardin', cuisine: 'Moroccan Garden Bistro', price: '$$', desc: 'Tucked inside a restored riad in the medina, Le Jardin feels like stumbling into a secret garden \u2014 banana trees overhead, turtles wandering the floor, the smell of fresh herbs everywhere. The food is traditional Moroccan done with care: light salads, slow-cooked tagines, excellent fresh juices.', location: 'Mouassine, Medina', gmOrder: 'The kefta tagine with egg \u2014 order it with a glass of fresh orange and mint juice on the side.', insiderTip: 'Go for lunch on a weekday. Weekend dinner gets crowded and you lose the quiet magic.', vibe: 'Long Lazy Lunch' },
+            { name: 'Nomad', cuisine: 'Modern Moroccan', price: '$$$', desc: 'Nomad sits above the spice souk with a rooftop view that will stop your scroll \u2014 the minarets, the tangle of the medina, the Atlas in the distance on a clear day. The kitchen does modern Moroccan with serious technique: chermoula-spiced fish, pigeon bastilla reimagined, beautiful vegetable dishes.', location: 'Rahba Kedima, Medina', gmOrder: 'The slow-cooked lamb shoulder with ras el hanout \u2014 not always on the menu so ask when you arrive.', insiderTip: 'Book the rooftop corner table. Tell them Maryama sent you.', vibe: 'Impress a Client' }
+          ],
+          secrets: [
+            { name: 'Dar Zitoun', cuisine: 'Home-style Moroccan', price: '$', desc: 'There is no sign on the door. You knock, a woman named Fatima opens it, and suddenly you are inside someone\'s home having the best meal of your trip. Couscous on Fridays, bastilla on special occasions, always a spread of seven salads to start. This is the Morocco that doesn\'t exist on any app.', location: 'Derb Dabachi, Medina', insiderTip: 'Maryama will make the reservation for you \u2014 it\'s not something you can book yourself.', vibe: 'Special Occasion' },
+            { name: 'Haj Brik', cuisine: 'Street Food', price: '$', desc: 'A tiny window counter near Bab Doukkala serving the same msemen sandwich \u2014 flaky griddle bread, spiced kefta, harissa, a fried egg \u2014 since before most of the city\'s fancy restaurants were born. The sandwiches cost almost nothing and you eat standing on the pavement.', location: 'Near Bab Doukkala, Medina', gmOrder: 'The msemen with kefta and extra harissa \u2014 point to it, you won\'t need words.', vibe: 'Street Food Adventure' },
+            { name: 'Caf\u00e9 des \u00c9pices', cuisine: 'Moroccan Caf\u00e9', price: '$', desc: 'Everyone passes through Rahba Kedima square but almost no one stops at the right place. Three floors, open windows, no fuss. The mint tea arrives in a proper pot poured from a height, the kefta sandwiches are messy and perfect.', location: 'Rahba Kedima, Medina', insiderTip: 'Go to the top floor and claim a window seat before noon. By afternoon it fills up.', vibe: 'Quick Between Sites' }
+          ]
+        },
+        {
+          name: 'Fez',
+          icons: [
+            { name: 'Riad Yusf Restaurant', cuisine: 'Traditional Fassi', price: '$$$', desc: 'Fez has the most refined culinary tradition in Morocco \u2014 the imperial city where the recipes never changed. The bastilla here is the benchmark: paper-thin warqa pastry, pigeon slow-cooked to silk, the bite of cinnamon and powdered sugar. Dining in the courtyard under the zellige tiles feels like eating inside a museum, except the food is alive.', location: 'Fez el-Bali, Andalusian Quarter', gmOrder: 'Start with the bastilla \u2014 pigeon, not seafood \u2014 then the lamb with prunes and toasted almonds.', insiderTip: 'Request the courtyard table when you book. You want the fountain and the open sky.', vibe: 'Special Occasion' },
+            { name: 'The Ruined Garden', cuisine: 'Modern Moroccan', price: '$$$', desc: 'Built into the ruins of a 14th-century palace in the heart of the medina. Wild jasmine climbing crumbling walls, citrus trees, a kitchen that honors Fassi tradition without being frozen by it. The mezze spread changes with the season.', location: 'Near Bou Inania Medersa', gmOrder: 'The seven vegetable couscous on Friday \u2014 steamed three times the traditional way.', insiderTip: 'Book for lunch over dinner. The light through the ruins in the afternoon is extraordinary.', vibe: 'Date Night' }
+          ],
+          secrets: [
+            { name: 'Caf\u00e9 Clock', cuisine: 'Moroccan Fusion', price: '$', desc: 'The camel burger became a cult item, which sounds gimmicky until you eat one. Beyond the famous sandwich, the kitchen does honest Moroccan salads, incredible lben drinks, and a rotating menu of dishes you won\'t find on any rooftop terrace.', location: 'Derb el Magana, Fez el-Bali', gmOrder: 'The camel burger \u2014 yes, really. Ask for extra chermoula sauce.', insiderTip: 'They host live Gnawa music on Thursday evenings and it\'s completely free.', vibe: 'Local Hangout' },
+            { name: 'Karouine Market Stalls', cuisine: 'Street Food & Soup', price: '$', desc: 'At dawn, the streets around the Karouine mosque fill with the smell of harira \u2014 the thick warming soup of tomato, lentils, chickpeas, and spices. You sit on a low stool, a man pours your bowl, you tear your bread, and for fifteen minutes you are genuinely inside the city.', location: 'Place Seffarine, Fez el-Bali', gmOrder: 'Harira with a chebakia pastry on the side \u2014 the sweetness with the soup is the traditional way.', vibe: 'Street Food Adventure' },
+            { name: 'Maison Bleue Garden Table', cuisine: 'Fassi Fine Dining', price: '$$$$', desc: 'Known as a riad hotel but you can book the garden table for dinner without staying. The chef cooks recipes that have been in Fassi families for generations. Quiet, unhurried, the kind of meal you describe to people for years.', location: 'Ain Zleten, Fez el-Bali', insiderTip: 'Call directly and ask for the garden table for two. Tell them you want the full tasting menu \u2014 it\'s not always listed.', vibe: 'Date Night' }
+          ]
+        },
+        {
+          name: 'Casablanca',
+          icons: [
+            { name: 'Le Cabestan', cuisine: 'Seafood & French-Moroccan', price: '$$$$', desc: 'Glass-walled dining room right on the Corniche where the ocean is the decor and the seafood arrives so fresh it barely needs cooking. This is where Casablanca\'s business elite close deals and families celebrate milestones.', location: 'Corniche Ain Diab', gmOrder: 'The whole sea bass baked in a salt crust \u2014 they crack it open in front of you.', insiderTip: 'Request a window table and arrive before sunset. The light on the water is worth the timing.', vibe: 'Impress a Client' },
+            { name: 'La Sqala', cuisine: 'Traditional Moroccan', price: '$$', desc: 'Built inside an 18th-century Portuguese fortress. The garden courtyard is all bougainvillea and birdsong, the kitchen does straight Moroccan classics, and the crowds are mostly local families celebrating birthdays. It feels real because it is.', location: 'Old Medina', gmOrder: 'The chicken bastilla to start, then the lamb tagine with dried apricots.', insiderTip: 'Go for Sunday lunch. Half the city has the same idea but the energy is wonderful.', vibe: 'Long Lazy Lunch' }
+          ],
+          secrets: [
+            { name: 'Hanout du Coin', cuisine: 'Moroccan Street Food', price: '$', desc: 'A corner shop in Maarif that most expats know and almost no visitors find. One thing: a pressed sandwich of kefta, roasted peppers, preserved lemon, and enough cumin to rearrange your afternoon. Opens at noon, closes when things run out.', location: 'Quartier Maarif', gmOrder: 'The kefta sandwich, pressed \u2014 ask for extra preserved lemon and he\'ll know you mean it.', vibe: 'Quick Between Sites' },
+            { name: 'Le Petit Rocher', cuisine: 'Casual Seafood', price: '$$', desc: 'Down steps from the Corniche promenade, practically on the rocks above the Atlantic. The catch comes in that morning and goes straight to the pan \u2014 grilled sardines, calamari, fried fish with chermoula. Plastic tables while the waves come in below you.', location: 'Corniche Ain Diab', insiderTip: 'Go at lunch. The fishermen eat here at midday and the catch is freshest then.', vibe: 'Local Hangout' },
+            { name: 'Boulangerie Bennis', cuisine: 'Moroccan Pastry', price: '$', desc: 'Producing the finest Moroccan pastries since 1953 and the family has changed nothing. The kaab el ghzal \u2014 gazelle horns filled with almond paste and orange blossom \u2014 are the reason Maryama always stops here before airport runs. Buy a box. Buy two boxes.', location: 'Habous Quarter', gmOrder: 'A half kilo of kaab el ghzal and a bag of ghriba cookies \u2014 the almond ones, not the coconut.', vibe: 'Quick Between Sites' }
+          ]
+        }
       ]
     },
     italy: {
       destination: 'Italy',
       brand: 'Authenticus Italy',
       image: 'https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=600&q=80',
-      intro: "Alberto's favorites \u2014 from Sicilian street stalls to three-star temples. Italy\'s food scene is unmatched in its depth, and these five restaurants span the full spectrum from rustic to refined.",
-      restaurants: [
-        { name: 'Osteria Francescana', cuisine: 'Italian Fine Dining', price: '$$$$', desc: "Massimo Bottura\'s legendary Modena restaurant consistently ranks among the world\'s best. The tasting menu is a love letter to Italian tradition told through avant-garde technique \u2014 his \"Oops! I Dropped the Lemon Tart\" and \"Five Ages of Parmigiano Reggiano\" are iconic. Book months ahead. The wine pairing is extraordinary, drawing from Italy\'s deepest cellars.", location: 'Modena' },
-        { name: 'Da Vittorio', cuisine: 'Italian Fine Dining', price: '$$$$', desc: 'Run by the Cerea family since 1966, Da Vittorio holds three Michelin stars for its masterful Lombard cuisine. The paccheri with lobster and the milk-fed veal are legendary. Set in a Renaissance-style villa above Bergamo, the dining room opens onto manicured gardens. An intensely personal experience \u2014 the family often greets guests themselves.', location: 'Bergamo' },
-        { name: 'Trattoria Mario', cuisine: 'Tuscan', price: '$', desc: 'No reservations, no menus, no nonsense. Since 1953, Mario has been serving Florence\'s best bistecca alla fiorentina on shared wooden tables. You\'ll sit elbow-to-elbow with locals and tourists alike, shouting your order over the din. The ribollita soup is silky perfection, the house Chianti is poured generously, and the bill will surprise you for all the right reasons.', location: 'Florence' },
-        { name: 'Antica Focacceria', cuisine: 'Sicilian Street Food', price: '$', desc: "Palermo\'s oldest street food institution, operating since 1834 in a vaulted stone hall near the cathedral. The panelle (chickpea fritters), arancini (fried rice balls stuffed with ragu), and pane con la milza (spleen sandwich \u2014 trust us) are the real Palermo. Stand at the marble counter with a cold Moretti and watch the city go by.", location: 'Palermo' },
-        { name: 'Il Pagliaccio', cuisine: 'Modern Italian', price: '$$$$', desc: 'Tucked into a quiet Roman side street, Il Pagliaccio holds two Michelin stars for chef Anthony Genovese\'s boundary-pushing Italian-Asian fusion. The intimate 30-seat dining room feels like a private dinner party. Expect dishes like squid ink tagliolini with sea urchin and yuzu, and pigeon with miso glaze. The sommelier\'s natural wine picks are a highlight.', location: 'Rome' }
+      intro: 'Alberto has spent twenty years eating his way through every region of this country. What follows is not a list of restaurants. It\'s a map of the places he keeps going back to, the ones where the owner knows his name, where the menu changes with what arrived that morning, where you eat so well you forget to take a photo.',
+      cities: [
+        {
+          name: 'Rome',
+          icons: [
+            { name: 'La Pergola', cuisine: 'Contemporary Italian', price: '$$$$', desc: 'Three Michelin stars on top of the Rome Cavalieri hotel, and Heinz Beck still runs the kitchen like it\'s personal. The view over the city at night does something to you \u2014 the domes and the rooftops lit up while you\'re eating hand-rolled pasta with black truffle and aged parmesan.', location: 'Monte Mario', gmOrder: 'The Fagottelli La Pergola \u2014 pasta filled with carbonara cream. It sounds simple and it will ruin you for other pasta forever.', insiderTip: 'Ask for the sommelier\'s off-menu pairing. He keeps a few bottles back for guests who show genuine interest.', vibe: 'Special Occasion' },
+            { name: 'Roscioli', cuisine: 'Roman Trattoria & Wine Bar', price: '$$$', desc: 'Half deli, half restaurant, and one of the most serious wine cellars in the city. The cacio e pepe is the benchmark every other version in Rome is measured against. It\'s loud and tight and the tables are close, and none of that matters once the food arrives.', location: 'Campo de\' Fiori', gmOrder: 'The cacio e pepe, always. And a plate of the burrata with anchovies before it.', insiderTip: 'The back room is quieter \u2014 mention you\'d prefer it when you book.', vibe: 'Impress a Client' }
+          ],
+          secrets: [
+            { name: 'Trattoria da Enzo al 29', cuisine: 'Traditional Roman', price: '$$', desc: 'Trastevere without the tourist tax \u2014 a proper family trattoria where the menu is written by hand each morning and the abbacchio alla romana comes out in a clay pot still bubbling. The room fits maybe thirty people and feels like someone\'s grandmother\'s dining room.', location: 'Trastevere', gmOrder: 'The rigatoni con la pajata if it\'s on \u2014 offal pasta that sounds alarming and tastes like the soul of Roman cooking.', insiderTip: 'No reservations for lunch. Arrive at 12:30 when they open. By 1pm there\'s a queue.', vibe: 'Long Lazy Lunch' },
+            { name: 'Osteria dell\'Ingegno', cuisine: 'Roman Wine Bar', price: '$$', desc: 'Two minutes from the Pantheon and almost entirely missed by the crowds. The wine list is the kind of thing you photograph to reference later \u2014 small producers, natural wines, things you\'ve never heard of. The food is simple: good cheese, Roman charcuterie, a pasta or two.', location: 'Pantheon', insiderTip: 'Tell them Alberto sent you. The owner Marco will bring something out from the back.', vibe: 'Late Night' },
+            { name: 'Suppl\u00ec Roma', cuisine: 'Roman Street Food', price: '$', desc: 'Romans eat suppl\u00ec the way New Yorkers eat a slice \u2014 standing, quickly, usually on the way somewhere else. Rice fried crisp on the outside, molten mozzarella and slow-cooked rag\u00f9 within. There are four things on the menu and a line out the door at noon.', location: 'Trastevere', gmOrder: 'The classic suppl\u00ec al telefono. Just the one thing. It\'s all you need.', vibe: 'Street Food Adventure' }
+          ]
+        },
+        {
+          name: 'Florence',
+          icons: [
+            { name: 'Enoteca Pinchiorri', cuisine: 'Haute Italian', price: '$$$$', desc: 'Three Michelin stars in a Renaissance palazzo with one of the great wine cellars of Europe \u2014 around 150,000 bottles beneath the dining room. Chef Riccardo Monco cooks Tuscany with extraordinary precision: the ingredients are local, but the technique is serious.', location: 'Santa Croce', insiderTip: 'The wine pairing here is not optional \u2014 it\'s the point. Annie F\u00e9olde built this cellar herself.', vibe: 'Special Occasion' },
+            { name: 'Buca Mario', cuisine: 'Classic Florentine', price: '$$$', desc: 'Florence\'s oldest restaurant \u2014 open since 1886, still in the same vaulted stone cellar, still serving the bistecca alla Fiorentina the way it has always been done. The steak comes on the bone, charred outside and red within, finished with nothing but olive oil and sea salt.', location: 'Piazza della Repubblica', gmOrder: 'The bistecca, 1.2kg minimum, cooked al sangue. Share it. Order the white beans alongside.', vibe: 'Impress a Client' }
+          ],
+          secrets: [
+            { name: 'Trattoria Mario', cuisine: 'Florentine Market Trattoria', price: '$', desc: 'The market traders from the Mercato Centrale have been eating lunch here since 1953. Communal tables, no menu beyond the chalkboard, and food that costs almost nothing and tastes exactly right. The ribollita is better here than anywhere with a Michelin star.', location: 'San Lorenzo Market', insiderTip: 'Arrive before noon. By 12:15 every seat is taken and they stop when the food runs out. Cash only.', vibe: 'Local Hangout' },
+            { name: 'Il Latini', cuisine: 'Tuscan Trattoria', price: '$$', desc: 'Long tables packed with Florentines, waiters who shout the menu at you, wine that arrives without asking. The food comes in waves: crostini, ribollita, pasta, meat, dessert, grappa. It\'s controlled chaos and it\'s wonderful.', location: 'Santa Maria Novella', gmOrder: 'The arista \u2014 slow-roasted pork loin with rosemary. Ask for it when you sit down because it goes fast.', vibe: 'Long Lazy Lunch' },
+            { name: 'Buca dell\'Orafo', cuisine: 'Old Florence', price: '$$', desc: 'The goldsmiths of the Ponte Vecchio used to eat here. The pappardelle with wild boar rag\u00f9 is proper Tuscan cooking: dark, rich, unhurried. It\'s steps from the bridge but somehow invisible to most people crossing it.', location: 'Ponte Vecchio', gmOrder: 'The pappardelle al cinghiale. The pasta is made that morning.', vibe: 'Date Night' }
+          ]
+        },
+        {
+          name: 'Amalfi Coast',
+          icons: [
+            { name: 'Il Faro di Capo d\'Orso', cuisine: 'Seafood & Southern Italian', price: '$$$$', desc: 'Perched on the rocks above the water between Maiori and Cetara, with a terrace that juts out over the sea. Chef Pierfranco Ferrara works almost entirely with what comes off the boats each morning \u2014 the spaghetti alle vongole is the simplest and most perfect thing on the menu.', location: 'Capo d\'Orso', insiderTip: 'The boat transfer from Amalfi is the way to arrive. Call ahead and they\'ll organise it.', vibe: 'Special Occasion' },
+            { name: 'Da Adolfo', cuisine: 'Lemon Coast Seafood', price: '$$', desc: 'You get here by boat from Positano and that journey is part of the point. A shack on a beach serving mozzarella grilled in lemon leaves and spaghetti with fresh anchovies since 1949. Your feet are practically in the water.', location: 'La Laurito Beach, Positano', gmOrder: 'The mozzarella in foglie di limone \u2014 grilled in lemon leaves on the charcoal. And whatever fish they grilled whole that morning.', insiderTip: 'The red boat runs from Spiaggia Grande in Positano \u2014 look for the Da Adolfo sign. Free with lunch.', vibe: 'Long Lazy Lunch' }
+          ],
+          secrets: [
+            { name: 'Cetara alle Lampare', cuisine: 'Fishing Village Seafood', price: '$$', desc: 'Cetara is what the Amalfi Coast looked like before tourism \u2014 a working fishing village that still makes colatura di alici, the fermented anchovy sauce. This is where the fishermen eat, right on the tiny harbour.', location: 'Cetara Harbour', gmOrder: 'Spaghetti con colatura di alici. Ask for it without chilli so you taste the anchovy properly.', insiderTip: 'Buy a bottle of the colatura from the shop next door \u2014 Giulio Giordano produces the best.', vibe: 'Local Hangout' },
+            { name: 'Trattoria da Gemma', cuisine: 'Amalfitan Home Cooking', price: '$$', desc: 'Up the steps away from the seafront chaos, this tiny room has been run by the same family since 1872. The scialatielli ai frutti di mare \u2014 the thick hand-cut pasta with mixed seafood \u2014 was actually invented here.', location: 'Old Town, Amalfi', gmOrder: 'The scialatielli ai frutti di mare \u2014 you are essentially obligated to order it. It was born in this kitchen.', insiderTip: 'Upstairs there are four tables with a window view over the cathedral steps. Ask for one when you book.', vibe: 'Date Night' },
+            { name: 'La Tagliata', cuisine: 'Mountain Terrace Trattoria', price: '$$', desc: '400 metres above Positano in the village of Montepertuso, looking down at the coast, the water, the boats, the whole picture. Multiple courses come whether you order them or not, the wine is from their own vines, and the tagliata di manzo is why people drive up the mountain.', location: 'Montepertuso, above Positano', insiderTip: 'They\'ll send a car down to Positano if you call ahead \u2014 the road up is not something you want to drive yourself.', vibe: 'Long Lazy Lunch' }
+          ]
+        }
       ]
     },
     france: {
       destination: 'France',
       brand: 'Essentially French',
       image: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=600&q=80',
-      intro: "Livy's selection \u2014 the essential French dining experience from Paris bistros to Provencal terraces. These are the restaurants that remind you why France invented fine dining.",
-      restaurants: [
-        { name: 'Le Petit Cler', cuisine: 'Bistro', price: '$$', desc: 'Everything a Parisian neighborhood bistro should be: zinc bar, handwritten chalkboard menu, a patron who remembers your name. On the charming pedestrian Rue Cler, the duck confit with sarladaise potatoes is the dish that keeps regulars coming back. Pair with a carafe of Cotes du Rhone and finish with the tarte Tatin. No pretension, just deeply satisfying French cooking.', location: 'Paris 7th' },
-        { name: "La Colombe d'Or", cuisine: 'Provencal', price: '$$$', desc: "One of the most extraordinary dining rooms in France \u2014 the walls are hung with original Picasso, Miro, Leger, and Matisse works, collected as payment from artists who stayed here in the 1920s. The Provencal menu is classic and unfussy: grilled sea bass, ratatouille, lavender creme brulee. The terrace overlooks the medieval ramparts of Saint-Paul-de-Vence. Reservations are essential.", location: 'Saint-Paul-de-Vence' },
-        { name: 'Le Suquet', cuisine: 'Michelin Star', price: '$$$$', desc: "Perched on the remote Aubrac plateau in central France, Le Suquet is chef Michel Bras\' lifework \u2014 a modernist glass-and-steel building designed to frame the volcanic landscape. The cuisine celebrates local terroir obsessively: wild herbs, Aubrac beef, Laguiole cheese. His signature \"Gargouillou\" of 60 vegetables, herbs and flowers is a plate that changed French gastronomy.", location: 'Laguiole' },
-        { name: 'Chez Fonfon', cuisine: 'Seafood', price: '$$$', desc: 'The bouillabaisse here is not just good \u2014 it\'s the standard against which all others are measured. Perched above the tiny Vallon des Auffes fishing cove in Marseille, Fonfon has been serving this saffron-scented Provencal fish stew since 1952. The ritual is sacred: first the broth with rouille and croutons, then the fish presented tableside. Book the waterside terrace.', location: 'Marseille' },
-        { name: 'La Mere Brazier', cuisine: 'Lyonnaise', price: '$$$', desc: "Founded in 1921 by Eugenie Brazier \u2014 the first chef to hold six Michelin stars \u2014 this Lyon institution has been reborn under chef Mathieu Viannay. The quenelle de brochet (pike dumpling in crayfish sauce) and the Bresse chicken cooked in a bladder are dishes that define Lyonnaise cuisine. The wine list is deep in Burgundy and Rhone, and the Art Deco dining room is a time capsule.", location: 'Lyon' }
+      intro: 'Livy has spent years eating her way through France \u2014 not the France of tourist menus and laminated wine lists, but the real one. The boulang\u00e8re who saves her the last kouign-amann, the cave \u00e0 manger in a Lyon traboule that doesn\'t take reservations, the fisherman\'s widow in Marseille who still makes bouillabaisse the old way. What follows is her honest, personal list.',
+      cities: [
+        {
+          name: 'Paris',
+          icons: [
+            { name: 'Le Grand V\u00e9four', cuisine: 'Classic French Haute Cuisine', price: '$$$$', desc: 'Tucked inside the Palais-Royal arcades, feeding writers and emperors since 1784. The painted glass ceiling and velvet banquettes haven\'t changed, and neither has the kitchen\'s commitment to classical technique done with absolute precision. It\'s theatrical in the best possible way, never stuffy.', location: 'Palais-Royal, 1st', gmOrder: 'The ravioles de foie gras \u2014 they arrive like little pillows of pure luxury. Follow it with the souffl\u00e9.', insiderTip: 'Ask for a table in the main gallery, not the side room. The painted ceiling is the whole point.', vibe: 'Special Occasion' },
+            { name: 'Septime', cuisine: 'Modern French Bistronomie', price: '$$$', desc: 'Bertrand Gr\u00e9baut\'s restaurant in the 11th changed what Parisian dining looked like when it opened, and it\'s still doing it. The menu is ingredient-obsessed \u2014 hyper-seasonal, minimal intervention, every plate feeling like someone thought very hard about one beautiful thing.', location: 'Charonne, 11th', insiderTip: 'Reservations open exactly three weeks in advance online \u2014 set an alarm. If you miss it, Septime La Cave next door takes walk-ins.', vibe: 'Impress a Client' }
+          ],
+          secrets: [
+            { name: 'Chez Denise \u2014 La Tour de Montlh\u00e9ry', cuisine: 'Old-School Parisian Bistro', price: '$$', desc: 'Les Halles the way it used to be \u2014 red-checked tablecloths, zinc bar, waiters who\'ve been there longer than you\'ve been alive. Massive plates of onglet, bone marrow, terrines that belong in a museum. Open until 5am.', location: 'Les Halles, 1st', gmOrder: 'The onglet \u00e0 l\'\u00e9chalote \u2014 the shallot sauce is ridiculous. And the \u00eele flottante at the end.', insiderTip: 'Go late. After midnight the room fills with chefs who\'ve just finished service.', vibe: 'Late Night' },
+            { name: 'Le Verre Vol\u00e9', cuisine: 'Natural Wine Bar & Small Plates', price: '$$', desc: 'On the Canal Saint-Martin, this little wine shop with a few tables is where Paris\'s natural wine obsession was born. Pick a bottle off the shelf, pay a small corkage, and eat whatever\'s chalked on the board \u2014 rillettes, aged cheese, charcuterie.', location: 'Canal Saint-Martin, 10th', insiderTip: 'Come for lunch when it\'s slightly less packed. Tell them what you\'re eating and trust the staff.', vibe: 'Local Hangout' },
+            { name: 'Hugo & Co', cuisine: 'Market-Driven French', price: '$', desc: 'A tiny counter near the Marais doing the best midday plate in the city for under fifteen euros. The menu changes daily \u2014 the sandwich of the day has never been bad. Always full of people who work in the neighborhood and know.', location: 'Marais, 4th', gmOrder: 'Whatever the sandwich of the day is. The lemon tart when they have it.', vibe: 'Quick Between Sites' }
+          ]
+        },
+        {
+          name: 'Provence',
+          icons: [
+            { name: 'La Chassagnette', cuisine: 'Proven\u00e7al Garden-to-Table', price: '$$$', desc: 'Armand Arnal tends his own organic kitchen garden on the edge of the Camargue, and everything you eat was growing outside the window that morning. The dining room opens onto the garden \u2014 you eat surrounded by what you\'re eating.', location: 'Sambuc, near Arles', gmOrder: 'The vegetable tasting menu in summer \u2014 it sounds modest and then it completely floors you.', insiderTip: 'Lunch is more relaxed and you can see the garden properly in daylight.', vibe: 'Long Lazy Lunch' },
+            { name: 'Oustau de Baumani\u00e8re', cuisine: 'Classic Proven\u00e7al Fine Dining', price: '$$$$', desc: 'Beneath the white limestone cliffs of Les Baux-de-Provence. The benchmark for luxury Proven\u00e7al dining since 1945. Ancient olive trees, lavender, stone walls covered in wisteria. Glenn Viel\'s cooking is rooted in tradition but alive.', location: 'Les Baux-de-Provence', insiderTip: 'The bistro next door, La Cabro d\'Or, shares the same property and garden \u2014 at half the price.', vibe: 'Special Occasion' }
+          ],
+          secrets: [
+            { name: 'Le Mas Tourteron', cuisine: 'Home-style Proven\u00e7al', price: '$$', desc: 'A farmhouse restaurant outside Gordes that became a quiet legend \u2014 the kind of place artists and writers stumbled on and then told no one about. The cooking is resolutely Proven\u00e7al grandmother: daube, tapenade, vegetables from the garden, cheese from the village. The terrace under the plane trees is one of the best places to sit in all of France.', location: 'Gordes, Luberon', gmOrder: 'The daube proven\u00e7ale with olives and orange peel. And the lavender cr\u00e8me br\u00fbl\u00e9e if it\'s on.', vibe: 'Long Lazy Lunch' },
+            { name: 'March\u00e9 d\'Apt \u2014 Sunday Market', cuisine: 'Proven\u00e7al Market Food', price: '$', desc: 'The Sunday market in Apt is the real Luberon. Find the woman selling tapenade from her own olives, the man with the rotating spit of poulet fermier, the stall with nothing but local cheeses wrapped in chestnut leaves. This is Provence eating.', location: 'Apt, Luberon', insiderTip: 'Get there by 8am before the crowds. Bring cash \u2014 many stalls don\'t take cards.', vibe: 'Street Food Adventure' },
+            { name: 'Caf\u00e9 de la Fontaine', cuisine: 'Village Bistro', price: '$', desc: 'In the village of La Garde-Freinet \u2014 the plat du jour changes with the market, the wine is local, and the terrace looks out over the village fountain where nothing happens very slowly. The Provence people imagine before they arrive and then can\'t find. Livy found it.', location: 'La Garde-Freinet, Var', gmOrder: 'Whatever the plat du jour is \u2014 that\'s always the answer here. The pastis before to set the mood.', vibe: 'Local Hangout' }
+          ]
+        },
+        {
+          name: 'Lyon',
+          icons: [
+            { name: 'Paul Bocuse \u2014 L\'Auberge du Pont de Collonges', cuisine: 'French Haute Cuisine', price: '$$$$', desc: 'You don\'t come here for novelty \u2014 you come to understand where modern French cuisine came from. Deliberately preserved as Bocuse left it, the VGE truffle soup and the sea bass en cro\u00fbte are still extraordinary. Not the most fashionable dinner in France, but the most important one.', location: 'Collonges-au-Mont-d\'Or', gmOrder: 'The soupe aux truffes VGE \u2014 the golden pastry dome arrives and you break through it yourself. Theater and delicious.', insiderTip: 'Lunch service is slightly less formal. Dress properly \u2014 this is old France and it means something here.', vibe: 'Special Occasion' },
+            { name: 'T\u00eatedoie', cuisine: 'Contemporary Lyonnaise', price: '$$$', desc: 'Christian T\u00eatedoie\'s restaurant on Fourvi\u00e8re hill has the best view of Lyon \u2014 the whole city spread below, the rivers, the red rooftops. The quenelle has never been more elegant and never more comforting.', location: 'Fourvi\u00e8re Hill', insiderTip: 'Book a window table at dusk. The city lights up below you as you eat.', vibe: 'Date Night' }
+          ],
+          secrets: [
+            { name: 'Le Bouchon des Filles', cuisine: 'Traditional Bouchon', price: '$$', desc: 'Lyon\'s bouchons are the soul of the city. This one on the Presqu\'\u00eele is run by women, which was actually how bouchons started, and the cooking is unapologetically traditional. The saladier lyonnais arrives first and it\'s a meal in itself.', location: 'Presqu\'\u00eele, 2nd', gmOrder: 'The quenelle de brochet, gratin\u00e9ed with sauce Nantua \u2014 the dish Lyon invented.', insiderTip: 'Go for lunch \u2014 bouchons are lunch places at heart. Midday is when the regulars come.', vibe: 'Long Lazy Lunch' },
+            { name: 'March\u00e9 de la Croix-Rousse', cuisine: 'Lyonnais Market', price: '$', desc: 'The Croix-Rousse plateau \u2014 where Lyon\'s chefs actually shop. The andouillette from the charcutier on the east end, the praline roses in a paper cone, the quenelles sold raw to take home. A proper working market that happens to be extraordinary.', location: 'Croix-Rousse, 4th', insiderTip: 'Walk the traboules afterward \u2014 the hidden silk-weavers\' passages through the apartment buildings. Mostly unlocked, completely unknown.', vibe: 'Street Food Adventure' },
+            { name: 'Le Vin des Vivants', cuisine: 'Natural Wine Bar & Charcuterie', price: '$$', desc: 'A tiny cave \u00e0 manger the Lyonnais treat as their private secret. All natural and biodynamic \u2014 mostly Beaujolais and Rh\u00f4ne producers you won\'t find anywhere else. Rosette de Lyon, fromage fort, a dressed salade de lentilles. The kind of place you accidentally stay in for four hours.', location: 'Presqu\'\u00eele, 1st', gmOrder: 'Ask what\'s open and trust them.', vibe: 'Local Hangout' }
+          ]
+        }
       ]
     },
     japan: {
       destination: 'Japan',
       brand: 'Oshinobi Travel',
       image: 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=600&q=80',
-      intro: "Hiroshi's guide \u2014 from hidden ramen counters to kaiseki temples. Japan takes food more seriously than anywhere on earth, and these five experiences span the full range from street-level to sublime.",
-      restaurants: [
-        { name: 'Sukiyabashi Jiro', cuisine: 'Sushi Omakase', price: '$$$$', desc: "The 10-seat counter where 90-year-old Jiro Ono serves what many consider the world\'s finest sushi. Each piece of nigiri is a study in precision \u2014 rice at body temperature, fish aged to the hour. The omakase lasts just 20 minutes but stays with you forever. Reservations require a concierge booking months in advance. A pilgrimage for anyone who loves food.", location: 'Ginza, Tokyo' },
-        { name: 'Kikunoi', cuisine: 'Kaiseki', price: '$$$$', desc: "Three Michelin stars of kaiseki \u2014 the centuries-old art of Japanese multi-course dining. Chef Yoshihiro Murata serves 8\u201312 courses that change with the seasons, each plated like a miniature landscape. In spring, expect cherry blossom motifs on delicate Kyoto ceramics; in autumn, matsutake mushrooms and persimmon. The tatami private rooms overlook a moss garden that\'s been tended for 300 years.", location: 'Higashiyama, Kyoto' },
-        { name: 'Ichiran Ramen', cuisine: 'Ramen', price: '$', desc: "Japan\'s most famous ramen chain, but famous for good reason. Each diner sits in a solo booth facing a bamboo curtain \u2014 no distractions, just you and your bowl. You customize everything on a paper form: broth richness, noodle firmness, garlic level, spice. The tonkotsu (pork bone) broth has been simmering for 18 hours. It\'s a ritual, an experience, and the best quick meal in Tokyo.", location: 'Multiple locations' },
-        { name: 'Nishiki Market Stalls', cuisine: 'Street Food', price: '$', desc: "Five blocks of Kyoto\'s soul, packed into a narrow covered market that\'s been feeding the city since the 14th century. Graze from stall to stall: pickled vegetables from generational makers, fresh yuba (tofu skin) still warm, grilled mochi, dashi-soaked eggs, and wagyu skewers. Come hungry around 10am before the crowds peak. Each stall specializes in one thing, and they\'ve been perfecting it for decades.", location: 'Kyoto' },
-        { name: 'Den', cuisine: 'Modern Japanese', price: '$$$$', desc: "Chef Zaiyu Hasegawa\'s Jingumae restaurant is where Japanese haute cuisine meets genuine fun. The dentucky fried chicken (a playful riff on KFC) and the \"Salad\" course served on a bed of actual soil are dishes that make you laugh and then stun you with their depth. The atmosphere is warm and lively \u2014 rare for a restaurant of this caliber. Consistently ranked among Asia\'s top restaurants.", location: 'Jingumae, Tokyo' }
+      intro: 'Hiroshi has spent years eating his way through Japan\'s back alleys, counter seats, and chef\'s tables \u2014 and he\'ll tell you straight: the best meals here are rarely the ones in the guidebooks. This list is a mix of both. The icons that genuinely deserve their reputation, and the places Hiroshi texts his friends about. Trust the list. Eat late. Bring cash.',
+      cities: [
+        {
+          name: 'Tokyo',
+          icons: [
+            { name: 'Sukiyabashi Jiro Honten', cuisine: 'Omakase Sushi', price: '$$$$', desc: 'Yes, it\'s that Jiro \u2014 the one from the documentary, the one Obama visited. Sitting at that 10-seat hinoki counter, watching Jiro-san or his son work in total silence, you understand why. Each piece arrives at the exact moment you should eat it. There is nothing else like it.', location: 'Ginza', insiderTip: 'Reservations require a hotel concierge connection. Lunch and dinner are the same menu \u2014 go for lunch if you can get it.', vibe: 'Special Occasion' },
+            { name: 'Narisawa', cuisine: 'Innovative Japanese', price: '$$$$', desc: 'Chef Narisawa calls his cooking "Satoyama Cuisine" \u2014 food that tells the story of Japan\'s forests, coastlines, and soil. Philosophical and delicious at the same time, which is a harder trick than it sounds. One of the genuinely great restaurants on earth.', location: 'Minami-Aoyama, Minato', gmOrder: 'The Bread of the Forest \u2014 sourdough baked tableside in a cast iron pot with ash. Sounds gimmicky. It\'s not.', vibe: 'Impress a Client' }
+          ],
+          secrets: [
+            { name: 'Kagari', cuisine: 'Chicken Paitan Ramen', price: '$', desc: 'Eight seats. No sign you\'d notice. A single bowl of tori paitan \u2014 chicken broth so rich it coats the back of a spoon \u2014 that Hiroshi genuinely thinks about between visits. The whole experience is under 30 minutes. It recalibrates what you think a bowl of noodles can be.', location: 'Ginza 1-chome', insiderTip: 'Go at 11am when they open or accept the dinner queue. Cash only, no reservations.', vibe: 'Quick Between Sites' },
+            { name: 'Ebisu Yokocho', cuisine: 'Izakaya Alley', price: '$$', desc: 'Not one restaurant \u2014 an entire alley of tiny yakitori and izakaya stalls under a low corrugated roof, all smoke and shoulder-to-shoulder salaryman energy. Pick a stool, order a Sapporo and whatever\'s on the grill. This is what Tokyo actually feels like at 10pm on a Tuesday.', location: 'Ebisu, east exit', gmOrder: 'Negima \u2014 chicken thigh and leek skewer, charred hard. Then tsukune with raw egg yolk.', vibe: 'Late Night' },
+            { name: 'Tonki', cuisine: 'Tonkatsu', price: '$$', desc: 'Open since 1939. Counter seating around an open kitchen where you watch the same methodical process repeated with near-religious precision. The rosu katsu has a crust that shatters and a center that stays juicy in a way that makes you question every tonkatsu you\'ve had before.', location: 'Meguro', insiderTip: 'Don\'t rush \u2014 they\'ll pour your miso and bring cabbage refills without asking.', vibe: 'Local Hangout' }
+          ]
+        },
+        {
+          name: 'Kyoto',
+          icons: [
+            { name: 'Kikunoi Honten', cuisine: 'Kaiseki', price: '$$$$', desc: 'If you\'re going to have one kaiseki meal in Kyoto, this is where Hiroshi sends his most discerning clients. Chef Murata\'s food is rooted in Kyoto tradition but never feels museum-like. The garden views shift with the season, the ceramics are extraordinary.', location: 'Higashiyama, near Maruyama Park', insiderTip: 'Book the tatami room. Request seasonal wagashi with your tea course \u2014 not always on by default.', vibe: 'Special Occasion' },
+            { name: 'Mizai', cuisine: 'Kaiseki', price: '$$$$', desc: 'Smaller and more intimate than the grand kaiseki institutions. A renovated machiya townhouse that feels like eating in a refined friend\'s home. Chef Tominaga trained at Kitcho and made the food his own \u2014 lighter, more playful, still impeccably seasonal. The dashi is worth the flight alone.', location: 'Nakagyo', gmOrder: 'Whatever the seasonal sashimi course is \u2014 Hiroshi says the knife work alone is worth pausing your conversation for.', vibe: 'Date Night' }
+          ],
+          secrets: [
+            { name: 'Nishiki Warai', cuisine: 'Obanzai & Sake', price: '$$', desc: 'Step off the main Nishiki Market drag and up a narrow staircase to this standing-room izakaya. Handwritten board of obanzai \u2014 Kyoto\'s small vegetable and tofu dishes \u2014 and a serious local sake selection. Regulars don\'t bother with the menu; they ask what came in that day.', location: 'Off Nishiki Market, Nakagyo', insiderTip: 'Go early evening. The pickled mackerel sushi (battera) runs out fast.', vibe: 'Local Hangout' },
+            { name: 'Kiyamachi Ramen', cuisine: 'Ramen', price: '$', desc: 'On Kiyamachi-dori, a street better known for its bars. The broth is a Kyoto-style chicken and dashi hybrid \u2014 lighter than Osaka, more complex than Tokyo. Fills with late-night bar crowds and cab drivers at midnight. Both are reliable judges of good ramen.', location: 'Kiyamachi-dori, between Shijo and Sanjo', vibe: 'Late Night' },
+            { name: 'Hirano-ya', cuisine: 'Tofu Cuisine (Yudofu)', price: '$$', desc: 'Yudofu \u2014 hot silken tofu simmered in kombu broth \u2014 sounds like it shouldn\'t be interesting. Here, near Nanzenji since the Meiji era, it genuinely is. You eat in a wooden room looking out onto a moss garden. The kind of quiet meal that Kyoto does better than anywhere.', location: 'Near Nanzenji Temple, Sakyo', insiderTip: 'Lunch only, closes when sold out. Come between 11:30 and noon.', vibe: 'Long Lazy Lunch' }
+          ]
+        },
+        {
+          name: 'Osaka',
+          icons: [
+            { name: 'Fujiya 1935', cuisine: 'Contemporary Spanish-Japanese', price: '$$$$', desc: 'Osaka takes eating more seriously than anywhere in Japan \u2014 "kuidaore" (eat until you drop) is practically civic policy. Third-generation chef Tetsuya Fujiwara trained in Spain and layers Spanish technique over Japanese ingredients in ways that feel inevitable. Three Michelin stars, no ceremony.', location: 'Chuo, near Shinsaibashi', gmOrder: 'The sea urchin course, whatever form it takes that season.', vibe: 'Impress a Client' },
+            { name: 'Mizuno', cuisine: 'Okonomiyaki', price: '$$', desc: 'Okonomiyaki belongs on a luxury travel list when the place has been perfecting one dish since 1945. Batter, cabbage, your choice of protein, cooked on the iron griddle at your table by a server who won\'t let you touch it until it\'s ready. Unpretentious, loud, delicious, completely Osaka.', location: 'Dotonbori, Chuo', insiderTip: 'Go for weekday lunch to halve the queue.', vibe: 'With Kids' }
+          ],
+          secrets: [
+            { name: 'Daruma Kushikatsu Shinsekai', cuisine: 'Kushikatsu', price: '$', desc: 'Shinsekai is one of Osaka\'s oldest working-class districts. Daruma is its most honest kushikatsu counter \u2014 skewered and deep-fried everything with cold beer and the one unbreakable rule: no double-dipping in the communal sauce. The rule is enforced. Hiroshi has seen people told to leave.', location: 'Shinsekai, Naniwa', insiderTip: 'Order the mixed set then keep pointing at skewers until you\'re full. Everything under 200 yen per stick.', vibe: 'Street Food Adventure' },
+            { name: 'Wanaka Honten', cuisine: 'Takoyaki', price: '$', desc: 'Takoyaki is Osaka\'s soul food. Hiroshi\'s pick is Wanaka in Namba: batter thinner and crispier than tourist spots, octopus genuinely tender, bonito flakes moving in the heat like they\'re still alive. Eat them too hot, burn your mouth, order another round.', location: 'Namba, Chuo', gmOrder: 'Plain takoyaki with just sauce, mayo, and bonito. Don\'t overcomplicate it.', vibe: 'Quick Between Sites' },
+            { name: 'Endo Sushi \u2014 Osaka Central Market', cuisine: 'Market Sushi', price: '$$', desc: 'Inside the Osaka Central Wholesale Market, open from 5am, a sushi counter feeding fishmongers since the fish came off the boats that morning. The freshness is absurd. The prices are market-worker prices. By 8am the serious regulars are on their second beer. The best value sushi meal in Japan.', location: 'Noda, inside Central Wholesale Market', insiderTip: 'Arrive by 6:30. Bring cash. Be respectful of the working environment around you.', vibe: 'Local Hangout' }
+          ]
+        }
       ]
     },
     mexico: {
       destination: 'Mexico',
       brand: 'Across Mexico',
       image: 'https://images.unsplash.com/photo-1518638150340-f706e86654de?w=600&q=80',
-      intro: "Cintli's picks \u2014 bold flavors from markets to fine dining. Mexican cuisine runs deeper than most people imagine, and these five restaurants prove that no country on earth has a richer food culture.",
-      restaurants: [
-        { name: 'Pujol', cuisine: 'Modern Mexican', price: '$$$$', desc: "Chef Enrique Olvera\'s flagship is consistently ranked among the world\'s top 20 restaurants. The iconic mole madre \u2014 two concentric circles of mole, one aged over 1,500 days, the other made fresh that morning \u2014 is a dish that redefines Mexican cuisine. The taco omakase bar next door serves six courses of extraordinary tacos. Book the main dining room for the full experience.", location: 'Polanco, Mexico City' },
-        { name: 'Casa Oaxaca', cuisine: 'Oaxacan', price: '$$$', desc: "Set in a candlelit colonial courtyard in the heart of Oaxaca, this restaurant celebrates the region\'s seven moles and indigenous ingredients. The chef sources directly from local farmers, and the mezcal pairings are curated from small-batch producers most visitors will never encounter. Try the tlayuda with chapulines (grasshoppers) for a truly Oaxacan experience. The roof terrace is magical at night.", location: 'Oaxaca' },
-        { name: 'Quintonil', cuisine: 'Modern Mexican', price: '$$$$', desc: "Jorge Vallejo\'s tribute to Mexico\'s extraordinary biodiversity. The menu changes constantly based on what arrives from milpa farmers, foragers, and fishermen. Dishes like ant larvae with avocado mousse and hoja santa ice cream sound daring but taste deeply rooted. The tasting menu with mezcal pairings is the way to go. The garden courtyard setting in Polanco feels like a secret the city is keeping.", location: 'Polanco, Mexico City' },
-        { name: 'Hartwood', cuisine: 'Wood-Fired', price: '$$$', desc: "Everything at Hartwood is cooked over wood fire, and nothing comes from further than 150 miles away. Set under a thatched palapa roof in the Tulum jungle, there\'s no electricity during service \u2014 just candlelight, the sound of the jungle, and some of the most intensely flavored food in Mexico. The octopus with burnt chili and the whole grilled fish are unforgettable. Arrive early; they don\'t take reservations.", location: 'Tulum' },
-        { name: 'Mercado de San Juan', cuisine: 'Market', price: '$', desc: "Mexico City\'s gourmet market is where the city\'s chefs shop for ingredients you won\'t find anywhere else. Wander past stalls selling imported French cheeses, Oaxacan chocolate, wild boar, crocodile, and edible insects alongside pristine seafood and artisan mezcals. Grab a stool at one of the ceviche counters for a lunch that costs a fraction of what you\'d pay in a restaurant but tastes every bit as good.", location: 'Centro, Mexico City' }
+      intro: 'Cintli has spent years eating her way through Mexico \u2014 from smoky market stalls in Oaxaca to chef\'s tables in Polanco. What she\'s built here isn\'t a restaurant list. It\'s the shortlist she gives her own family when they visit. The Icons are famous for a reason. The Secrets are places you earn by knowing someone.',
+      cities: [
+        {
+          name: 'Mexico City',
+          icons: [
+            { name: 'Pujol', cuisine: 'Contemporary Mexican', price: '$$$$', desc: 'Enrique Olvera\'s flagship put Mexico City on the global fine dining map. The mole madre \u2014 a ring of 35-year-old mole surrounding a younger batch \u2014 is one of the most quietly profound things you can eat anywhere in the world. This is not a meal, it\'s an education in what Mexican cuisine actually is.', location: 'Polanco', gmOrder: 'The mole madre taco course \u2014 don\'t skip it even if you\'re full.', insiderTip: 'Book the omakase taco bar seating if available \u2014 a completely different, more intimate experience.', vibe: 'Special Occasion' },
+            { name: 'Contramar', cuisine: 'Seafood', price: '$$$', desc: 'This is the lunch that Mexico City runs on. Politicians, artists, architects, old money, new money \u2014 they all end up here on a long Tuesday afternoon. The tostadas de at\u00fan are dangerously good, the red-and-green grilled fish is the dish people fly back for.', location: 'Roma Norte', gmOrder: 'Tostadas de at\u00fan to start, then the pescado a la talla \u2014 split between two.', insiderTip: 'No reservations for the bar. Arrive at 1:30pm and grab a stool \u2014 you\'ll eat just as well.', vibe: 'Long Lazy Lunch' }
+          ],
+          secrets: [
+            { name: 'El Hidalguense', cuisine: 'Barbacoa', price: '$', desc: 'Sundays only, and only until they run out \u2014 usually by noon. This family has been slow-cooking lamb in underground pits since before most of the neighborhood existed. Plastic tables, consom\u00e9 straight from the cup, salsa on your shirt. Cintli has been coming since she was twelve.', location: 'Colonia Escand\u00f3n', gmOrder: 'A full kilo of barbacoa de borrego with extra consom\u00e9 and green salsa.', insiderTip: 'Get there by 9am on Sunday. Bring cash only. The lamb runs out.', vibe: 'Local Hangout' },
+            { name: 'La Casa de las Enchiladas de Do\u00f1a Caro', cuisine: 'Traditional Mexican', price: '$', desc: 'No sign, the address is a doorway on a residential street in Doctores. Do\u00f1a Caro has been making enchiladas from her grandmother\'s recipes for over two decades, and the mole poblano on Thursdays is worth planning a trip around. Six tables, handwritten menu, zero Instagram presence by design.', location: 'Colonia Doctores', insiderTip: 'Thursday is mole day. Tell her you\'re a guest of Cintli \u2014 she\'ll bring the small dishes she doesn\'t put on the menu.', vibe: 'Quick Between Sites' },
+            { name: 'Expendio de Ma\u00edz Sin Nombre', cuisine: 'Ancestral Mexican & Natural Wine', price: '$$$', desc: 'No name. No menu. You sit down and eat what they bring you, which changes daily based on what the milpa and local markets produce. Every dish traces back to pre-Hispanic corn traditions. For clients who are genuinely curious, not just hungry.', location: 'Centro Hist\u00f3rico', insiderTip: 'Reservations are essential and fill weeks out. Message them on Instagram \u2014 the only way to book.', vibe: 'Date Night' }
+          ]
+        },
+        {
+          name: 'Oaxaca',
+          icons: [
+            { name: 'Casa Oaxaca El Restaurante', cuisine: 'Contemporary Oaxacan', price: '$$$', desc: 'Alejandro Ruiz took Oaxacan pantry staples \u2014 heirloom corn, wild herbs, chapulines, quesillo \u2014 and made them feel like something from the world\'s great kitchens without losing a single gram of their soul. The terrace over the courtyard at golden hour is one of those settings where you forget what you were worried about.', location: 'Centro Hist\u00f3rico, Oaxaca City', gmOrder: 'Whatever the seasonal mole is \u2014 ask which one the kitchen is most proud of this week.', insiderTip: 'Request the courtyard table. The indoor room misses the whole point.', vibe: 'Impress a Client' },
+            { name: 'Mercado 20 de Noviembre', cuisine: 'Market / Traditional Oaxacan', price: '$', desc: 'Every serious traveler comes here, but most do it wrong \u2014 they walk through and take photos instead of sitting down. Pull up a stool at a smoke-blackened comedor, point at the tlayuda you want, and let the comal do the rest.', location: 'Centro Hist\u00f3rico, Oaxaca City', gmOrder: 'Tlayuda with tasajo, black beans, and asiento \u2014 the raw unrefined pork fat they spread underneath. Don\'t skip it.', insiderTip: 'Stalls on the east side are run by the same families for 30+ years. Look for the longest lines of locals.', vibe: 'Street Food Adventure' }
+          ],
+          secrets: [
+            { name: 'Itanon\u00ed', cuisine: 'Heirloom Corn', price: '$', desc: 'A tortiller\u00eda that quietly does more for Oaxacan corn culture than almost anyone. Over forty varieties of heirloom ma\u00edz from indigenous farmers, turned into tlayudas, memelas, and tamales that taste like the land they came from.', location: 'Colonia Reforma, Oaxaca City', gmOrder: 'The memela with black bean paste and fresh quesillo \u2014 simple, completely revelatory.', insiderTip: 'Open mornings only, closed Sunday. This is breakfast, and it\'s the best breakfast in Oaxaca.', vibe: 'Quick Between Sites' },
+            { name: 'El Destilado', cuisine: 'Contemporary Mexican & Mezcal Bar', price: '$$$', desc: 'Hidden down a narrow alley. Started as a mezcal cave and evolved into one of the most quietly adventurous kitchens in the city. Grasshopper garum and fermented chicatana ant paste without making it feel performative. The mezcal library has bottles you cannot find anywhere else on earth.', location: 'Callej\u00f3n 5 de Mayo, Oaxaca City', insiderTip: 'Ask to see the mezcal cellar after dinner. They\'ll take you down if it\'s not slammed.', vibe: 'Late Night' },
+            { name: 'Comedor Lupita \u2014 Tlacolula Market', cuisine: 'Market Comedor', price: '$', desc: 'The Sunday market in Tlacolula is one of Mexico\'s great indigenous markets, and Lupita\'s comedor in the back corner has been feeding vendors and farmers for decades. A green chorizo that isn\'t on any list anywhere, and memelitas with reques\u00f3n at 10am after two hours walking the stalls.', location: 'Tlacolula de Matamoros', gmOrder: 'Green chorizo with eggs and whatever she made that morning.', insiderTip: 'Sunday only. Pair with Mitla ruins and a mezcal palenque visit nearby.', vibe: 'Local Hangout' }
+          ]
+        },
+        {
+          name: 'Tulum',
+          icons: [
+            { name: 'Hartwood', cuisine: 'Wood-Fire / Farm-to-Table', price: '$$$$', desc: 'Two New Yorkers, a wood-burning oven, and the conviction that the jungle had everything they needed. Cooked entirely over fire with no electricity in the kitchen. Get here before sunset and watch the light drop through the palms.', location: 'Tulum Hotel Zone', gmOrder: 'Whatever whole fish is on the fire that night, with the roasted beets if they have them.', insiderTip: 'No reservations \u2014 arrive when they open (6pm) or expect 90 minutes. Have a mezcal and enjoy the jungle.', vibe: 'Date Night' },
+            { name: 'Gitano', cuisine: 'Mexican & Cocktail Bar', price: '$$$', desc: 'A jungle garden with incredible mezcal cocktails, a DJ who knows what he\'s doing, and food that\'s actually better than it needs to be. The tostadas are exceptional, the vibe peaks around 9pm.', location: 'Tulum Pueblo', insiderTip: 'Go to the Pueblo location, not the beach club. Better atmosphere, easier to get a table.', vibe: 'Late Night' }
+          ],
+          secrets: [
+            { name: 'El Camello Jr.', cuisine: 'Mariscos', price: '$', desc: 'While everyone at the hotel zone pays $40 for ceviche with a view, locals are here eating genuinely among the best mariscos on the Riviera Maya. Palapa with plastic chairs and a fish counter. The aguachile negro \u2014 prawns in charred chile broth \u2014 is one of the dishes Cintli thinks about when she\'s not in Mexico.', location: 'Tulum Pueblo', gmOrder: 'Aguachile negro with a cold Modelo and lime. Ask for extra tostadas.', insiderTip: 'Lunch only. Closes when the fish runs out, usually by 3pm.', vibe: 'Long Lazy Lunch' },
+            { name: 'La Flor de Michoac\u00e1n', cuisine: 'Carnitas', price: '$', desc: 'A carnitas stand from before Tulum was Tulum \u2014 before the boutique hotels and yoga retreats. The family still slow-cooks pork in copper vats using a Michoac\u00e1n recipe. On Sunday mornings the line of locals tells you everything.', location: 'Tulum Pueblo', gmOrder: 'Mixed carnitas by weight \u2014 ask for surtida, all the cuts together. With pickled jalape\u00f1os.', insiderTip: 'Sunday morning is the main event. Go before noon.', vibe: 'Street Food Adventure' },
+            { name: 'Burrito Amor', cuisine: 'Mexican / Organic', price: '$$', desc: 'The name sounds like a tourist trap but this tiny spot has been quietly serving the most thoughtfully sourced Mexican breakfast in Tulum for years. Owners source from local organic farms, make their own tortillas. Half the clientele are Tulum locals who work in the hotel zone.', location: 'Avenida Tulum, Tulum Pueblo', gmOrder: 'Enfrijoladas with eggs and avocado in the morning.', insiderTip: 'The line moves fast. Don\'t overthink the menu. Everything is good.', vibe: 'Quick Between Sites' }
+          ]
+        }
       ]
     },
     greece: {
@@ -1086,13 +1293,44 @@ body {
       destination: 'Spain',
       brand: 'Unbox Spain & Portugal',
       image: 'https://images.unsplash.com/photo-1543783207-ec64e4d95325?w=600&q=80',
-      intro: "Juan's favorites \u2014 tapas bars, pintxos, and Michelin stars. Spain\'s food scene is one of the most exciting on the planet, from San Sebastian\'s pintxos bars to Seville\'s century-old taverns.",
-      restaurants: [
-        { name: 'Tickets', cuisine: 'Creative Tapas', price: '$$$', desc: "Albert Adria\'s Barcelona funhouse serves tapas reimagined as theater. The \"liquid olive\" that bursts on your tongue, the air baguette filled with Iberico ham, the cotton candy tree \u2014 every dish is a conversation piece. The vibe is loud, colorful, and electric. Book well ahead and come with a sense of adventure. The adjoining cocktail bar Bodega 1900 is equally fantastic for pre-dinner vermut.", location: 'Barcelona' },
-        { name: 'Asador Etxebarri', cuisine: 'Basque Grill', price: '$$$$', desc: "In a tiny Basque village, chef Victor Arguinzoniz has turned wood-fire grilling into high art. He built every grill himself, using different woods for different ingredients \u2014 vine cuttings for prawns, apple wood for goat\'s milk ice cream, oak for the legendary txuleta steak. The produce is immaculate, the setting is humbling, and the simplicity is deceptive. Regularly ranked among the world\'s top 10 restaurants.", location: 'Axpe' },
-        { name: 'Casa Dani', cuisine: 'Traditional', price: '$', desc: "Hidden inside the Mercado de la Paz in Madrid\'s Salamanca district, Casa Dani serves what is universally agreed to be the best tortilla espanola in Spain. Creamy, barely set in the center, made with nothing but eggs, potatoes, onion, and olive oil. The lunch crowd is a mix of market vendors, businesspeople, and in-the-know visitors. Arrive before 1pm or prepare to wait. The croquetas are also exceptional.", location: 'Mercado de la Paz, Madrid' },
-        { name: 'Arzak', cuisine: 'Basque Fine Dining', price: '$$$$', desc: "Three Michelin stars held continuously since 1989, making Arzak one of the longest-running fine dining institutions in the world. Father-daughter team Juan Mari and Elena Arzak push Basque cuisine forward while honoring its roots. The laboratory downstairs contains over 1,500 experimental flavor combinations. Signature dishes like the egg with truffle and Idiazabal cheese foam are now part of culinary history.", location: 'San Sebastian' },
-        { name: 'El Rinconcillo', cuisine: 'Tapas', price: '$$', desc: "Seville\'s oldest bar has been pouring sherry and serving tapas since 1670 \u2014 that\'s not a typo. The interior is a time capsule of azulejo tiles, dark wood, and hanging Iberico hams. Your tab is chalked on the bar counter. Order the espinacas con garbanzos (spinach with chickpeas), the carrillada (braised pork cheek), and a copa of manzanilla sherry. You\'re standing where generations of Sevillanos have stood before you.", location: 'Seville' }
+      intro: 'Juan has spent years eating his way across Spain \u2014 from late-night pintxos bars in the Basque Country to market stools in Seville where the tortilla has been made the same way since 1948. These are the places he actually takes people when they want to eat like they live here.',
+      cities: [
+        {
+          name: 'Barcelona',
+          icons: [
+            { name: 'Disfrutar', cuisine: 'Avant-garde Catalan', price: '$$$$', desc: 'Three former elBulli chefs running one of the best restaurants in the world out of a bright, tile-walled room in the Eixample. The tasting menu feels like a magic show \u2014 spherified olives that burst, lobster served in ways you can\'t quite explain. Book months in advance.', location: 'Eixample', gmOrder: 'The multi-spherification of gazpacho \u2014 a bowl of tomato bubbles that tastes like the platonic ideal of summer.', insiderTip: 'Request the terrace table for desserts \u2014 they\'ll sometimes move you outside if you ask.', vibe: 'Special Occasion' },
+            { name: 'Bar Central \u2014 Mercat de la Boqueria', cuisine: 'Catalan Seafood', price: '$$', desc: 'Yes, La Boqueria is full of tourists \u2014 but Bar Central at the back is where locals still elbow in for a stool at lunch. The grilled razor clams come off the plancha blistered and smoky, dressed in nothing but olive oil and sea salt.', location: 'Las Ramblas / El Raval', gmOrder: 'Grilled cuttlefish with alioli \u2014 the kitchen makes the alioli from scratch every morning.', vibe: 'Quick Between Sites' }
+          ],
+          secrets: [
+            { name: 'El Xampanyet', cuisine: 'Traditional Tapas & Cava', price: '$', desc: 'A cava bar in El Born that has barely changed since the 1930s \u2014 azulejo tiles, barrels stacked to the ceiling, the owner\'s grandmother\'s anchovies still on the menu. The house cava costs almost nothing.', location: 'El Born', insiderTip: 'The anchovies are house-cured and extraordinary. Order two tins and pa amb tom\u00e0quet before anything else.', vibe: 'Local Hangout' },
+            { name: 'La Cova Fumada', cuisine: 'Catalan Seafood Tapas', price: '$', desc: 'Cash-only, no-sign, no-reservation bar in Barceloneta that invented the bombas \u2014 the fried potato-and-meat croquette every bar in the city copies. The family has run it since 1944. They open at 9am, run out of food by 1pm. Juan considers this the most important meal in Barcelona.', location: 'Barceloneta', insiderTip: 'Get there before 11am. No sign on the door \u2014 look for the cluster of regulars on Carrer del Baluard.', vibe: 'Street Food Adventure' },
+            { name: 'Bar Calders', cuisine: 'Modern Pintxos & Vermouth', price: '$', desc: 'Sant Antoni is Barcelona\'s real neighborhood and Calders is its living room \u2014 marble tables spilling onto the pavement, a rotating board of pintxos, and a vermouth list that takes the ritual seriously.', location: 'Sant Antoni', vibe: 'Long Lazy Lunch' }
+          ]
+        },
+        {
+          name: 'San Sebasti\u00e1n',
+          icons: [
+            { name: 'Arzak', cuisine: 'New Basque', price: '$$$$', desc: 'Elena Arzak runs this four-decade institution with her father Juan Mari in a hillside house above the city. Techniques that redefined Spanish cooking, ingredients from a network of local farmers they\'ve worked with for thirty years. The restaurant that made the world pay attention to this corner of Spain.', location: 'Alto de Miracruz', gmOrder: 'Whatever Elena has written on the menu that week with egg \u2014 she has a gift for egg dishes.', insiderTip: 'Lunch is slightly more relaxed. Walk it off along La Concha beach afterward.', vibe: 'Impress a Client' },
+            { name: 'La Vi\u00f1a', cuisine: 'Basque Pintxos & Desserts', price: '$$', desc: 'The burnt cheesecake originated here \u2014 not the trend, the actual thing, decades before New York food media discovered it. The bar in the Old Town is perpetually packed, and the cheesecake comes out warm, wobbly, and aggressively unbeautiful in the best possible way.', location: 'Parte Vieja', gmOrder: 'The cheesecake, obviously \u2014 but also the anchovy pintxo on bread fried in olive oil.', vibe: 'Date Night' }
+          ],
+          secrets: [
+            { name: 'Bar Txepetxa', cuisine: 'Anchovy Pintxos', price: '$', desc: 'The entire menu is anchovies. One family, one obsession, one narrow bar \u2014 anchovies with caviar, with sea urchin, with piquillo pepper, with smoked cod. Juan says this is the only place in the world where he\'s had an anchovy that made him emotional.', location: 'Parte Vieja', insiderTip: 'They close Mondays and run out of the best combinations by 9pm. Go early or go twice.', vibe: 'Local Hangout' },
+            { name: 'Bodeg\u00f3n Alejandro', cuisine: 'Traditional Basque', price: '$$', desc: 'A few streets back from the waterfront where the tour groups thin out. The Basque dishes grandmothers actually cook: kokotxas al pil-pil, marmitako, slow-braised cheeks. The portions are genuinely alarming in a joyful way.', location: 'Parte Vieja', gmOrder: 'Kokotxas al pil-pil \u2014 hake cheeks in their own gelatin emulsified with olive oil. Sounds strange, tastes like the sea.', vibe: 'Long Lazy Lunch' },
+            { name: 'Mercado de la Bretxa \u2014 Pintxos Circuit', cuisine: 'Basque Market Pintxos', price: '$', desc: 'Not a single restaurant but a ritual: counter to counter, glass of txakoli at each, small plates of whatever\'s fresh. Juan\'s route takes about two hours and ends with coffee at the bar in the corner that hasn\'t updated its sign since 1987.', location: 'Gros district', insiderTip: 'Saturday between 10am and noon. Bring cash, wear comfortable shoes, don\'t eat breakfast.', vibe: 'Street Food Adventure' }
+          ]
+        },
+        {
+          name: 'Seville',
+          icons: [
+            { name: 'Bar El Comercio', cuisine: 'Traditional Sevillano Tapas', price: '$', desc: 'Same corner in Alfalfa since 1904 \u2014 tile walls, bullfighting prints, TV permanently on football. The montadito de pring\u00e1 is made from leftover pork and chickpea stew that\'s been simmering since morning. The best sandwich in Seville.', location: 'Alfalfa', gmOrder: 'Montadito de pring\u00e1 \u2014 shredded pork stew on a small roll. Sounds humble, changes your life.', vibe: 'Quick Between Sites' },
+            { name: 'Eslava', cuisine: 'Creative Sevillano Tapas', price: '$$', desc: 'The bar that put modern Sevillano cooking on the map \u2014 has won Spain\'s national tapas competition multiple times and stays completely unpretentious. The torrija with cream and caramel sauce is a dessert people fly to Seville for.', location: 'San Lorenzo', insiderTip: 'The restaurant in back takes reservations; the bar doesn\'t. For the full experience, stand at the bar with a Cruzcampo.', vibe: 'Local Hangout' }
+          ],
+          secrets: [
+            { name: 'Bodega Santa Cruz (Las Columnas)', cuisine: 'Classic Tapas & Sherry', price: '$', desc: 'Standing-room bar next to the Cathedral \u2014 everyone calls it Las Columnas. Tapas chalked on a board, manzanilla poured cold and fast, you eat standing on the cobblestones because that is how Seville does it.', location: 'Barrio Santa Cruz', insiderTip: 'Go between 1pm and 3pm. The espinacas con garbanzos is the dish that surprises most people.', vibe: 'Local Hangout' },
+            { name: 'El Rinconcillo', cuisine: 'Traditional Sevillano Tapas', price: '$', desc: 'The oldest bar in Seville \u2014 opened in 1670. The waiters chalk your bill on the bar and tally it at the end, a tradition they\'ve kept for three centuries. The Ib\u00e9rico ham is carved to order.', location: 'Feria / Alameda', gmOrder: 'Croquetas de jam\u00f3n ib\u00e9rico \u2014 the b\u00e9chamel is made slowly, the jam\u00f3n is generous, the crust shatters.', vibe: 'Special Occasion' },
+            { name: 'Mercado de Triana \u2014 Stall 14', cuisine: 'Andalusian Market Food', price: '$', desc: 'At the foot of the bridge across the Guadalquivir. The stall near the back does a gazpacho and grilled prawn combination that costs nothing and tastes completely correct. Juan brings every client here before they\'ve had time to pick up luggage.', location: 'Triana', insiderTip: 'Arrive by 1pm for full lunch energy. Grab a table anywhere and order from wherever looks good.', vibe: 'Long Lazy Lunch' }
+          ]
+        }
       ]
     },
     thailand: {
@@ -1202,19 +1440,50 @@ body {
     }
   }
 
-  function buildGuideHtml(guideKey, data) {
-    var restaurantsHtml = '';
-    data.restaurants.forEach(function(r) {
-      restaurantsHtml += '<div class="restaurant-entry">' +
+  function buildRestaurantCard(r) {
+    var html = '<div class="restaurant-entry">' +
+      '<div class="restaurant-name-row">' +
         '<div class="restaurant-name">' + r.name + '</div>' +
-        '<div class="restaurant-meta">' + r.cuisine + ' &middot; ' + r.price + '</div>' +
-        '<div class="restaurant-desc">' + r.desc + '</div>' +
-        '<div class="restaurant-location">' + r.location + '</div>' +
-        '</div>';
-    });
+        (r.vibe ? '<span class="restaurant-vibe">' + r.vibe + '</span>' : '') +
+      '</div>' +
+      '<div class="restaurant-meta">' + r.cuisine + ' &middot; ' + r.price + ' &middot; ' + r.location + '</div>' +
+      '<div class="restaurant-desc">' + r.desc + '</div>';
+    if (r.gmOrder) html += '<div class="restaurant-gm-order">&#127869; GM\'s Order: ' + r.gmOrder + '</div>';
+    if (r.insiderTip) html += '<div class="restaurant-insider">&#128161; Insider Tip: ' + r.insiderTip + '</div>';
+    html += '</div>';
+    return html;
+  }
+
+  function buildGuideHtml(guideKey, data) {
+    var contentHtml = '';
+
+    // New city-based format
+    if (data.cities) {
+      data.cities.forEach(function(city) {
+        contentHtml += '<div class="city-section">';
+        contentHtml += '<h3 class="city-name">' + city.name + '</h3>';
+        if (city.icons && city.icons.length) {
+          contentHtml += '<div class="tier-icons"><div class="tier-label">&#9733; The Icons</div>';
+          city.icons.forEach(function(r) { contentHtml += buildRestaurantCard(r); });
+          contentHtml += '</div>';
+        }
+        if (city.secrets && city.secrets.length) {
+          contentHtml += '<div class="tier-secrets"><div class="tier-label">&#9830; Our Local Secrets</div>';
+          city.secrets.forEach(function(r) { contentHtml += buildRestaurantCard(r); });
+          contentHtml += '</div>';
+        }
+        contentHtml += '</div>';
+      });
+    } else {
+      // Legacy flat format (Greece, Thailand)
+      data.restaurants.forEach(function(r) {
+        contentHtml += buildRestaurantCard(r);
+      });
+    }
+
     return '<div class="guide-expanded-title">Where to Eat in ' + data.destination + '</div>' +
       '<div class="guide-expanded-intro">' + data.intro + '</div>' +
-      restaurantsHtml +
+      contentHtml +
       '<div class="guide-expanded-actions">' +
         '<div class="share-wrap">' +
           '<button class="share-btn" data-guide="' + guideKey + '">Share This Guide</button>' +
@@ -1244,15 +1513,57 @@ body {
         sharePop.classList.toggle('open');
       });
 
+      function getAllRestaurants() {
+        var all = [];
+        if (data.cities) {
+          data.cities.forEach(function(city) {
+            (city.icons || []).forEach(function(r) { all.push({ r: r, city: city.name, tier: 'icon' }); });
+            (city.secrets || []).forEach(function(r) { all.push({ r: r, city: city.name, tier: 'secret' }); });
+          });
+        } else {
+          data.restaurants.forEach(function(r) { all.push({ r: r, city: '', tier: '' }); });
+        }
+        return all;
+      }
+
       function buildPlainText() {
         var divider = '\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014';
         var text = 'WHERE TO EAT IN ' + data.destination.toUpperCase() + '\n'
-          + data.intro + '\n\n' + divider + '\n\n';
-        data.restaurants.forEach(function(r, i) {
-          text += (i + 1) + '. ' + r.name.toUpperCase() + '\n';
-          text += r.cuisine + ' \u00b7 ' + r.price + ' \u00b7 ' + r.location + '\n';
-          text += r.desc + '\n\n';
-        });
+          + data.intro + '\n\n';
+
+        if (data.cities) {
+          data.cities.forEach(function(city) {
+            text += divider + '\n' + city.name.toUpperCase() + '\n' + divider + '\n\n';
+            if (city.icons && city.icons.length) {
+              text += '\u2605 THE ICONS\n\n';
+              city.icons.forEach(function(r) {
+                text += r.name.toUpperCase() + '\n';
+                text += r.cuisine + ' \u00b7 ' + r.price + ' \u00b7 ' + r.location + '\n';
+                text += r.desc + '\n';
+                if (r.gmOrder) text += 'GM\'s Order: ' + r.gmOrder + '\n';
+                text += '\n';
+              });
+            }
+            if (city.secrets && city.secrets.length) {
+              text += '\u25C6 OUR LOCAL SECRETS\n\n';
+              city.secrets.forEach(function(r) {
+                text += r.name.toUpperCase() + '\n';
+                text += r.cuisine + ' \u00b7 ' + r.price + ' \u00b7 ' + r.location + '\n';
+                text += r.desc + '\n';
+                if (r.gmOrder) text += 'GM\'s Order: ' + r.gmOrder + '\n';
+                text += '\n';
+              });
+            }
+          });
+        } else {
+          text += divider + '\n\n';
+          data.restaurants.forEach(function(r, i) {
+            text += (i + 1) + '. ' + r.name.toUpperCase() + '\n';
+            text += r.cuisine + ' \u00b7 ' + r.price + ' \u00b7 ' + r.location + '\n';
+            text += r.desc + '\n\n';
+          });
+        }
+
         text += divider + '\n\n';
         text += 'This guide is curated by our local team in ' + data.destination + '. For reservations or personalized recommendations, just let me know.';
         return text;
@@ -1261,15 +1572,38 @@ body {
       function buildBrandedHTML() {
         var logoUrl = 'https://cdn.prod.website-files.com/645dce8d3cf060ba152e3ed6/645dd0fb59b28a589dc86dba_TCL%20White%20Logo%20200.png';
         var rows = '';
-        data.restaurants.forEach(function(r, i) {
-          var bg = i % 2 === 0 ? '#ffffff' : '#f9f9f9';
-          rows +=
-            '<tr><td style="padding:16px 24px;background:' + bg + ';">' +
-              '<div style="font-size:15px;font-weight:700;color:#304256;margin:0 0 2px;">' + r.name + '</div>' +
-              '<div style="font-size:12px;color:#5b86a0;margin:0 0 8px;">' + r.cuisine + ' &middot; ' + r.price + ' &middot; ' + r.location + '</div>' +
-              '<div style="font-size:13px;line-height:1.5;color:#555;">' + r.desc + '</div>' +
+        var count = 0;
+
+        function restaurantRow(r, tierLabel) {
+          var bg = count % 2 === 0 ? '#ffffff' : '#f9f9f9';
+          count++;
+          var html = '<tr><td style="padding:16px 24px;background:' + bg + ';">' +
+            '<div style="font-size:15px;font-weight:700;color:#304256;margin:0 0 2px;">' + r.name + '</div>' +
+            '<div style="font-size:12px;color:#5b86a0;margin:0 0 8px;">' + r.cuisine + ' &middot; ' + r.price + ' &middot; ' + r.location + '</div>' +
+            '<div style="font-size:13px;line-height:1.5;color:#555;">' + r.desc + '</div>';
+          if (r.gmOrder) html += '<div style="font-size:12px;font-style:italic;color:#304256;margin-top:6px;">&#127869; GM\'s Order: ' + r.gmOrder + '</div>';
+          html += '</td></tr>';
+          return html;
+        }
+
+        if (data.cities) {
+          data.cities.forEach(function(city) {
+            rows += '<tr><td style="background:#304256;padding:10px 24px;">' +
+              '<span style="font-size:16px;font-weight:700;color:#ffffff;">' + city.name + '</span>' +
             '</td></tr>';
-        });
+            if (city.icons && city.icons.length) {
+              rows += '<tr><td style="padding:8px 24px;background:#f0f0f0;"><span style="font-size:11px;font-weight:700;color:#304256;text-transform:uppercase;letter-spacing:1px;">&#9733; The Icons</span></td></tr>';
+              city.icons.forEach(function(r) { rows += restaurantRow(r); });
+            }
+            if (city.secrets && city.secrets.length) {
+              rows += '<tr><td style="padding:8px 24px;background:#faf8f5;"><span style="font-size:11px;font-weight:700;color:#5b86a0;text-transform:uppercase;letter-spacing:1px;">&#9830; Our Local Secrets</span></td></tr>';
+              city.secrets.forEach(function(r) { rows += restaurantRow(r); });
+            }
+          });
+        } else {
+          data.restaurants.forEach(function(r) { rows += restaurantRow(r); });
+        }
+
         return '<table cellpadding="0" cellspacing="0" border="0" width="520" style="max-width:520px;font-family:Arial,Helvetica,sans-serif;border-collapse:collapse;">' +
           '<tr><td style="padding:0;">' +
             '<img src="' + data.image + '" alt="' + data.destination + '" width="520" style="display:block;width:100%;height:auto;" />' +
@@ -1362,6 +1696,24 @@ body {
       var guideKey = card.getAttribute('data-guide');
       if (guideKey) openGuide(guideKey, card);
     });
+  });
+
+  // ====== DYNAMIC BADGE COUNTS ======
+  guideCards.forEach(function(card) {
+    var guideKey = card.getAttribute('data-guide');
+    if (!guideKey || !guideData[guideKey]) return;
+    var d = guideData[guideKey];
+    var badge = card.querySelector('.guide-card-badge');
+    if (!badge) return;
+    var svg = badge.querySelector('svg');
+    var svgHtml = svg ? svg.outerHTML : '';
+    if (d.cities) {
+      var total = 0;
+      d.cities.forEach(function(c) { total += (c.icons ? c.icons.length : 0) + (c.secrets ? c.secrets.length : 0); });
+      badge.innerHTML = svgHtml + ' ' + total + ' restaurants across ' + d.cities.length + ' cities';
+    } else {
+      badge.innerHTML = svgHtml + ' ' + d.restaurants.length + ' restaurants curated';
+    }
   });
 
   // ====== SCROLL REVEAL ======
