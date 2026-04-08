@@ -58,12 +58,11 @@
       '<li>' +
         '<a href="advisor-portal.html#resources">Marketing Hub <span class="nav-arrow"></span></a>' +
         '<div class="nav-dropdown">' +
-          '<a href="#">Photos</a>' +
-          '<a href="#">Videos</a>' +
-          '<a href="#">Brochures &amp; Flyers</a>' +
-          '<a href="#">Logos</a>' +
-          '<a href="#">Social Media Content</a>' +
+          '<a href="#">Social Media Kit</a>' +
+          '<a href="#">Email Templates</a>' +
           '<a href="culinary-guides.html">Culinary Guides</a>' +
+          '<a href="#">Destination One-Pagers</a>' +
+          '<a href="advisor-portal.html#compare">Destination Comparison</a>' +
         '</div>' +
       '</li>' +
       '<li><a href="advisor-portal.html#team">Meet Our Team</a></li>' +
@@ -92,7 +91,7 @@
       '</div>' +
       '<div class="mobile-expandable mobile-link" data-target="mob-marketing">Marketing Hub <span class="mobile-expand-icon">+</span></div>' +
       '<div class="mobile-sub" id="mob-marketing">' +
-        '<a href="#">Photos</a><a href="#">Videos</a><a href="#">Brochures &amp; Flyers</a><a href="#">Logos</a><a href="#">Social Media Content</a><a href="culinary-guides.html">Culinary Guides</a>' +
+        '<a href="#">Social Media Kit</a><a href="#">Email Templates</a><a href="culinary-guides.html">Culinary Guides</a><a href="#">Destination One-Pagers</a><a href="advisor-portal.html#compare">Destination Comparison</a>' +
       '</div>' +
       '<a href="advisor-portal.html#team" class="mobile-link">Meet Our Team</a>' +
       '<a href="advisor-portal.html#signup" class="mobile-cta">Submit a Request</a>';
