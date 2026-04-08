@@ -210,7 +210,7 @@ body {
   font-weight: 500;
   color: var(--navy);
   text-decoration: none;
-  padding: 0.8rem 0;
+  padding: 1rem 0;
   border-bottom: 1px solid var(--light);
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -224,7 +224,7 @@ body {
   font-weight: 400;
   color: var(--text-sec);
   text-decoration: none;
-  padding: 0.45rem 0;
+  padding: 0.7rem 0;
   text-transform: none;
   letter-spacing: 0;
 }
@@ -725,12 +725,13 @@ body {
   .nav { padding: 0 1.5rem; }
   .nav-links { display: none; }
   .nav-toggle { display: block; }
-  .guides-grid { grid-template-columns: 1fr; max-width: 500px; }
+  .guides-grid { grid-template-columns: 1fr; }
   .hero { min-height: 300px; }
   .hero-title { font-size: 1.8rem; }
   .hero-subtitle { font-size: 0.9rem; }
   .guide-expanded.open { padding: 1.8rem; }
   .guide-expanded-title { font-size: 1.2rem; }
+  .tier-secrets { margin: 1rem -1.8rem 0; padding: 0.2rem 1.8rem 1.2rem; }
 }
 
 @media (max-width: 480px) {
@@ -740,6 +741,10 @@ body {
   .hero-content { padding: 0 1.2rem; }
   .hero-title { font-size: 1.5rem; }
   .guide-expanded-actions { flex-direction: column; align-items: flex-start; gap: 0.8rem; }
+  .tier-secrets { margin: 1rem -1.2rem 0; padding: 0.2rem 1.2rem 1.2rem; }
+  .tier-label { font-size: 0.72rem; }
+  .dest-filter-btn { padding: 0.5rem 1rem; font-size: 0.72rem; }
+  .city-name { font-size: 1.1rem; }
 }
 </style>
 <link rel="stylesheet" href="components/footer.css">

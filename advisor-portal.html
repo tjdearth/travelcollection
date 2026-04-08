@@ -219,7 +219,7 @@ body {
   font-weight: 500;
   color: var(--navy);
   text-decoration: none;
-  padding: 0.8rem 0;
+  padding: 1rem 0;
   border-bottom: 1px solid var(--light);
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -233,7 +233,7 @@ body {
   font-weight: 400;
   color: var(--text-sec);
   text-decoration: none;
-  padding: 0.45rem 0;
+  padding: 0.7rem 0;
   text-transform: none;
   letter-spacing: 0;
 }
@@ -253,7 +253,7 @@ body {
   background: var(--navy);
   color: #fff;
   text-decoration: none;
-  padding: 0.8rem 1.5rem;
+  padding: 1rem 1.5rem;
   border-radius: 0;
   font-size: 0.85rem;
   font-weight: 600;
@@ -275,11 +275,11 @@ body {
   align-items: center;
   justify-content: center;
   text-align: center;
-  overflow: hidden;
 }
 .hero-bg {
   position: absolute;
   inset: 0;
+  clip-path: inset(0);
   background: url('Photos/3.jpg') center/cover no-repeat;
   animation: kenBurnsHero 20s ease-in-out infinite alternate;
 }
@@ -1344,6 +1344,10 @@ body {
   .wizard-form-row { grid-template-columns: 1fr; }
   .wizard-modal { padding: 1.5rem; }
 }
+@media (max-width: 420px) {
+  .wizard-country-grid { grid-template-columns: repeat(2, 1fr); }
+  .wizard-step-line { width: 30px; }
+}
 
 /* ============ COMPARISON TOOL ============ */
 .compare-section {
@@ -1595,8 +1599,17 @@ body {
   .footer-bottom a { margin-left: 0; margin-right: 1rem; }
 }
 
+@media (max-width: 768px) {
+  .dest-card-actions { opacity: 1; transform: translateY(0); }
+  .compare-select-wrap { flex: 0 1 100%; }
+  .compare-vs { margin: 0.3rem 0; }
+}
+
 @media (max-width: 480px) {
+  .hero { height: 60vh; min-height: 380px; }
+  .hero-content { padding-top: 80px; }
   .hero-buttons { flex-direction: column; align-items: center; }
+  .hero-buttons .btn-outline, .hero-buttons .btn-solid { padding: 0.75rem 1.8rem; }
   .hero-subtitle { font-size: 0.95rem; }
   .section-title { font-size: 1.6rem !important; }
   .stat-number { font-size: 2.2rem; }
@@ -1606,12 +1619,22 @@ body {
   .trusted-logos { gap: 2rem; }
   .value-number { font-size: 2.4rem; }
   .gm-grid { grid-template-columns: 1fr; }
+  .value-prop { padding: 60px 5%; }
+  .compare-section { padding: 60px 5%; }
+  .gm-section { padding: 60px 5%; }
+  .destinations { padding: 40px 5%; }
+  .resources { padding: 40px 5%; }
+  .testimonial { padding: 40px 5%; }
+  .signup { padding: 40px 5%; }
+  .stats { padding: 40px 5%; }
+  .stat { padding: 0 0.5rem; }
 }
 
 /* ============ WHAT'S NEW FEED ============ */
 .whats-new {
   background: var(--white);
   padding: 60px 5%;
+  overflow: hidden;
 }
 .whats-new-inner {
   max-width: 1200px;
@@ -1698,12 +1721,22 @@ body {
     scroll-snap-type: x mandatory;
     gap: 1rem;
     padding-bottom: 1rem;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
   }
+  .whats-new-grid::-webkit-scrollbar { display: none; }
   .news-card {
     min-width: 280px;
     flex-shrink: 0;
     scroll-snap-align: start;
   }
+}
+@media (max-width: 480px) {
+  .news-card {
+    min-width: calc(100vw - 3rem);
+  }
+  .whats-new { padding: 40px 5%; }
 }
 
 /* ============ QUOTE REQUEST MODAL ============ */
@@ -1851,6 +1884,10 @@ body {
 .qf-dest-check input[type="checkbox"]:checked + span {
   font-weight: 600;
   color: var(--navy);
+}
+@media (max-width: 600px) {
+  .quote-form .qf-row { grid-template-columns: 1fr !important; }
+  .quote-modal { padding: 1.5rem; }
 }
 @media (max-width: 480px) {
   .qf-dest-grid { grid-template-columns: repeat(2, 1fr); }
