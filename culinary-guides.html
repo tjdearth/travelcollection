@@ -577,6 +577,34 @@ body {
 }
 .share-btn:hover { background: var(--slate); }
 .share-btn.copied { background: #3a7a5c; }
+.share-wrap { position: relative; display: inline-block; }
+.share-pop {
+  display: none;
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 0;
+  background: #fff;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+  padding: 0.4rem 0;
+  min-width: 180px;
+  z-index: 10;
+}
+.share-pop.open { display: block; }
+.share-pop button {
+  display: block;
+  width: 100%;
+  padding: 0.5rem 1rem;
+  background: none;
+  border: none;
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.share-pop button:hover { background: #f2f2f2; }
+.share-pop button span { font-size: 0.65rem; color: var(--text-sec); display: block; }
 .close-guide-link {
   font-family: var(--font-body);
   font-size: 0.82rem;
@@ -978,6 +1006,8 @@ body {
   var guideData = {
     morocco: {
       destination: 'Morocco',
+      brand: 'Experience Morocco',
+      image: 'https://images.unsplash.com/photo-1539020140153-e479b8c22e70?w=600&q=80',
       intro: "Maryama's picks \u2014 from rooftop riads to hidden medina gems. These are the restaurants we send our own guests to, the places where the chef knows our name and the table is always ready.",
       restaurants: [
         { name: 'La Maison Arabe', cuisine: 'Moroccan Fine Dining', price: '$$$', desc: 'One of Marrakech\'s most storied dining rooms, set in a beautifully restored 1946 riad. The seven-course Moroccan degustation is a showpiece \u2014 expect slow-cooked lamb tagine with preserved lemons, pastilla layered with saffron-dusted almonds, and a rose-petal dessert. Reserve the courtyard table by the fountain for a truly magical evening.', location: 'Medina, Marrakech' },
@@ -989,6 +1019,8 @@ body {
     },
     italy: {
       destination: 'Italy',
+      brand: 'Authenticus Italy',
+      image: 'https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=600&q=80',
       intro: "Alberto's favorites \u2014 from Sicilian street stalls to three-star temples. Italy\'s food scene is unmatched in its depth, and these five restaurants span the full spectrum from rustic to refined.",
       restaurants: [
         { name: 'Osteria Francescana', cuisine: 'Italian Fine Dining', price: '$$$$', desc: "Massimo Bottura\'s legendary Modena restaurant consistently ranks among the world\'s best. The tasting menu is a love letter to Italian tradition told through avant-garde technique \u2014 his \"Oops! I Dropped the Lemon Tart\" and \"Five Ages of Parmigiano Reggiano\" are iconic. Book months ahead. The wine pairing is extraordinary, drawing from Italy\'s deepest cellars.", location: 'Modena' },
@@ -1000,6 +1032,8 @@ body {
     },
     france: {
       destination: 'France',
+      brand: 'Essentially French',
+      image: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=600&q=80',
       intro: "Livy's selection \u2014 the essential French dining experience from Paris bistros to Provencal terraces. These are the restaurants that remind you why France invented fine dining.",
       restaurants: [
         { name: 'Le Petit Cler', cuisine: 'Bistro', price: '$$', desc: 'Everything a Parisian neighborhood bistro should be: zinc bar, handwritten chalkboard menu, a patron who remembers your name. On the charming pedestrian Rue Cler, the duck confit with sarladaise potatoes is the dish that keeps regulars coming back. Pair with a carafe of Cotes du Rhone and finish with the tarte Tatin. No pretension, just deeply satisfying French cooking.', location: 'Paris 7th' },
@@ -1011,6 +1045,8 @@ body {
     },
     japan: {
       destination: 'Japan',
+      brand: 'Oshinobi Travel',
+      image: 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=600&q=80',
       intro: "Hiroshi's guide \u2014 from hidden ramen counters to kaiseki temples. Japan takes food more seriously than anywhere on earth, and these five experiences span the full range from street-level to sublime.",
       restaurants: [
         { name: 'Sukiyabashi Jiro', cuisine: 'Sushi Omakase', price: '$$$$', desc: "The 10-seat counter where 90-year-old Jiro Ono serves what many consider the world\'s finest sushi. Each piece of nigiri is a study in precision \u2014 rice at body temperature, fish aged to the hour. The omakase lasts just 20 minutes but stays with you forever. Reservations require a concierge booking months in advance. A pilgrimage for anyone who loves food.", location: 'Ginza, Tokyo' },
@@ -1022,6 +1058,8 @@ body {
     },
     mexico: {
       destination: 'Mexico',
+      brand: 'Across Mexico',
+      image: 'https://images.unsplash.com/photo-1518638150340-f706e86654de?w=600&q=80',
       intro: "Cintli's picks \u2014 bold flavors from markets to fine dining. Mexican cuisine runs deeper than most people imagine, and these five restaurants prove that no country on earth has a richer food culture.",
       restaurants: [
         { name: 'Pujol', cuisine: 'Modern Mexican', price: '$$$$', desc: "Chef Enrique Olvera\'s flagship is consistently ranked among the world\'s top 20 restaurants. The iconic mole madre \u2014 two concentric circles of mole, one aged over 1,500 days, the other made fresh that morning \u2014 is a dish that redefines Mexican cuisine. The taco omakase bar next door serves six courses of extraordinary tacos. Book the main dining room for the full experience.", location: 'Polanco, Mexico City' },
@@ -1033,6 +1071,8 @@ body {
     },
     greece: {
       destination: 'Greece',
+      brand: 'Nostos Greece',
+      image: 'https://images.unsplash.com/photo-1533105079780-92b9be482077?w=600&q=80',
       intro: "Aris's essentials \u2014 Mediterranean flavors with Aegean views. Greek food is about the ingredient, not the technique, and these five restaurants prove that simplicity can be extraordinary.",
       restaurants: [
         { name: 'Spondi', cuisine: 'French-Greek Fine Dining', price: '$$$$', desc: "Two Michelin stars in a bougainvillea-draped neoclassical courtyard that feels like dining in a private Athens garden. Chef Angelos Lantos weaves Greek ingredients through French technique \u2014 Aegean langoustine with citrus emulsion, lamb from Crete with wild herbs. The wine list is one of the deepest in Greece, and the sommelier\'s Greek wine flight is a revelation for anyone who thinks Greek wine begins and ends with retsina.", location: 'Athens' },
@@ -1044,6 +1084,8 @@ body {
     },
     spain: {
       destination: 'Spain',
+      brand: 'Unbox Spain & Portugal',
+      image: 'https://images.unsplash.com/photo-1543783207-ec64e4d95325?w=600&q=80',
       intro: "Juan's favorites \u2014 tapas bars, pintxos, and Michelin stars. Spain\'s food scene is one of the most exciting on the planet, from San Sebastian\'s pintxos bars to Seville\'s century-old taverns.",
       restaurants: [
         { name: 'Tickets', cuisine: 'Creative Tapas', price: '$$$', desc: "Albert Adria\'s Barcelona funhouse serves tapas reimagined as theater. The \"liquid olive\" that bursts on your tongue, the air baguette filled with Iberico ham, the cotton candy tree \u2014 every dish is a conversation piece. The vibe is loud, colorful, and electric. Book well ahead and come with a sense of adventure. The adjoining cocktail bar Bodega 1900 is equally fantastic for pre-dinner vermut.", location: 'Barcelona' },
@@ -1055,6 +1097,8 @@ body {
     },
     thailand: {
       destination: 'Thailand',
+      brand: 'Nira Thailand',
+      image: 'https://images.unsplash.com/photo-1528181304800-259b08848526?w=600&q=80',
       intro: "Nick's guide \u2014 street food, floating markets, and refined Thai cuisine. Thailand has more culinary range than almost any country in Asia, and these five spots prove it, from a smoky street stall to one of the world\'s most innovative restaurants.",
       restaurants: [
         { name: 'Gaggan Anand', cuisine: 'Progressive Indian-Thai', price: '$$$$', desc: "The most polarizing and thrilling restaurant in Bangkok. Chef Gaggan serves a 25-course tasting menu represented entirely by emojis \u2014 no written descriptions, just pure surprise. The flavors are explosive: Indian spices meet Thai technique in dishes like yogurt orbs that burst on your tongue and lick-the-plate curries. Multiple years as Asia\'s No. 1 restaurant. Book weeks ahead and come with an open mind.", location: 'Bangkok' },
@@ -1172,7 +1216,13 @@ body {
       '<div class="guide-expanded-intro">' + data.intro + '</div>' +
       restaurantsHtml +
       '<div class="guide-expanded-actions">' +
-        '<button class="share-btn" data-guide="' + guideKey + '">Share This Guide</button>' +
+        '<div class="share-wrap">' +
+          '<button class="share-btn" data-guide="' + guideKey + '">Share This Guide</button>' +
+          '<div class="share-pop">' +
+            '<button data-action="text">Copy as Text<span>Plain text for any email</span></button>' +
+            '<button data-action="html">Copy as Branded HTML<span>Rich email with TC branding</span></button>' +
+          '</div>' +
+        '</div>' +
         '<a href="#" class="close-guide-link">Close</a>' +
       '</div>';
   }
@@ -1187,8 +1237,14 @@ body {
     }
     var shareBtn = expandedPanel.querySelector('.share-btn');
     if (shareBtn) {
+      var sharePop = shareBtn.nextElementSibling;
+
       shareBtn.addEventListener('click', function() {
-        var btn = this;
+        document.querySelectorAll('.share-pop.open').forEach(function(p) { if (p !== sharePop) p.classList.remove('open'); });
+        sharePop.classList.toggle('open');
+      });
+
+      function buildPlainText() {
         var divider = '\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014';
         var text = 'WHERE TO EAT IN ' + data.destination.toUpperCase() + '\n'
           + data.intro + '\n\n' + divider + '\n\n';
@@ -1198,31 +1254,71 @@ body {
           text += r.desc + '\n\n';
         });
         text += divider + '\n\n';
-        text += 'This guide is curated by our in-country GM who lives in ' + data.destination + '. For reservations or personalized recommendations, just let me know.';
+        text += 'This guide is curated by our local team in ' + data.destination + '. For reservations or personalized recommendations, just let me know.';
+        return text;
+      }
 
-        function onCopied() {
-          btn.textContent = 'Copied!';
-          btn.classList.add('copied');
-          setTimeout(function() {
-            btn.textContent = 'Share This Guide';
-            btn.classList.remove('copied');
-          }, 2000);
-        }
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(text).then(onCopied);
-        } else {
-          var ta = document.createElement('textarea');
-          ta.value = text;
-          ta.style.position = 'fixed';
-          ta.style.left = '-9999px';
-          document.body.appendChild(ta);
-          ta.select();
-          document.execCommand('copy');
-          document.body.removeChild(ta);
-          onCopied();
-        }
+      function buildBrandedHTML() {
+        var logoUrl = 'https://cdn.prod.website-files.com/645dce8d3cf060ba152e3ed6/645dd0fb59b28a589dc86dba_TCL%20White%20Logo%20200.png';
+        var rows = '';
+        data.restaurants.forEach(function(r, i) {
+          var bg = i % 2 === 0 ? '#ffffff' : '#f9f9f9';
+          rows +=
+            '<tr><td style="padding:16px 24px;background:' + bg + ';">' +
+              '<div style="font-size:15px;font-weight:700;color:#304256;margin:0 0 2px;">' + r.name + '</div>' +
+              '<div style="font-size:12px;color:#5b86a0;margin:0 0 8px;">' + r.cuisine + ' &middot; ' + r.price + ' &middot; ' + r.location + '</div>' +
+              '<div style="font-size:13px;line-height:1.5;color:#555;">' + r.desc + '</div>' +
+            '</td></tr>';
+        });
+        return '<table cellpadding="0" cellspacing="0" border="0" width="520" style="max-width:520px;font-family:Arial,Helvetica,sans-serif;border-collapse:collapse;">' +
+          '<tr><td style="padding:0;">' +
+            '<img src="' + data.image + '" alt="' + data.destination + '" width="520" style="display:block;width:100%;height:auto;" />' +
+          '</td></tr>' +
+          '<tr><td style="background:#304256;padding:14px 24px;">' +
+            '<span style="font-size:20px;font-weight:700;color:#ffffff;">Where to Eat in ' + data.destination + '</span><br/>' +
+            '<span style="font-size:11px;color:rgba(255,255,255,0.7);text-transform:uppercase;letter-spacing:1.5px;">' + data.brand + '</span>' +
+          '</td></tr>' +
+          '<tr><td style="background:#5b86a0;padding:6px 24px;font-size:11px;font-weight:700;color:#fff;text-transform:uppercase;letter-spacing:1px;">&#127860; Culinary Guide</td></tr>' +
+          '<tr><td style="padding:16px 24px;background:#ffffff;">' +
+            '<p style="font-size:14px;line-height:1.6;color:#555;margin:0;">' + data.intro + '</p>' +
+          '</td></tr>' +
+          rows +
+          '<tr><td style="background:#304256;padding:12px 24px;text-align:center;">' +
+            '<img src="' + logoUrl + '" alt="Travel Collection" height="24" style="height:24px;" />' +
+          '</td></tr>' +
+        '</table>';
+      }
+
+      function flashCopied() {
+        shareBtn.textContent = 'Copied!';
+        shareBtn.classList.add('copied');
+        sharePop.classList.remove('open');
+        setTimeout(function() {
+          shareBtn.textContent = 'Share This Guide';
+          shareBtn.classList.remove('copied');
+        }, 2000);
+      }
+
+      sharePop.querySelector('[data-action="text"]').addEventListener('click', function() {
+        var text = buildPlainText();
+        navigator.clipboard.writeText(text).then(flashCopied);
+      });
+
+      sharePop.querySelector('[data-action="html"]').addEventListener('click', function() {
+        var html = buildBrandedHTML();
+        var text = buildPlainText();
+        var blob = new Blob([html], { type: 'text/html' });
+        var item = new ClipboardItem({ 'text/html': blob, 'text/plain': new Blob([text], { type: 'text/plain' }) });
+        navigator.clipboard.write([item]).then(flashCopied);
       });
     }
+
+    // Close share popover on outside click
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.share-wrap')) {
+        document.querySelectorAll('.share-pop.open').forEach(function(p) { p.classList.remove('open'); });
+      }
+    });
   }
 
   function openGuide(guideKey, card) {
