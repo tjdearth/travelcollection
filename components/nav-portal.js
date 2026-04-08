@@ -60,7 +60,7 @@
         '<div class="nav-dropdown">' +
           '<a href="#">Social Media Kit</a>' +
           '<a href="culinary-guides.html">Culinary Guides</a>' +
-          '<a href="#">Destination Playlists</a>' +
+          '<a href="destination-playlists.html">Destination Playlists</a>' +
           '<a href="#">Destination One-Pagers</a>' +
           '<a href="advisor-portal.html#compare">Destination Comparison</a>' +
         '</div>' +
