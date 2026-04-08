@@ -727,9 +727,11 @@ body {
   .nav-links { display: none; }
   .nav-toggle { display: block; }
   .guides-grid { grid-template-columns: 1fr; }
-  .hero { min-height: 300px; }
-  .hero-title { font-size: 1.8rem; }
-  .hero-subtitle { font-size: 0.9rem; }
+  .hero { height: 35vh; min-height: 220px; }
+  .hero-content { padding: 80px 1.5rem 0; }
+  .hero-title { font-size: 1.6rem; margin-bottom: 0.5rem; }
+  .hero-subtitle { font-size: 0.85rem; margin-bottom: 0.5rem; }
+  .hero-breadcrumb { font-size: 0.7rem; }
   .guide-expanded.open { padding: 1.8rem; }
   .guide-expanded-title { font-size: 1.2rem; }
   .tier-secrets { margin: 1rem -1.8rem 0; padding: 0.2rem 1.8rem 1.2rem; }
@@ -737,10 +739,12 @@ body {
 
 @media (max-width: 480px) {
   .guides-section { padding: 2rem 4% 3rem; }
-  .filter-section { padding: 1.8rem 4% 0; }
+  .filter-section { padding: 1.2rem 4% 0; }
   .guide-expanded.open { padding: 1.2rem; }
+  .hero { height: auto; min-height: 0; padding: 100px 0 2rem; }
   .hero-content { padding: 0 1.2rem; }
-  .hero-title { font-size: 1.5rem; }
+  .hero-title { font-size: 1.4rem; }
+  .hero-label { font-size: 0.65rem; margin-bottom: 0.4rem; }
   .guide-expanded-actions { flex-direction: column; align-items: flex-start; gap: 0.8rem; }
   .tier-secrets { margin: 1rem -1.2rem 0; padding: 0.2rem 1.2rem 1.2rem; }
   .tier-label { font-size: 0.72rem; }

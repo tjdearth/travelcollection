@@ -1568,8 +1568,10 @@ body {
   .nav-toggle { display: block; }
   .nav { padding: 0 1.5rem; }
 
-  .hero { height: 70vh; min-height: 450px; }
-  .hero-title { font-size: clamp(1.6rem, 5vw, 2.4rem); }
+  .hero { height: auto; min-height: 0; padding: 100px 0 2rem; }
+  .hero-title { font-size: clamp(1.4rem, 5vw, 2rem); margin-bottom: 0.5rem; }
+  .hero-subtitle { font-size: 0.88rem; margin-bottom: 1rem; }
+  .hero-label { font-size: 0.65rem; margin-bottom: 0.4rem; }
 
   .value-prop { padding: 80px 5%; }
   .value-prop-inner { grid-template-columns: 1fr; }
@@ -1607,10 +1609,10 @@ body {
 }
 
 @media (max-width: 480px) {
-  .hero { height: 60vh; min-height: 380px; }
-  .hero-content { padding-top: 80px; }
-  .hero-buttons { flex-direction: column; align-items: center; }
-  .hero-buttons .btn-outline, .hero-buttons .btn-solid { padding: 0.75rem 1.8rem; }
+  .hero-content { padding: 0 1.2rem; }
+  .hero-buttons { flex-direction: column; align-items: center; gap: 0.5rem; }
+  .hero-buttons .btn-outline, .hero-buttons .btn-solid { padding: 0.65rem 1.5rem; font-size: 0.75rem; }
+  .hero-search { margin-top: 0.8rem; }
   .hero-subtitle { font-size: 0.95rem; }
   .section-title { font-size: 1.6rem !important; }
   .stat-number { font-size: 2.2rem; }
