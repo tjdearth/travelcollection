@@ -727,7 +727,7 @@ a { color: inherit; }
         </a>
         <div class="share-wrap">
           <button class="playlist-share-btn" onclick="toggleSharePop(this)">Share with Client</button>
-          <div class="share-pop" data-url="https://open.spotify.com/playlist/22RAWfENzAUc1eOz9F1e8l" data-dest="Italy" data-blurb="To get you in the mood for Italy, here's a playlist handpicked by our local team — the same people who'll be looking after you on the ground. Think golden hour in Positano, aperitivo on a Florentine terrace. Enjoy!">
+          <div class="share-pop" data-url="https://open.spotify.com/playlist/22RAWfENzAUc1eOz9F1e8l" data-dest="Italy" data-brand="Authenticus Italy" data-vibe="Aperitivo Vibes" data-title="Sounds of La Dolce Vita" data-img="https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=600&q=80" data-blurb="To get you in the mood for Italy, here's a playlist handpicked by our local team — the same people who'll be looking after you on the ground. Think golden hour in Positano, aperitivo on a Florentine terrace. Enjoy!">
             <button onclick="copyAsText(this.parentNode)">Copy as Text<span>Plain text for any email</span></button>
             <button onclick="copyAsHTML(this.parentNode)">Copy as Branded HTML<span>Rich email with TC branding</span></button>
           </div>
@@ -760,7 +760,7 @@ a { color: inherit; }
         </a>
         <div class="share-wrap">
           <button class="playlist-share-btn" onclick="toggleSharePop(this)">Share with Client</button>
-          <div class="share-pop" data-url="https://open.spotify.com/playlist/2RbDa6LZ1dTydspaIap7fo" data-dest="East Africa" data-blurb="To get you excited for East Africa, here's a playlist handpicked by our local team — the same people who'll be with you on safari. The rhythms of Kenya, Tanzania, Uganda and Rwanda. Enjoy!">
+          <div class="share-pop" data-url="https://open.spotify.com/playlist/2RbDa6LZ1dTydspaIap7fo" data-dest="East Africa" data-brand="Truly Swahili" data-vibe="Safari Sundowners" data-title="Swahili Sunset Sessions" data-img="https://images.unsplash.com/photo-1516426122078-c23e76319801?w=600&q=80" data-blurb="To get you excited for East Africa, here's a playlist handpicked by our local team — the same people who'll be with you on safari. The rhythms of Kenya, Tanzania, Uganda and Rwanda. Enjoy!">
             <button onclick="copyAsText(this.parentNode)">Copy as Text<span>Plain text for any email</span></button>
             <button onclick="copyAsHTML(this.parentNode)">Copy as Branded HTML<span>Rich email with TC branding</span></button>
           </div>
@@ -984,19 +984,34 @@ function copyAsHTML(pop) {
   var blurb = pop.getAttribute('data-blurb');
   var url = pop.getAttribute('data-url');
   var dest = pop.getAttribute('data-dest');
+  var brand = pop.getAttribute('data-brand');
+  var vibe = pop.getAttribute('data-vibe');
+  var title = pop.getAttribute('data-title');
+  var img = pop.getAttribute('data-img');
   var logoUrl = 'https://cdn.prod.website-files.com/645dce8d3cf060ba152e3ed6/645dd0fb59b28a589dc86dba_TCL%20White%20Logo%20200.png';
-  var html = '<div style="max-width:520px;font-family:Arial,sans-serif;">' +
-    '<div style="background:#304256;padding:16px 24px;text-align:center;">' +
-      '<img src="' + logoUrl + '" alt="Travel Collection" style="height:32px;">' +
-    '</div>' +
-    '<div style="padding:24px;background:#ffffff;">' +
-      '<p style="font-size:15px;line-height:1.6;color:#333;margin:0 0 16px;">' + blurb + '</p>' +
-      '<a href="' + url + '" style="display:inline-block;background:#1DB954;color:#ffffff;padding:10px 24px;text-decoration:none;font-weight:bold;font-size:14px;">Listen to ' + dest + ' Playlist</a>' +
-    '</div>' +
-    '<div style="padding:12px 24px;background:#f5f5f5;text-align:center;font-size:11px;color:#999;">' +
-      'Curated by Travel Collection' +
-    '</div>' +
-  '</div>';
+  var html =
+    '<div style="max-width:480px;font-family:Arial,Helvetica,sans-serif;overflow:hidden;">' +
+      '<!--[if mso]><table cellpadding="0" cellspacing="0" width="480"><tr><td><![endif]-->' +
+      '<div style="position:relative;overflow:hidden;">' +
+        '<img src="' + img + '" alt="' + dest + '" style="display:block;width:100%;height:220px;object-fit:cover;" />' +
+        '<div style="position:absolute;bottom:0;left:0;right:0;padding:16px 20px;background:linear-gradient(transparent,rgba(0,0,0,0.7));">' +
+          '<div style="font-size:22px;font-weight:700;color:#ffffff;margin:0;">' + dest + '</div>' +
+          '<div style="font-size:12px;color:rgba(255,255,255,0.8);text-transform:uppercase;letter-spacing:1px;">' + brand + '</div>' +
+        '</div>' +
+        '<div style="position:absolute;top:12px;right:12px;background:#1DB954;color:#fff;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:4px 12px;">' + vibe + '</div>' +
+      '</div>' +
+      '<div style="padding:20px 24px;background:#ffffff;">' +
+        '<div style="font-size:18px;font-weight:700;color:#304256;margin:0 0 10px;">' + title + '</div>' +
+        '<p style="font-size:14px;line-height:1.6;color:#555;margin:0 0 20px;">' + blurb + '</p>' +
+        '<a href="' + url + '" style="display:inline-block;background:#1DB954;color:#ffffff;padding:12px 28px;text-decoration:none;font-weight:700;font-size:14px;letter-spacing:0.5px;">' +
+          '&#9835; &nbsp;Listen on Spotify' +
+        '</a>' +
+      '</div>' +
+      '<div style="padding:10px 24px;background:#304256;text-align:center;">' +
+        '<img src="' + logoUrl + '" alt="Travel Collection" style="height:24px;opacity:0.8;" />' +
+      '</div>' +
+      '<!--[if mso]></td></tr></table><![endif]-->' +
+    '</div>';
   var blob = new Blob([html], { type: 'text/html' });
   var item = new ClipboardItem({ 'text/html': blob, 'text/plain': new Blob([blurb + '\n\n' + url], { type: 'text/plain' }) });
   navigator.clipboard.write([item]).then(function() {
