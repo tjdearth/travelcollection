@@ -729,26 +729,20 @@ body {
 
   .hero { height: 35vh; min-height: 300px; }
   .hero-title { font-size: clamp(1.4rem, 5vw, 2rem); }
+  .hero-content { padding: 0 1.5rem; }
 
-  .filter-bar {
+  .filter-group {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
-  }
-  .filter-group {
     flex-wrap: nowrap;
-    min-width: max-content;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
   }
+  .filter-group::-webkit-scrollbar { display: none; }
 
-  .itinerary-grid { grid-template-columns: 1fr; }
+  .itinerary-grid { grid-template-columns: 1fr; gap: 1.25rem; }
 
-  .footer-grid {
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .footer-grid { grid-template-columns: 1fr; }
+  .itin-detail-actions { flex-wrap: wrap; }
 }
 
 @media (max-width: 480px) {
@@ -757,6 +751,14 @@ body {
   .itin-card-body { padding: 1rem; }
   .itin-card-actions { flex-direction: column; }
   .itin-card-actions button { width: 100%; }
+  .hero-content { padding: 0 1.2rem; }
+  .itin-tag { font-size: 0.72rem; }
+  .day-label { font-size: 0.75rem; }
+  .filter-group-label { font-size: 0.75rem; }
+  .filter-btn-text, .filter-btn-pill { padding: 0.45rem 0.9rem; }
+  .day-timeline { padding-left: 1.5rem; }
+  .day-item::before { left: -1.5rem; }
+  .cust-overlay { padding: 1rem; }
 }
 
 /* ============ CUSTOMIZE MODAL ============ */
