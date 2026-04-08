@@ -514,6 +514,35 @@ a { color: inherit; }
   transition: all 0.3s;
 }
 .playlist-share-btn:hover { border-color: var(--navy); color: var(--navy); }
+.share-wrap { position: relative; display: inline-block; }
+.share-pop {
+  display: none;
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: #fff;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+  padding: 0.4rem 0;
+  min-width: 160px;
+  z-index: 10;
+}
+.share-pop.open { display: block; }
+.share-pop button {
+  display: block;
+  width: 100%;
+  padding: 0.5rem 1rem;
+  background: none;
+  border: none;
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.share-pop button:hover { background: #f2f2f2; }
+.share-pop button span { font-size: 0.65rem; color: var(--text-sec); display: block; }
 
 /* ============ CTA SECTION ============ */
 .cta-section {
@@ -696,7 +725,13 @@ a { color: inherit; }
           <svg viewBox="0 0 24 24"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
           Open in Spotify
         </a>
-        <button class="playlist-share-btn" onclick="copyPlaylistLink(this)" data-url="https://open.spotify.com/playlist/22RAWfENzAUc1eOz9F1e8l" data-blurb="To get you in the mood for Italy, here's a playlist handpicked by our local team — the same people who'll be looking after you on the ground. Think golden hour in Positano, aperitivo on a Florentine terrace. Enjoy!">Share with Client</button>
+        <div class="share-wrap">
+          <button class="playlist-share-btn" onclick="toggleSharePop(this)">Share with Client</button>
+          <div class="share-pop" data-url="https://open.spotify.com/playlist/22RAWfENzAUc1eOz9F1e8l" data-dest="Italy" data-blurb="To get you in the mood for Italy, here's a playlist handpicked by our local team — the same people who'll be looking after you on the ground. Think golden hour in Positano, aperitivo on a Florentine terrace. Enjoy!">
+            <button onclick="copyAsText(this.parentNode)">Copy as Text<span>Plain text for any email</span></button>
+            <button onclick="copyAsHTML(this.parentNode)">Copy as Branded HTML<span>Rich email with TC branding</span></button>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -723,7 +758,13 @@ a { color: inherit; }
           <svg viewBox="0 0 24 24"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
           Open in Spotify
         </a>
-        <button class="playlist-share-btn" onclick="copyPlaylistLink(this)" data-url="https://open.spotify.com/playlist/2RbDa6LZ1dTydspaIap7fo" data-blurb="To get you excited for East Africa, here's a playlist handpicked by our local team — the same people who'll be with you on safari. The rhythms of Kenya, Tanzania, Uganda and Rwanda. Enjoy!">Share with Client</button>
+        <div class="share-wrap">
+          <button class="playlist-share-btn" onclick="toggleSharePop(this)">Share with Client</button>
+          <div class="share-pop" data-url="https://open.spotify.com/playlist/2RbDa6LZ1dTydspaIap7fo" data-dest="East Africa" data-blurb="To get you excited for East Africa, here's a playlist handpicked by our local team — the same people who'll be with you on safari. The rhythms of Kenya, Tanzania, Uganda and Rwanda. Enjoy!">
+            <button onclick="copyAsText(this.parentNode)">Copy as Text<span>Plain text for any email</span></button>
+            <button onclick="copyAsHTML(this.parentNode)">Copy as Branded HTML<span>Rich email with TC branding</span></button>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -910,14 +951,56 @@ a { color: inherit; }
 })();
 
 // ====== SHARE WITH CLIENT ======
-function copyPlaylistLink(btn) {
-  var url = btn.getAttribute('data-url');
-  var blurb = btn.getAttribute('data-blurb');
-  var text = blurb + '\n\n' + url;
-  navigator.clipboard.writeText(text).then(function() {
-    var original = btn.textContent;
-    btn.textContent = 'Copied!';
-    setTimeout(function() { btn.textContent = original; }, 2000);
+function toggleSharePop(btn) {
+  var pop = btn.nextElementSibling;
+  document.querySelectorAll('.share-pop.open').forEach(function(p) {
+    if (p !== pop) p.classList.remove('open');
+  });
+  pop.classList.toggle('open');
+}
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.share-wrap')) {
+    document.querySelectorAll('.share-pop.open').forEach(function(p) { p.classList.remove('open'); });
+  }
+});
+
+function flashBtn(pop, msg) {
+  var shareBtn = pop.previousElementSibling;
+  var original = shareBtn.textContent;
+  shareBtn.textContent = msg;
+  pop.classList.remove('open');
+  setTimeout(function() { shareBtn.textContent = original; }, 2000);
+}
+
+function copyAsText(pop) {
+  var blurb = pop.getAttribute('data-blurb');
+  var url = pop.getAttribute('data-url');
+  navigator.clipboard.writeText(blurb + '\n\n' + url).then(function() {
+    flashBtn(pop, 'Copied!');
+  });
+}
+
+function copyAsHTML(pop) {
+  var blurb = pop.getAttribute('data-blurb');
+  var url = pop.getAttribute('data-url');
+  var dest = pop.getAttribute('data-dest');
+  var logoUrl = 'https://cdn.prod.website-files.com/645dce8d3cf060ba152e3ed6/645dd0fb59b28a589dc86dba_TCL%20White%20Logo%20200.png';
+  var html = '<div style="max-width:520px;font-family:Arial,sans-serif;">' +
+    '<div style="background:#304256;padding:16px 24px;text-align:center;">' +
+      '<img src="' + logoUrl + '" alt="Travel Collection" style="height:32px;">' +
+    '</div>' +
+    '<div style="padding:24px;background:#ffffff;">' +
+      '<p style="font-size:15px;line-height:1.6;color:#333;margin:0 0 16px;">' + blurb + '</p>' +
+      '<a href="' + url + '" style="display:inline-block;background:#1DB954;color:#ffffff;padding:10px 24px;text-decoration:none;font-weight:bold;font-size:14px;">Listen to ' + dest + ' Playlist</a>' +
+    '</div>' +
+    '<div style="padding:12px 24px;background:#f5f5f5;text-align:center;font-size:11px;color:#999;">' +
+      'Curated by Travel Collection' +
+    '</div>' +
+  '</div>';
+  var blob = new Blob([html], { type: 'text/html' });
+  var item = new ClipboardItem({ 'text/html': blob, 'text/plain': new Blob([blurb + '\n\n' + url], { type: 'text/plain' }) });
+  navigator.clipboard.write([item]).then(function() {
+    flashBtn(pop, 'Copied!');
   });
 }
 </script>
