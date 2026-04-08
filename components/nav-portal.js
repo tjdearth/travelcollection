@@ -60,6 +60,7 @@
         '<div class="nav-dropdown">' +
           '<a href="#">Social Media Kit</a>' +
           '<a href="culinary-guides.html">Culinary Guides</a>' +
+          '<a href="#">Destination Playlists</a>' +
           '<a href="#">Destination One-Pagers</a>' +
           '<a href="advisor-portal.html#compare">Destination Comparison</a>' +
         '</div>' +
@@ -90,7 +91,7 @@
       '</div>' +
       '<div class="mobile-expandable mobile-link" data-target="mob-marketing">Marketing Hub <span class="mobile-expand-icon">+</span></div>' +
       '<div class="mobile-sub" id="mob-marketing">' +
-        '<a href="#">Social Media Kit</a><a href="culinary-guides.html">Culinary Guides</a><a href="#">Destination One-Pagers</a><a href="advisor-portal.html#compare">Destination Comparison</a>' +
+        '<a href="#">Social Media Kit</a><a href="culinary-guides.html">Culinary Guides</a><a href="#">Destination Playlists</a><a href="#">Destination One-Pagers</a><a href="advisor-portal.html#compare">Destination Comparison</a>' +
       '</div>' +
       '<a href="advisor-portal.html#team" class="mobile-link">Meet Our Team</a>' +
       '<a href="advisor-portal.html#signup" class="mobile-cta">Submit a Request</a>';
