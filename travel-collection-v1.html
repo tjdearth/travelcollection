@@ -934,7 +934,10 @@ body {
   .nav-links { display: none; }
   .nav-toggle { display: block; }
   .nav { padding: 0 1.5rem; }
+  .nav-toggle { padding: 10px; }
+  .hero-content { right: 5%; }
   .hero-content h1 { font-size: clamp(2.2rem, 6vw, 3rem); }
+  .where-next-scroll { touch-action: pan-x; }
   .intro { padding: 80px 5%; }
   .intro-inner { margin-left: 5%; }
   .hallmarks { padding: 80px 5%; }
@@ -982,13 +985,29 @@ body {
 
 @media (max-width: 480px) {
   .hero-content { left: 5%; right: 5%; bottom: 10%; }
+  .hero-content h1 { font-size: clamp(1.8rem, 5vw, 2.2rem); }
+  .hero-counter { display: none; }
+  .intro { padding: 60px 5%; }
+  .intro p { font-size: 1.2rem; }
+  .hallmarks { padding: 60px 5%; }
+  .hallmarks-list { margin-left: 0; }
   .hallmark-row {
     grid-template-columns: 1fr;
     gap: 0.5rem;
   }
   .hallmark-num { font-size: 1.8rem; }
+  .service-left .service-num { font-size: 2rem; }
+  .philosophy-tabs { flex-wrap: wrap; gap: 0.8rem; }
   .philosophy-images { height: 280px; }
-  .sustain-inset img { height: 280px; }
+  .sustain-inset img { height: 280px; width: 100%; }
+  .destinations { padding: 60px 5%; }
+  .services { padding: 60px 5%; }
+  .quote-section { padding: 60px 5%; }
+  .cta-section { padding: 60px 5%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-slide-bg { animation: none !important; }
 }
 </style>
 <link rel="stylesheet" href="components/footer.css">

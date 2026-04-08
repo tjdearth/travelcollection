@@ -376,8 +376,10 @@ a { color: inherit; }
 .playlist-card {
   background: var(--white);
   border: 1px solid var(--light);
-  overflow: hidden;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.playlist-card-header {
+  overflow: hidden;
 }
 .playlist-card:hover {
   transform: translateY(-4px);
@@ -648,15 +650,24 @@ a { color: inherit; }
 @media (max-width: 768px) {
   .nav { padding: 0 1.5rem; }
   .nav-links { display: none; }
-  .nav-toggle { display: block; }
+  .nav-toggle { display: block; padding: 10px; }
   .playlist-grid { grid-template-columns: 1fr; max-width: 500px; margin: 0 auto; }
   .hero { min-height: 350px; }
   .hero-title { font-size: 1.8rem; }
+  .playlist-embed { height: 232px; }
 }
 
 @media (max-width: 480px) {
   .playlists-section { padding: 2rem 4% 3rem; }
   .filter-section { padding: 1.5rem 4% 0; }
+  .playlist-embed { height: 152px; }
+  .cta-section { padding: 3rem 5%; }
+  .intro-section { padding: 2.5rem 5% 1.5rem; }
+  .hero-title { font-size: 1.5rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-slide-bg { animation: none !important; }
 }
 </style>
 <link rel="stylesheet" href="components/footer.css">

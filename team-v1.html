@@ -734,7 +734,14 @@
             }
         }
 
+        @media (max-width: 768px) {
+            .nav-toggle { padding: 10px; }
+        }
+
         @media (max-width: 480px) {
+            .hero {
+                min-height: 280px;
+            }
             .hero h1 {
                 font-size: 1.9rem;
             }
@@ -742,10 +749,24 @@
                 grid-template-columns: 1fr;
                 gap: 20px;
             }
+            .team-card-img {
+                aspect-ratio: 4/3;
+            }
             .filter-inner {
-                gap: 16px;
+                gap: 12px;
+            }
+            .filter-inner button {
+                font-size: 0.75rem;
+                padding: 8px 14px;
+            }
+            .team-grid-section {
+                padding: 0 24px 60px;
             }
             .footer-grid { grid-template-columns: 1fr; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .team-card { transition: none !important; }
         }
     </style>
     <link rel="stylesheet" href="components/footer.css">
