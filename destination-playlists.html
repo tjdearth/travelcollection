@@ -990,28 +990,31 @@ function copyAsHTML(pop) {
   var img = pop.getAttribute('data-img');
   var logoUrl = 'https://cdn.prod.website-files.com/645dce8d3cf060ba152e3ed6/645dd0fb59b28a589dc86dba_TCL%20White%20Logo%20200.png';
   var html =
-    '<div style="max-width:480px;font-family:Arial,Helvetica,sans-serif;overflow:hidden;">' +
-      '<!--[if mso]><table cellpadding="0" cellspacing="0" width="480"><tr><td><![endif]-->' +
-      '<div style="position:relative;overflow:hidden;">' +
-        '<img src="' + img + '" alt="' + dest + '" style="display:block;width:100%;height:220px;object-fit:cover;" />' +
-        '<div style="position:absolute;bottom:0;left:0;right:0;padding:16px 20px;background:linear-gradient(transparent,rgba(0,0,0,0.7));">' +
-          '<div style="font-size:22px;font-weight:700;color:#ffffff;margin:0;">' + dest + '</div>' +
-          '<div style="font-size:12px;color:rgba(255,255,255,0.8);text-transform:uppercase;letter-spacing:1px;">' + brand + '</div>' +
-        '</div>' +
-        '<div style="position:absolute;top:12px;right:12px;background:#1DB954;color:#fff;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:4px 12px;">' + vibe + '</div>' +
-      '</div>' +
-      '<div style="padding:20px 24px;background:#ffffff;">' +
+    '<table cellpadding="0" cellspacing="0" border="0" width="480" style="max-width:480px;font-family:Arial,Helvetica,sans-serif;border-collapse:collapse;">' +
+      '<tr><td style="padding:0;">' +
+        '<img src="' + img + '" alt="' + dest + '" width="480" style="display:block;width:100%;height:auto;" />' +
+      '</td></tr>' +
+      '<tr><td style="background:#304256;padding:14px 20px;">' +
+        '<span style="font-size:20px;font-weight:700;color:#ffffff;">' + dest + '</span><br/>' +
+        '<span style="font-size:11px;color:rgba(255,255,255,0.7);text-transform:uppercase;letter-spacing:1.5px;">' + brand + '</span>' +
+      '</td></tr>' +
+      '<tr><td style="padding:0;">' +
+        '<table cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;"><tr>' +
+          '<td style="background:#1DB954;padding:6px 20px;font-size:11px;font-weight:700;color:#fff;text-transform:uppercase;letter-spacing:1px;">' + vibe + '</td>' +
+          '<td style="background:#1DB954;"></td>' +
+        '</tr></table>' +
+      '</td></tr>' +
+      '<tr><td style="padding:20px 24px;background:#ffffff;">' +
         '<div style="font-size:18px;font-weight:700;color:#304256;margin:0 0 10px;">' + title + '</div>' +
         '<p style="font-size:14px;line-height:1.6;color:#555;margin:0 0 20px;">' + blurb + '</p>' +
         '<a href="' + url + '" style="display:inline-block;background:#1DB954;color:#ffffff;padding:12px 28px;text-decoration:none;font-weight:700;font-size:14px;letter-spacing:0.5px;">' +
           '&#9835; &nbsp;Listen on Spotify' +
         '</a>' +
-      '</div>' +
-      '<div style="padding:10px 24px;background:#304256;text-align:center;">' +
-        '<img src="' + logoUrl + '" alt="Travel Collection" style="height:24px;opacity:0.8;" />' +
-      '</div>' +
-      '<!--[if mso]></td></tr></table><![endif]-->' +
-    '</div>';
+      '</td></tr>' +
+      '<tr><td style="background:#304256;padding:12px 24px;text-align:center;">' +
+        '<img src="' + logoUrl + '" alt="Travel Collection" height="24" style="height:24px;" />' +
+      '</td></tr>' +
+    '</table>';
   var blob = new Blob([html], { type: 'text/html' });
   var item = new ClipboardItem({ 'text/html': blob, 'text/plain': new Blob([blurb + '\n\n' + url], { type: 'text/plain' }) });
   navigator.clipboard.write([item]).then(function() {
