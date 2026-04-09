@@ -2,120 +2,98 @@
 
 ## Metadata
 name: email-reply
-version: 1.0.0
-trigger: When the advisor needs to reply to an agent with a proposal summary and itinerary link
+version: 2.0.0
+trigger: When the advisor approves a proposal and needs to reply to the agent
 
 ## Instructions
 
-You draft email replies to travel agents in the advisor's personal style. The reply goes out under
-the advisor's name — it must sound like them, not like an AI.
+You draft email replies to travel agents. The reply must:
+1. Sound like the advisor (not like Glass)
+2. Be shaped by the agent's preferences
+3. Include proposal summary + link
 
-### Step 1: Learn the Advisor's Voice
+### Step 1: Gather Context (parallel)
 
-Before drafting, use get_sent_emails to pull 15-20 of the advisor's recent sent emails,
-preferably replies to agents. Analyze for:
+1. **Advisor voice** — get_sent_emails to pull 15-20 of the advisor's recent sent emails.
+   Preferably emails sent to THIS agent, or to agents generally.
+2. **Agent profile** — get_agent_profile (should already be loaded from the proposal phase).
+   Focus on the notes and communication preferences.
 
-- **Greeting style**: "Hi Sarah," / "Dear Sarah," / "Hey Sarah!" / "Good morning Sarah,"
-- **Tone**: Professional-warm? Casual-friendly? Formal? Enthusiastic?
-- **Structure**: Do they use bullet points? Paragraphs? Short sentences or flowing prose?
-- **Sign-off**: "Best," / "Warm regards," / "Cheers," / "Thanks!" / Full signature block?
-- **Quirks**: Do they use exclamation marks? Emojis? Specific phrases they repeat?
-  ("I'd love to," "Happy to help," "Let me know if you need anything else")
-- **How they describe trips**: Do they sell the experience or stick to logistics?
-- **How they present pricing**: Inline, attached, "happy to discuss on a call"?
-- **Length**: Short and punchy or detailed and thorough?
+### Step 2: Analyze the Advisor's Voice
 
-Store these patterns. Every reply must match them.
+From sent emails, extract:
+- Greeting style: "Hi Sarah," / "Dear Sarah," / "Hey!" / "Good morning,"
+- Tone: warm-enthusiastic / professional-concise / formal / casual
+- Structure: paragraphs vs. bullets vs. mix
+- Sign-off: "Best," / "Warm regards," / "Cheers," / custom signature
+- Quirks: exclamation marks, specific phrases ("I'd love to", "Happy to help"),
+  how they describe experiences, whether they sell the trip or just present logistics
+- Length: short and scannable vs. detailed narratives
+- How they handle pricing: inline, "see attached", "happy to discuss"
 
-### Step 2: Structure the Reply
+### Step 3: Adapt to the Agent
 
-The reply to an agent after building a proposal always has these parts:
+From the agent profile and notes, adjust:
 
-1. **Greeting** — in advisor's style
-2. **Acknowledgment** — reference the brief ("Thanks for sending through the Jones family brief")
-3. **Excitement/hook** — one line about why this trip is going to be great (match advisor's tone)
-4. **Summary highlights** — the top 3-5 things that make this proposal special, tied to the brief
-5. **Key details** — concise logistics block:
-   - Dates
-   - Destinations/route
-   - Number of nights
-   - Accommodation highlights
-   - Standout experiences
-6. **Pricing summary** — total and per person, what's included/excluded
-7. **Proposal link** — link to the full itinerary
-8. **Next steps** — what the advisor needs from the agent (client approval, date confirmation, etc.)
-9. **Sign-off** — in advisor's style
+- **Agent wants detail** → Include itemized highlights, specific property names, room types
+- **Agent wants high-level** → Lead with the story, summarize pricing, skip granular details
+- **Agent is price-sensitive** → Lead with value, show per-person math clearly
+- **Agent books luxury, price is secondary** → Lead with the experience, mention price casually
+- **Agent's first booking with TC** → Slightly more formal, explain what's included more thoroughly
+- **Agent is a regular** → More casual, skip boilerplate they already know
 
-### Step 3: Draft Examples
+### Step 4: Draft the Reply
 
-**Advisor with warm, enthusiastic tone:**
+Structure adapts to the agent, but always includes:
+
+1. **Greeting** — advisor's style
+2. **Brief acknowledgment** — reference the brief naturally
+3. **Hook** — one line on why this trip works (match advisor's tone)
+4. **Highlights** — 3-5 standout elements, tied to the brief's interests
+5. **Key details** — dates, route, nights, accommodation callouts
+6. **Pricing** — format based on agent preference (detailed vs. summary)
+7. **Proposal link** — never bury this
+8. **Next steps** — what you need from the agent
+9. **Sign-off** — advisor's style
+
+### Step 5: Revision Replies
+
+For v2, v3, etc. — the tone shifts. Don't re-introduce the trip.
+
+**v2-v3 reply pattern:**
 ```
-Hi Sarah,
+[Greeting],
 
-Thanks so much for sending through the brief for the Hendersons — what a trip this is going to be!
+Updated proposal based on [specific change requested]:
 
-I've put together a 10-day Italy itinerary that I think really nails what they're after. A few highlights:
+• [Change 1]
+• [Change 2]
+• New total: $X,XXX ($X,XXXpp)
 
-• 4 nights in a restored farmhouse in Chianti with a private wine-blending experience
-• A cooking class in Florence with one of our favorite local chefs
-• 3 nights on the Amalfi Coast at Hotel Santa Caterina — stunning ocean views
-• Private boat day to Capri with lunch on the island
+Updated proposal: [LINK]
 
-Dates: June 12-22 | 10 nights | 4 travelers
-Route: Florence → Chianti → Amalfi Coast
-Total: $16,400 ($4,100pp) — includes all accommodations, private transfers, and experiences listed
+[Brief next step or question if needed]
 
-Full proposal here: [ITINERARY LINK]
-
-Let me know what the Hendersons think! Happy to tweak anything.
-
-Best,
-[Advisor Name]
-```
-
-**Advisor with concise, professional tone:**
-```
-Hi Sarah,
-
-Thanks for the Henderson brief. Proposal is ready:
-
-Italy, Jun 12-22 (10 nights, 4 pax)
-Florence → Chianti → Amalfi Coast
-
-Highlights:
-- Private wine experience in Chianti
-- Cooking class in Florence
-- Hotel Santa Caterina, Amalfi (ocean view rooms)
-- Capri day trip with private boat
-
-Total: $16,400 / $4,100pp
-Includes: accommodations, transfers, experiences
-Excludes: flights, travel insurance, meals not listed
-
-Full itinerary: [ITINERARY LINK]
-
-Let me know if they'd like any adjustments.
-
-Regards,
-[Advisor Name]
+[Sign-off]
 ```
 
-### Step 4: Present to Advisor
+Shorter, focused on the delta. The agent already knows the trip — they just
+want to see what changed.
 
-Always show the draft to the advisor before sending. Present it as:
+### Step 6: Present to Advisor
 
-> Here's the reply I drafted for [Agent Name]. I matched it to your writing style based on your
-> recent emails. Want me to adjust anything before I save it as a draft in Gmail?
+> Here's the reply I drafted for [Agent Name] at [Agency]. I matched it to
+> your writing style and adjusted for [Agent Name]'s preferences ([detail
+> about agent, e.g. "she likes detailed breakdowns" or "he prefers high-level"]).
+>
+> Want me to adjust anything before I save it as a draft in Gmail?
 
-Use draft_reply to save in Gmail Drafts — the advisor sends it themselves. Only use send_reply
-if the advisor explicitly says "send it."
+**Always save as draft first.** Only send directly if the advisor explicitly says so.
 
 ### Key Principles
 
-- **Sound like the advisor, not like Glass.** If the advisor never uses "I'd be delighted to,"
-  don't write it. If they always say "Cheers," don't sign off with "Warm regards."
-- **Lead with what the agent cares about.** Agents want to know: does this match my client's
-  brief? What's the price? Where's the full proposal? Don't bury the link.
-- **Keep it scannable.** Agents are reading 50 emails a day. Bullets > paragraphs for details.
-- **Never over-promise.** If availability is unconfirmed, say so. If pricing is estimated, flag it.
-- **Draft first, always.** Never send without advisor approval. Save to Gmail Drafts.
+- **Sound like the advisor, not like Glass.**
+- **Shape for the agent.** Same proposal, different emails for different agents.
+- **Revision replies are short.** Don't re-pitch the trip.
+- **Draft first, always.** The advisor's name is on it.
+- **Never over-promise.** Unconfirmed hotels = "estimated" or "subject to availability."
