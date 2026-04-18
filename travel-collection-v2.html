@@ -1002,15 +1002,177 @@ footer {
 .switch.on { background: var(--accent); }
 .switch.on::after { left: 16px; }
 
-/* ————————————— RESPONSIVE (minimal for desktop-first design review) ————————————— */
+/* ————————————— RESPONSIVE ————————————— */
+
+/* Hamburger & mobile drawer (hidden on desktop) */
+.nav-toggle {
+  display: none;
+  background: transparent;
+  border: 1px solid var(--line);
+  padding: 10px 11px;
+  cursor: pointer;
+  border-radius: 4px;
+  margin-left: 4px;
+}
+.nav-toggle span {
+  display: block;
+  width: 20px; height: 1.5px;
+  background: var(--ink);
+  margin: 5px 0;
+  transition: transform .25s, opacity .2s;
+  transform-origin: center;
+}
+.nav-toggle.on span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+.nav-toggle.on span:nth-child(2) { opacity: 0; }
+.nav-toggle.on span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+.nav-drawer {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: var(--bg);
+  z-index: 99;
+  padding: 96px 28px 40px;
+  display: none;
+  flex-direction: column;
+  gap: 2px;
+  overflow-y: auto;
+}
+.nav-drawer.on { display: flex; }
+.nav-drawer a {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 30px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line);
+  letter-spacing: -0.01em;
+}
+.nav-drawer .drawer-advisor {
+  font-family: var(--sans);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  border-bottom: none;
+  padding: 24px 0 4px;
+}
+.nav-drawer .drawer-cta {
+  align-self: flex-start;
+  margin-top: 8px;
+}
+
+/* Tablet landscape — 1100px */
 @media (max-width: 1100px) {
-  .pillars-grid, .region-grid, .svc-grid, .test-grid { grid-template-columns: repeat(2, 1fr); }
+  .nav-links { display: none; }
+  .nav-cta .advisor { display: none; }
+
   .hero { grid-template-columns: 1fr; }
   .hero-right { display: none; }
+
+  .pillars-grid, .svc-grid, .test-grid, .region-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .pillars-header { grid-template-columns: 1fr; gap: 24px; margin-bottom: 48px; }
+  .pillar:nth-child(2n) { border-right: none; padding-right: 28px; }
+  .pillar:nth-child(n+3) { border-top: 1px solid var(--line); }
+
   .philosophy { grid-template-columns: 1fr; }
-  .phil-image { min-height: 360px; }
+  .phil-image { min-height: 360px; order: -1; }
   .contact-grid { grid-template-columns: 1fr; gap: 60px; }
+  .dest-header { grid-template-columns: 1fr; gap: 24px; }
+  .foot-grid { grid-template-columns: 1fr 1fr; gap: 48px; }
+  .prologue { grid-template-columns: 1fr; gap: 48px; padding: 120px 60px; }
+  .prologue-label { position: static; }
+}
+
+/* Tablet portrait / large phone — 780px */
+@media (max-width: 780px) {
+  .nav {
+    grid-template-columns: auto 1fr auto;
+    padding: 14px 20px;
+  }
+  .nav.scrolled { padding: 12px 20px; }
+  .nav-brand img { height: 42px; }
+  .nav.scrolled .nav-brand img { height: 38px; }
   .nav-links { display: none; }
+  .nav-cta { gap: 10px; justify-self: end; }
+  .nav-cta .btn { display: none; }
+  .nav-toggle { display: block; }
+
+  section { padding: 80px 24px; }
+
+  .hero { min-height: auto; height: auto; }
+  .hero-left { padding: 110px 24px 56px; gap: 48px; }
+  .hero-title { font-size: clamp(40px, 10vw, 56px); margin-bottom: 24px; }
+  .hero-sub { font-size: 16px; margin-bottom: 28px; max-width: none; }
+  .hero-ctas { flex-wrap: wrap; gap: 10px; }
+  .hero-ctas .btn { padding: 12px 18px; font-size: 11px; }
+  .hero-meta { gap: 24px; flex-wrap: wrap; padding-top: 20px; }
+  .hero-meta strong { font-size: 28px; }
+
+  .prologue { padding: 80px 24px; gap: 40px; }
+  .prologue-body p { font-size: 22px; line-height: 1.4; }
+  .prologue-stats { margin-top: 40px; }
+  .prologue-stat { padding-right: 12px; }
+  .prologue-stat strong { font-size: 36px; }
+
+  .pillars-grid { grid-template-columns: 1fr; }
+  .pillar,
+  .pillar:first-child,
+  .pillar:last-child,
+  .pillar:nth-child(2n) {
+    border-right: none;
+    border-top: 1px solid var(--line);
+    padding: 36px 24px;
+    min-height: auto;
+  }
+  .pillar:nth-child(n+3) { border-top: 1px solid var(--line); }
+  .pillar-title { font-size: 24px; margin-top: 36px; }
+
+  .region { margin-bottom: 48px; }
+  .region-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .region-name { font-size: 22px; }
+  .dest-card-country { font-size: 18px; }
+  .dest-card-dmc { font-size: 12px; }
+
+  .bleed { padding: 48px 24px; min-height: 380px; }
+  .bleed-attrib { position: static; margin-top: 24px; }
+
+  .svc-grid { grid-template-columns: 1fr; margin-top: 48px; }
+  .svc { min-height: auto; padding: 36px 28px; }
+  .svc-img { margin: -36px -28px 24px; aspect-ratio: 16/9; }
+  .svc-title { font-size: 26px; }
+
+  .test-grid { grid-template-columns: 1fr; gap: 40px; margin-top: 40px; }
+  .test-quote { font-size: 19px; }
+
+  .phil-content { padding: 80px 24px; }
+  .phil-image { min-height: 280px; }
+  .phil-tabs { overflow-x: auto; gap: 4px; }
+  .phil-tab { flex: none; padding: 14px 14px; white-space: nowrap; }
+  .phil-panel h4 { font-size: 28px; }
+  .phil-panel p { font-size: 16px; }
+
+  .form { grid-template-columns: 1fr; gap: 20px; }
+  .form-submit { flex-direction: column; align-items: flex-start; gap: 16px; }
+  .contact-info dl { grid-template-columns: 100px 1fr; }
+
+  footer { padding: 60px 24px 32px; }
+  .foot-grid { grid-template-columns: 1fr; gap: 40px; margin-bottom: 40px; }
+  .foot-brand img { height: 52px; }
+  .foot-bottom { flex-direction: column; gap: 12px; align-items: flex-start; }
+
+  .tweaks { display: none !important; }
+}
+
+/* Small phone — 480px */
+@media (max-width: 480px) {
+  .hero-title { font-size: 42px; }
+  .hero-meta { gap: 18px; }
+  .hero-meta strong { font-size: 24px; }
+  .bleed-quote { font-size: 26px; }
+  .nav-drawer a { font-size: 26px; padding: 12px 0; }
+  .region-grid { gap: 12px; }
+  .dest-card-country { font-size: 16px; }
 }
 </style>
 </head>
@@ -1031,8 +1193,21 @@ footer {
   <div class="nav-cta">
     <a href="#" class="advisor">Advisor Portal ↗</a>
     <a href="#contact" class="btn">Plan a Journey</a>
+    <button class="nav-toggle" id="navToggle" aria-label="Menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
   </div>
 </nav>
+
+<div class="nav-drawer" id="navDrawer" aria-hidden="true">
+  <a href="#destinations">Destinations</a>
+  <a href="#services">Services</a>
+  <a href="#philosophy">Philosophy</a>
+  <a href="#testimonials">Journal</a>
+  <a href="#contact">Contact</a>
+  <a href="#" class="drawer-advisor">Advisor Portal ↗</a>
+  <a href="#contact" class="btn drawer-cta">Plan a Journey</a>
+</div>
 
 <!-- ————————————— HERO ————————————— -->
 <header class="hero" data-screen-label="Hero">
@@ -1507,6 +1682,21 @@ function card(d) {
 const nav = document.getElementById("nav");
 window.addEventListener("scroll", () => {
   nav.classList.toggle("scrolled", window.scrollY > 40);
+});
+
+// Mobile drawer
+const navToggle = document.getElementById("navToggle");
+const navDrawer = document.getElementById("navDrawer");
+function setDrawer(open) {
+  navToggle.classList.toggle("on", open);
+  navDrawer.classList.toggle("on", open);
+  navToggle.setAttribute("aria-expanded", open ? "true" : "false");
+  navDrawer.setAttribute("aria-hidden", open ? "false" : "true");
+  document.body.style.overflow = open ? "hidden" : "";
+}
+navToggle.addEventListener("click", () => setDrawer(!navDrawer.classList.contains("on")));
+navDrawer.addEventListener("click", e => {
+  if (e.target.tagName === "A") setDrawer(false);
 });
 
 // ————————————— HERO CAROUSEL —————————————
