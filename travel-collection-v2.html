@@ -160,9 +160,11 @@ html[data-photo="duotone"] .photo::after {
   mix-blend-mode: normal;
 }
 
-/* Hero always keeps full richness regardless of mode — first impression */
-html .hero-right .photo-img { filter: saturate(0.92) contrast(0.98) !important; }
-html .hero-right .photo::after { opacity: 0 !important; }
+/* Hero always keeps full richness regardless of mode — first impression (desktop/tablet only) */
+@media (min-width: 721px) {
+  html .hero-right .photo-img { filter: saturate(0.92) contrast(0.98) !important; }
+  html .hero-right .photo::after { opacity: 0 !important; }
+}
 
 /* Navy hover-wash on destination cards — brand signature interaction */
 .dest-card .photo::before {
@@ -1115,7 +1117,8 @@ footer {
     inset: 0 !important;
     z-index: 1;
   }
-  .hero-right .photo-img { filter: saturate(0.85) contrast(1.02) brightness(0.55) !important; }
+  html .hero-right .photo-img,
+  .hero-right .photo-img { filter: saturate(0.85) contrast(1.05) brightness(0.48) !important; }
   /* Dark overlay — attached to .hero (parent) so it paints ABOVE the images */
   .hero::after {
     content: "";
