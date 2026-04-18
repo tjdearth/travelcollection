@@ -1,0 +1,1673 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Travel Collection — Redesign Proposal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Work+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg: oklch(0.98 0.005 80);
+  --bg-warm: oklch(0.95 0.012 70);
+  --bg-deep: oklch(0.22 0.015 50);
+  --ink: oklch(0.18 0.01 60);
+  --ink-soft: oklch(0.35 0.01 60);
+  --muted: oklch(0.55 0.01 70);
+  --line: oklch(0.88 0.008 70);
+  --accent: #304256;
+  --accent-soft: oklch(0.93 0.018 250);
+  --accent-light: oklch(0.72 0.06 230);
+  --serif: "Cormorant Garamond", "GT Sectra", Georgia, serif;
+  --sans: "Work Sans", "Söhne", -apple-system, BlinkMacSystemFont, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--sans);
+  font-weight: 300;
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.55;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; text-decoration: none; }
+img { display: block; max-width: 100%; }
+
+/* ————————————— NAV ————————————— */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  z-index: 100;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  padding: 18px 40px;
+  background: color-mix(in oklch, var(--bg) 85%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid transparent;
+  transition: border-color .3s, padding .3s;
+}
+.nav.scrolled { border-bottom-color: var(--line); padding: 14px 40px; }
+.nav-brand {
+  display: flex; align-items: center;
+  height: 56px;
+}
+.nav-brand img {
+  height: 52px; width: auto;
+  /* White logo → invert to dark for the light nav */
+  filter: brightness(0) saturate(100%) invert(22%) sepia(22%) saturate(900%) hue-rotate(178deg) brightness(95%) contrast(90%);
+  transition: filter .3s, height .3s;
+}
+.nav.scrolled .nav-brand img { height: 44px; }
+.nav-links {
+  display: flex; gap: 34px;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+.nav-links a { position: relative; padding: 4px 0; transition: color .2s; }
+.nav-links a:hover { color: var(--accent); }
+.nav-cta {
+  justify-self: end;
+  display: flex; align-items: center; gap: 20px;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.nav-cta .advisor { color: var(--muted); }
+.nav-cta .advisor:hover { color: var(--ink); }
+.btn {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 12px 22px;
+  background: var(--ink);
+  color: var(--bg);
+  font-family: var(--sans);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: background .2s, transform .2s;
+}
+.btn:hover { background: var(--accent); }
+.btn-ghost {
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--ink);
+}
+.btn-ghost:hover { background: var(--ink); color: var(--bg); }
+.btn-light {
+  background: var(--bg); color: var(--ink);
+}
+.btn-light:hover { background: var(--accent); color: var(--bg); }
+
+/* ————————————— PHOTO FILTER SYSTEM —————————————
+   Global treatment applied to every image surface.
+   Controlled via data-photo on <html>.
+*/
+.photo { position: relative; }
+.photo::after {
+  content: "";
+  position: absolute; inset: 0;
+  pointer-events: none;
+  mix-blend-mode: multiply;
+  opacity: 0;
+  transition: opacity .4s ease;
+  background: transparent;
+}
+
+/* 1. None — reference */
+html[data-photo="none"] .photo-img { filter: none; }
+
+/* 2. Warm filmic — my default recommendation */
+html[data-photo="warm"] .photo-img {
+  filter: saturate(0.82) contrast(0.95) brightness(1.03) sepia(0.08);
+}
+html[data-photo="warm"] .photo::after {
+  background: linear-gradient(180deg, rgba(253,240,220,0.08), rgba(48,66,86,0.06));
+  opacity: 1;
+  mix-blend-mode: soft-light;
+}
+
+/* 3. Muted matte — Aman / Six Senses vibe */
+html[data-photo="matte"] .photo-img {
+  filter: saturate(0.7) contrast(0.88) brightness(1.02);
+}
+html[data-photo="matte"] .photo::after {
+  background: rgba(240,232,220,0.12);
+  opacity: 1;
+  mix-blend-mode: normal;
+}
+
+/* 4. Duotone navy — most branded */
+html[data-photo="duotone"] .photo-img {
+  filter: grayscale(1) contrast(1.05) brightness(1.02);
+}
+html[data-photo="duotone"] .photo::after {
+  background: linear-gradient(180deg, rgba(48,66,86,0.78), rgba(48,66,86,0.5) 55%, rgba(232,210,180,0.35));
+  opacity: 1;
+  mix-blend-mode: normal;
+}
+
+/* Hero always keeps full richness regardless of mode — first impression */
+html .hero-right .photo-img { filter: saturate(0.92) contrast(0.98) !important; }
+html .hero-right .photo::after { opacity: 0 !important; }
+
+/* Navy hover-wash on destination cards — brand signature interaction */
+.dest-card .photo::before {
+  content: "";
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(48,66,86,0.0), rgba(48,66,86,0.55));
+  opacity: 0;
+  transition: opacity .4s ease;
+  z-index: 2;
+  pointer-events: none;
+}
+.dest-card:hover .photo::before { opacity: 1; }
+
+/* ————————————— HERO ————————————— */
+.hero {
+  position: relative;
+  height: 100vh;
+  min-height: 720px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  overflow: hidden;
+}
+.hero-left {
+  padding: 140px 80px 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  z-index: 2;
+}
+.hero-eyebrow {
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 32px;
+  display: flex; align-items: center; gap: 14px;
+}
+.hero-eyebrow::before {
+  content: ""; width: 32px; height: 1px; background: var(--accent);
+}
+.hero-title {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: clamp(56px, 6vw, 96px);
+  line-height: 0.98;
+  letter-spacing: -0.02em;
+  margin-bottom: 28px;
+}
+.hero-title em {
+  font-style: italic;
+  color: var(--accent);
+  font-weight: 400;
+}
+.hero-sub {
+  font-size: 18px;
+  font-weight: 300;
+  color: var(--ink-soft);
+  max-width: 460px;
+  line-height: 1.6;
+  margin-bottom: 40px;
+}
+.hero-ctas { display: flex; gap: 14px; }
+.hero-meta {
+  display: flex; gap: 48px;
+  padding-top: 28px;
+  border-top: 1px solid var(--line);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.hero-meta strong {
+  display: block;
+  font-family: var(--serif);
+  font-size: 36px;
+  font-weight: 400;
+  color: var(--ink);
+  letter-spacing: 0;
+  text-transform: none;
+  margin-bottom: 4px;
+  font-feature-settings: "lnum";
+}
+
+.hero-right {
+  position: relative;
+  overflow: hidden;
+  background: var(--bg-warm);
+}
+.hero-img {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  transition: opacity 1.2s ease;
+}
+.hero-img.active { opacity: 1; }
+.hero-img-caption {
+  position: absolute;
+  bottom: 40px; left: 40px; right: 40px;
+  z-index: 3;
+  color: var(--bg);
+  display: flex; justify-content: space-between; align-items: flex-end;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  mix-blend-mode: difference;
+}
+.hero-img-caption .loc {
+  font-family: var(--serif);
+  font-size: 22px;
+  text-transform: none;
+  letter-spacing: 0;
+  font-style: italic;
+}
+.hero-dots { display: flex; gap: 8px; }
+.hero-dot {
+  width: 28px; height: 2px;
+  background: rgba(255,255,255,0.35);
+  border: none; padding: 0; cursor: pointer;
+  transition: background .3s;
+}
+.hero-dot.active { background: white; }
+
+/* ————————————— SECTION PRIMITIVES ————————————— */
+section { padding: 140px 80px; }
+.section-eyebrow {
+  display: inline-flex; align-items: center; gap: 14px;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 24px;
+}
+.section-eyebrow::before {
+  content: ""; width: 24px; height: 1px; background: var(--accent);
+}
+.section-title {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: clamp(40px, 4.5vw, 68px);
+  line-height: 1.02;
+  letter-spacing: -0.015em;
+  margin-bottom: 24px;
+  max-width: 14ch;
+}
+.section-title em { font-style: italic; color: var(--accent); }
+.section-lede {
+  font-size: 19px;
+  color: var(--ink-soft);
+  font-weight: 300;
+  max-width: 58ch;
+  line-height: 1.6;
+}
+
+/* ————————————— INTRO / PROLOGUE ————————————— */
+.prologue {
+  padding: 160px 80px;
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 120px;
+  align-items: start;
+  border-bottom: 1px solid var(--line);
+}
+.prologue-label {
+  position: sticky; top: 120px;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 20px;
+  color: var(--accent);
+}
+.prologue-body p {
+  font-family: var(--serif);
+  font-size: 30px;
+  line-height: 1.35;
+  font-weight: 400;
+  color: var(--ink);
+  letter-spacing: -0.005em;
+}
+.prologue-body p em { font-style: italic; color: var(--accent); }
+.prologue-stats {
+  margin-top: 64px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  border-top: 1px solid var(--line);
+}
+.prologue-stat {
+  padding: 32px 0 0;
+  padding-right: 24px;
+}
+.prologue-stat strong {
+  display: block;
+  font-family: var(--serif);
+  font-size: 56px;
+  font-weight: 400;
+  line-height: 1;
+  margin-bottom: 10px;
+  font-feature-settings: "lnum";
+}
+.prologue-stat span {
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* ————————————— PILLARS (Redesigned "What Sets Us Apart") ————————————— */
+.pillars {
+  background: var(--bg-warm);
+  position: relative;
+}
+.pillars-header {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: end;
+  margin-bottom: 80px;
+}
+.pillars-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  border-top: 1px solid var(--line);
+  overflow: hidden;
+}
+.pillar {
+  padding: 40px 28px 48px 28px;
+  border-right: 1px solid var(--line);
+  display: flex; flex-direction: column;
+  min-height: 320px;
+  cursor: pointer;
+  transition: background .3s, padding .3s;
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+  isolation: isolate;
+}
+.pillar-bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  transition: opacity .5s ease;
+  z-index: -1;
+  filter: grayscale(0.85) brightness(1.1);
+}
+.pillar:hover .pillar-bg { opacity: 0.14; }
+.pillar::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(48,66,86,0.05), rgba(48,66,86,0.12));
+  opacity: 0;
+  transition: opacity .5s ease;
+  z-index: -1;
+}
+.pillar:hover::before { opacity: 1; }
+.pillar:first-child { padding-left: 28px; }
+.pillar:last-child { border-right: none; padding-right: 0; }
+.pillar:hover { background: color-mix(in oklch, var(--accent-soft) 40%, transparent); }
+.pillar-num {
+  font-family: var(--serif);
+  font-size: 13px;
+  color: var(--accent);
+  margin-bottom: auto;
+  letter-spacing: 0.05em;
+}
+.pillar-title {
+  font-family: var(--serif);
+  font-size: 28px;
+  font-weight: 400;
+  line-height: 1.1;
+  margin: 60px 0 16px;
+  letter-spacing: -0.01em;
+}
+.pillar-body {
+  font-size: 15px;
+  color: var(--ink-soft);
+  line-height: 1.55;
+}
+
+/* ————————————— DESTINATIONS (Regional) ————————————— */
+.destinations {
+  padding-bottom: 80px;
+}
+.dest-header {
+  display: grid; grid-template-columns: 1.2fr 1fr;
+  gap: 80px;
+  align-items: end;
+  margin-bottom: 56px;
+}
+.dest-filters {
+  display: flex; gap: 8px; flex-wrap: wrap;
+  align-self: end;
+}
+.dest-filter {
+  padding: 10px 18px;
+  border: 1px solid var(--line);
+  background: transparent;
+  font-family: var(--sans);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 500;
+  cursor: pointer;
+  color: var(--ink-soft);
+  transition: all .2s;
+  border-radius: 100px;
+}
+.dest-filter:hover { color: var(--ink); border-color: var(--ink); }
+.dest-filter.active {
+  background: var(--ink); color: var(--bg); border-color: var(--ink);
+}
+
+.region {
+  margin-bottom: 72px;
+}
+.region-header {
+  display: flex; align-items: baseline; justify-content: space-between;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 32px;
+}
+.region-name {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 28px;
+  font-weight: 400;
+}
+.region-count {
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.region-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+.dest-card {
+  display: block;
+  cursor: pointer;
+  transition: opacity .3s;
+}
+.dest-card:hover { opacity: 0.82; }
+.dest-card:hover .dest-card-img { transform: scale(1.03); }
+.dest-card-imgwrap {
+  position: relative;
+  aspect-ratio: 4/5;
+  overflow: hidden;
+  background: var(--bg-warm);
+  margin-bottom: 14px;
+}
+.dest-card-img {
+  position: absolute; inset: 0;
+  background-size: cover; background-position: center;
+  transition: transform .6s ease;
+}
+.dest-card-overlay {
+  position: absolute;
+  top: 14px; left: 14px;
+  padding: 4px 10px;
+  background: rgba(255,255,255,0.9);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink);
+  font-weight: 500;
+}
+.dest-card-country {
+  font-family: var(--serif);
+  font-size: 22px;
+  font-weight: 500;
+  margin-bottom: 2px;
+  letter-spacing: -0.005em;
+}
+.dest-card-dmc {
+  font-size: 13px;
+  color: var(--muted);
+  font-style: italic;
+  font-family: var(--serif);
+}
+
+/* ————————————— FULL-BLEED BREAK ————————————— */
+.bleed {
+  height: 62vh;
+  min-height: 480px;
+  position: relative;
+  overflow: hidden;
+  display: flex; align-items: flex-end;
+  padding: 80px;
+  color: white;
+}
+.bleed-bg {
+  position: absolute; inset: 0;
+  background-size: cover;
+  background-position: center;
+  background-image: url("https://images.unsplash.com/photo-1528127269322-539801943592?w=2000&q=80");
+}
+.bleed::before {
+  content: "";
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,0) 40%, rgba(0,0,0,0.5) 100%);
+}
+.bleed-quote {
+  position: relative;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: clamp(32px, 3.6vw, 52px);
+  line-height: 1.2;
+  font-weight: 400;
+  max-width: 24ch;
+  letter-spacing: -0.01em;
+}
+.bleed-attrib {
+  position: absolute;
+  bottom: 80px; right: 80px;
+  font-size: 12px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+/* ————————————— SERVICES ————————————— */
+.services {
+  background: var(--bg-deep);
+  color: var(--bg);
+}
+.services .section-eyebrow { color: oklch(0.65 0.02 70); }
+.services .section-eyebrow::before { background: var(--accent-light); }
+.services .section-title em { color: var(--accent-light); }
+.services .section-lede { color: oklch(0.78 0.01 70); }
+
+.svc-grid {
+  margin-top: 80px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: oklch(0.3 0.015 50);
+  border: 1px solid oklch(0.3 0.015 50);
+}
+.svc {
+  background: var(--bg-deep);
+  padding: 48px 40px;
+  display: flex; flex-direction: column;
+  min-height: 480px;
+  transition: background .3s;
+  cursor: pointer;
+}
+.svc:hover { background: oklch(0.26 0.015 50); }
+.svc-img {
+  aspect-ratio: 3/2;
+  margin: -48px -40px 32px;
+  position: relative;
+  overflow: hidden;
+}
+.svc-img .photo-img {
+  position: absolute; inset: 0;
+  background-size: cover;
+  background-position: center;
+}
+.svc-num {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 14px;
+  color: var(--accent-light);
+  margin-bottom: 8px;
+}
+.svc-title {
+  font-family: var(--serif);
+  font-size: 30px;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  margin-bottom: 16px;
+}
+.svc-body {
+  font-size: 14px;
+  color: oklch(0.78 0.01 70);
+  line-height: 1.6;
+  margin-bottom: 28px;
+  flex: 1;
+}
+.svc-link {
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--bg);
+  display: inline-flex; align-items: center; gap: 10px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid oklch(0.4 0.02 50);
+  align-self: flex-start;
+  transition: border-color .2s, color .2s;
+}
+.svc:hover .svc-link { border-color: var(--bg); }
+
+/* ————————————— TESTIMONIALS ————————————— */
+.testimonials {
+  background: var(--bg-warm);
+}
+.test-grid {
+  margin-top: 64px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 48px;
+}
+.test {
+  display: flex; flex-direction: column;
+}
+.test-portrait {
+  aspect-ratio: 4/5;
+  margin-bottom: 24px;
+  background-color: var(--line);
+  position: relative;
+  overflow: hidden;
+}
+.test-portrait .photo-img {
+  position: absolute; inset: 0;
+  background-size: cover;
+  background-position: center;
+}
+.test-portrait::after {
+  content: "";
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, transparent 60%, rgba(0,0,0,0.3));
+}
+.test-rating {
+  font-family: var(--serif);
+  color: var(--accent);
+  letter-spacing: 4px;
+  margin-bottom: 12px;
+  font-size: 14px;
+}
+.test-quote {
+  font-family: var(--serif);
+  font-size: 22px;
+  line-height: 1.4;
+  font-weight: 400;
+  margin-bottom: 20px;
+  letter-spacing: -0.005em;
+}
+.test-attrib {
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+  display: flex; justify-content: space-between;
+  font-size: 13px;
+}
+.test-attrib strong {
+  font-weight: 500;
+}
+.test-attrib span {
+  color: var(--muted);
+  font-style: italic;
+  font-family: var(--serif);
+}
+
+/* ————————————— PHILOSOPHY ————————————— */
+.philosophy {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  padding: 0;
+}
+.phil-content {
+  padding: 140px 80px;
+}
+.phil-image {
+  position: relative;
+  overflow: hidden;
+  min-height: 720px;
+}
+.phil-image .photo-img {
+  position: absolute; inset: 0;
+  background-size: cover;
+  background-position: center;
+  background-image: url("https://images.unsplash.com/photo-1514565131-fce0801e5785?w=1200&q=80");
+}
+.phil-tabs {
+  display: flex; gap: 0;
+  margin: 48px 0 32px;
+  border-bottom: 1px solid var(--line);
+}
+.phil-tab {
+  flex: 1;
+  padding: 16px 0;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  font-family: var(--sans);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 500;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all .2s;
+  text-align: left;
+}
+.phil-tab.active {
+  color: var(--ink);
+  border-bottom-color: var(--accent);
+}
+.phil-panel {
+  display: none;
+}
+.phil-panel.active { display: block; }
+.phil-panel h4 {
+  font-family: var(--serif);
+  font-size: 36px;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  margin-bottom: 16px;
+}
+.phil-panel p {
+  font-size: 17px;
+  color: var(--ink-soft);
+  line-height: 1.65;
+  margin-bottom: 24px;
+}
+.phil-panel ul {
+  list-style: none;
+}
+.phil-panel li {
+  padding: 14px 0;
+  border-top: 1px solid var(--line);
+  display: flex; justify-content: space-between;
+  font-size: 14px;
+}
+.phil-panel li span:first-child { color: var(--muted); }
+.phil-panel li span:last-child { font-family: var(--serif); font-style: italic; }
+
+/* ————————————— CONTACT ————————————— */
+.contact {
+  background: var(--bg-deep);
+  color: var(--bg);
+}
+.contact .section-eyebrow { color: oklch(0.65 0.02 70); }
+.contact .section-title em { color: var(--accent-light); }
+
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 120px;
+  margin-top: 60px;
+}
+.contact-info p {
+  color: oklch(0.78 0.01 70);
+  font-size: 16px;
+  line-height: 1.7;
+  margin-bottom: 40px;
+  max-width: 40ch;
+}
+.contact-info dl {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  row-gap: 18px;
+  padding-top: 28px;
+  border-top: 1px solid oklch(0.35 0.015 50);
+}
+.contact-info dt {
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: oklch(0.65 0.02 70);
+}
+.contact-info dd {
+  font-family: var(--serif);
+  font-size: 16px;
+  font-style: italic;
+}
+
+.form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+.form .full { grid-column: 1 / -1; }
+.field { display: flex; flex-direction: column; gap: 8px; }
+.field label {
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: oklch(0.65 0.02 70);
+}
+.field input, .field select, .field textarea {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid oklch(0.4 0.015 50);
+  padding: 10px 0;
+  font-family: var(--sans);
+  font-size: 16px;
+  color: var(--bg);
+  font-weight: 300;
+}
+.field input:focus, .field select:focus, .field textarea:focus {
+  outline: none;
+  border-bottom-color: var(--bg);
+}
+.field textarea { resize: vertical; min-height: 80px; }
+.field select { color: var(--bg); }
+.field select option { background: var(--bg-deep); color: var(--bg); }
+
+.form-submit {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 16px;
+  padding-top: 24px;
+  border-top: 1px solid oklch(0.35 0.015 50);
+}
+.form-submit .note {
+  font-size: 12px;
+  color: oklch(0.65 0.02 70);
+  max-width: 32ch;
+}
+
+/* ————————————— FOOTER ————————————— */
+footer {
+  background: var(--bg-deep);
+  color: oklch(0.78 0.01 70);
+  padding: 80px 80px 40px;
+  border-top: 1px solid oklch(0.28 0.015 50);
+}
+.foot-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 64px;
+  margin-bottom: 64px;
+}
+.foot-brand {
+  margin-bottom: 20px;
+  height: 68px;
+}
+.foot-brand img { height: 64px; width: auto; }
+.foot-col h5 {
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--bg);
+  margin-bottom: 20px;
+  font-weight: 500;
+}
+.foot-col a {
+  display: block;
+  font-size: 14px;
+  padding: 6px 0;
+  color: oklch(0.72 0.01 70);
+  transition: color .2s;
+}
+.foot-col a:hover { color: var(--bg); }
+.foot-bottom {
+  padding-top: 32px;
+  border-top: 1px solid oklch(0.28 0.015 50);
+  display: flex; justify-content: space-between;
+  font-size: 12px;
+  color: oklch(0.6 0.01 70);
+}
+
+/* ————————————— TWEAKS PANEL ————————————— */
+.tweaks {
+  position: fixed;
+  bottom: 24px; right: 24px;
+  width: 300px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+  padding: 20px;
+  z-index: 200;
+  display: none;
+  font-family: var(--sans);
+}
+.tweaks.on { display: block; }
+.tweaks h6 {
+  font-family: var(--serif);
+  font-size: 18px;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+.tweaks .tweaks-sub {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--line);
+}
+.tweak-row {
+  margin-bottom: 18px;
+}
+.tweak-row > label {
+  display: block;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+.seg {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 4px;
+  padding: 3px;
+  background: var(--bg-warm);
+  border-radius: 4px;
+}
+.seg button {
+  border: none;
+  background: transparent;
+  padding: 7px 8px;
+  font-size: 11px;
+  font-family: var(--sans);
+  cursor: pointer;
+  border-radius: 3px;
+  color: var(--ink-soft);
+  text-transform: capitalize;
+}
+.seg button.on { background: var(--ink); color: var(--bg); }
+
+.accent-swatches { display: flex; gap: 8px; }
+.accent-swatches button {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  padding: 0;
+}
+.accent-swatches button.on { border-color: var(--ink); }
+
+.tweak-toggle {
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: 13px;
+  cursor: pointer;
+}
+.switch { width: 34px; height: 20px; background: var(--line); border-radius: 20px; position: relative; transition: background .2s; }
+.switch::after { content: ""; position: absolute; width: 16px; height: 16px; background: white; border-radius: 50%; top: 2px; left: 2px; transition: left .2s; }
+.switch.on { background: var(--accent); }
+.switch.on::after { left: 16px; }
+
+/* ————————————— RESPONSIVE (minimal for desktop-first design review) ————————————— */
+@media (max-width: 1100px) {
+  .pillars-grid, .region-grid, .svc-grid, .test-grid { grid-template-columns: repeat(2, 1fr); }
+  .hero { grid-template-columns: 1fr; }
+  .hero-right { display: none; }
+  .philosophy { grid-template-columns: 1fr; }
+  .phil-image { min-height: 360px; }
+  .contact-grid { grid-template-columns: 1fr; gap: 60px; }
+  .nav-links { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- ————————————— NAV ————————————— -->
+<nav class="nav" id="nav">
+  <a href="#" class="nav-brand" aria-label="Travel Collection">
+    <img src="https://cdn.prod.website-files.com/645dce8d3cf060ba152e3ed6/645dd0fb59b28a589dc86dba_TCL%20White%20Logo%20200.png" alt="Travel Collection" />
+  </a>
+  <div class="nav-links">
+    <a href="#destinations">Destinations</a>
+    <a href="#services">Services</a>
+    <a href="#philosophy">Philosophy</a>
+    <a href="#testimonials">Journal</a>
+    <a href="#contact">Contact</a>
+  </div>
+  <div class="nav-cta">
+    <a href="#" class="advisor">Advisor Portal ↗</a>
+    <a href="#contact" class="btn">Plan a Journey</a>
+  </div>
+</nav>
+
+<!-- ————————————— HERO ————————————— -->
+<header class="hero" data-screen-label="Hero">
+  <div class="hero-left">
+    <div>
+      <div class="hero-eyebrow">16 local DMCs &middot; 22 countries</div>
+      <h1 class="hero-title">Where the world<br/>feels <em>personal</em>.</h1>
+      <p class="hero-sub">Bespoke journeys across 22 countries, delivered by a family of 16 local destination management companies who reveal each place on its own terms.</p>
+      <div class="hero-ctas">
+        <a href="#destinations" class="btn">Explore Destinations</a>
+        <a href="#philosophy" class="btn btn-ghost">Our Approach</a>
+      </div>
+    </div>
+    <div class="hero-meta">
+      <div><strong>22</strong>Countries</div>
+      <div><strong>16</strong>Local DMCs</div>
+      <div><strong>100%</strong>Locally led</div>
+    </div>
+  </div>
+  <div class="hero-right photo">
+    <div class="hero-img photo-img active" style="background-image:url('https://images.unsplash.com/photo-1539020140153-e479b8c22e70?w=1600&q=80')" data-loc="Marrakech, Morocco"></div>
+    <div class="hero-img photo-img" style="background-image:url('https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=1600&q=80')" data-loc="Kyoto, Japan"></div>
+    <div class="hero-img photo-img" style="background-image:url('https://images.unsplash.com/photo-1533105079780-92b9be482077?w=1600&q=80')" data-loc="Santorini, Greece"></div>
+    <div class="hero-img photo-img" style="background-image:url('https://images.unsplash.com/photo-1526392060635-9d6019884377?w=1600&q=80')" data-loc="Machu Picchu, Peru"></div>
+    <div class="hero-img-caption">
+      <div class="loc" id="heroLoc">Marrakech, Morocco</div>
+      <div class="hero-dots" id="heroDots"></div>
+    </div>
+  </div>
+</header>
+
+<!-- ————————————— PROLOGUE ————————————— -->
+<section class="prologue" data-screen-label="Prologue">
+  <div class="prologue-label">Introduction</div>
+  <div class="prologue-body">
+    <p>Travel Collection is a <em>global family of destination management companies</em>, each led by local experts who transform journeys into deeply personal experiences — connecting guests with the soul of each place through curated stays, cultural immersion, and seamless delivery.</p>
+    <div class="prologue-stats">
+      <div class="prologue-stat"><strong>22</strong><span>Countries</span></div>
+      <div class="prologue-stat"><strong>16</strong><span>Local DMCs</span></div>
+      <div class="prologue-stat"><strong>1</strong><span>Standard of excellence</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ————————————— PILLARS ————————————— -->
+<section class="pillars" id="pillars" data-screen-label="Pillars">
+  <div class="pillars-header">
+    <div>
+      <div class="section-eyebrow">Our Promise</div>
+      <h2 class="section-title">Four principles,<br/>one <em>standard</em>.</h2>
+    </div>
+    <p class="section-lede">We've distilled our work into four commitments — the non-negotiables that shape every itinerary, from the first conversation to the final farewell.</p>
+  </div>
+  <div class="pillars-grid">
+    <div class="pillar">
+      <div class="pillar-bg" style="background-image:url('https://images.unsplash.com/photo-1539020140153-e479b8c22e70?w=900&q=80')"></div>
+      <div class="pillar-num">01 / Local</div>
+      <div>
+        <h3 class="pillar-title">Rooted in place</h3>
+        <p class="pillar-body">Locally-based teams with deep cultural knowledge, established networks, and access that no outsider can replicate.</p>
+      </div>
+    </div>
+    <div class="pillar">
+      <div class="pillar-bg" style="background-image:url('https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=900&q=80')"></div>
+      <div class="pillar-num">02 / Craft</div>
+      <div>
+        <h3 class="pillar-title">Built from scratch</h3>
+        <p class="pillar-body">No templates. Every itinerary designed around your pace, interests, and the way you prefer to travel.</p>
+      </div>
+    </div>
+    <div class="pillar">
+      <div class="pillar-bg" style="background-image:url('https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=900&q=80')"></div>
+      <div class="pillar-num">03 / Immersion</div>
+      <div>
+        <h3 class="pillar-title">Beyond the surface</h3>
+        <p class="pillar-body">Meetings with artisans, dinners in private homes, access to places closed to the public. Travel that leaves a mark.</p>
+      </div>
+    </div>
+    <div class="pillar">
+      <div class="pillar-bg" style="background-image:url('https://images.unsplash.com/photo-1516426122078-c23e76319801?w=900&q=80')"></div>
+      <div class="pillar-num">04 / Impact</div>
+      <div>
+        <h3 class="pillar-title">Travel with purpose</h3>
+        <p class="pillar-body">Partnerships with local suppliers and conservation projects. Tourism that leaves each place better than we found it.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ————————————— DESTINATIONS ————————————— -->
+<section class="destinations" id="destinations" data-screen-label="Destinations">
+  <div class="dest-header">
+    <div>
+      <div class="section-eyebrow">The Collection</div>
+      <h2 class="section-title">Twenty-two countries,<br/>one <em>standard</em>.</h2>
+    </div>
+    <div class="dest-filters" id="destFilters">
+      <button class="dest-filter active" data-region="all">All Regions</button>
+      <button class="dest-filter" data-region="europe">Europe</button>
+      <button class="dest-filter" data-region="asia">Asia-Pacific</button>
+      <button class="dest-filter" data-region="africa">Africa & Middle East</button>
+      <button class="dest-filter" data-region="americas">Americas</button>
+    </div>
+  </div>
+
+  <div id="regionList"></div>
+</section>
+
+<!-- ————————————— BLEED QUOTE ————————————— -->
+<section class="bleed photo" style="padding: 80px;" data-screen-label="Bleed quote">
+  <div class="bleed-bg photo-img"></div>
+  <p class="bleed-quote">"The people who reveal a place's secrets are the ones who never left it."</p>
+  <div class="bleed-attrib">Travel Collection Philosophy</div>
+</section>
+
+<!-- ————————————— SERVICES ————————————— -->
+<section class="services" id="services" data-screen-label="Services">
+  <div class="section-eyebrow">What We Do</div>
+  <h2 class="section-title">Three ways<br/>to <em>travel</em> with us.</h2>
+  <p class="section-lede">Whether it's a bespoke journey for two, a group united by shared passions, or a corporate programme designed to reward and inspire — we bring the same local depth to every brief.</p>
+
+  <div class="svc-grid">
+    <div class="svc">
+      <div class="svc-img photo"><div class="photo-img" style="background-image:url('https://images.unsplash.com/photo-1518684079-3c830dcef090?w=900&q=80')"></div></div>
+      <div class="svc-num">01 — Private</div>
+      <h3 class="svc-title">Tailored Travel</h3>
+      <p class="svc-body">Every journey begins with a conversation. Our specialists design fully bespoke itineraries — romantic escapes, multi-generational adventures, cultural deep-dives. No templates. No shortcuts.</p>
+      <a href="#" class="svc-link">Design my journey →</a>
+    </div>
+    <div class="svc">
+      <div class="svc-img photo"><div class="photo-img" style="background-image:url('https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=900&q=80')"></div></div>
+      <div class="svc-num">02 — Groups</div>
+      <h3 class="svc-title">Affinity Travel</h3>
+      <p class="svc-body">For groups united by shared passions — wine collectors, art patrons, alumni, wellness circles. Expert-led programming combined with the intimacy of private travel.</p>
+      <a href="#" class="svc-link">Plan a group trip →</a>
+    </div>
+    <div class="svc">
+      <div class="svc-img photo"><div class="photo-img" style="background-image:url('https://images.unsplash.com/photo-1511578314322-379afb476865?w=900&q=80')"></div></div>
+      <div class="svc-num">03 — Corporate</div>
+      <h3 class="svc-title">Corporate & Events</h3>
+      <p class="svc-body">Executive retreats, incentive programmes, product launches, gala dinners. Our local teams handle venues, logistics, and the details that turn events into stories.</p>
+      <a href="#" class="svc-link">Brief our team →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ————————————— TESTIMONIALS ————————————— -->
+<section class="testimonials" id="testimonials" data-screen-label="Testimonials">
+  <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: end;">
+    <div>
+      <div class="section-eyebrow">Guest Voices</div>
+      <h2 class="section-title">What they <em>say</em>.</h2>
+    </div>
+    <p class="section-lede">Stories from travellers who came home with more than photographs — verified accounts, with their guide and region attributed.</p>
+  </div>
+
+  <div class="test-grid">
+    <div class="test">
+      <div class="test-portrait photo"><div class="photo-img" style="background-image:url('https://images.unsplash.com/photo-1580489944761-15a19d654956?w=600&q=80')"></div></div>
+      <div class="test-rating">★★★★★</div>
+      <p class="test-quote">"Our guide in Marrakech wasn't just knowledgeable — he was passionate. He showed us a side of the city we never could have found on our own."</p>
+      <div class="test-attrib">
+        <strong>Gina D.</strong>
+        <span>Morocco · May 2026</span>
+      </div>
+    </div>
+    <div class="test">
+      <div class="test-portrait photo"><div class="photo-img" style="background-image:url('https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=600&q=80')"></div></div>
+      <div class="test-rating">★★★★★</div>
+      <p class="test-quote">"Travel Collection redefined what luxury means to us. It's not about thread count — it's being welcomed into a local chef's home, or a private sunset picnic on a clifftop in Santorini."</p>
+      <div class="test-attrib">
+        <strong>Jan W.</strong>
+        <span>Greece & Italy · March 2026</span>
+      </div>
+    </div>
+    <div class="test">
+      <div class="test-portrait photo"><div class="photo-img" style="background-image:url('https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=600&q=80')"></div></div>
+      <div class="test-rating">★★★★★</div>
+      <p class="test-quote">"Planning for 30 people felt overwhelming until we connected with Travel Collection. The cultural experiences they arranged in Japan were beyond anything we imagined."</p>
+      <div class="test-attrib">
+        <strong>Leslie F.</strong>
+        <span>Japan · October 2025</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ————————————— PHILOSOPHY ————————————— -->
+<section class="philosophy" id="philosophy" data-screen-label="Philosophy">
+  <div class="phil-content">
+    <div class="section-eyebrow">Our Approach</div>
+    <h2 class="section-title">A philosophy,<br/>not a <em>playbook</em>.</h2>
+
+    <div class="phil-tabs" id="philTabs">
+      <button class="phil-tab active" data-tab="local">Local First</button>
+      <button class="phil-tab" data-tab="craft">Craft Over Scale</button>
+      <button class="phil-tab" data-tab="impact">Lasting Impact</button>
+    </div>
+
+    <div class="phil-panel active" data-panel="local">
+      <h4>Hospitality rooted in place.</h4>
+      <p>The best travel experiences come from those who call a destination home. Each of our 16 DMC brands is led by local teams with deep cultural knowledge, personal relationships, and an insider's understanding of what makes their corner of the world special &mdash; spanning 22 countries across four continents.</p>
+      <ul>
+        <li><span>Locally-led DMC brands</span><span>16</span></li>
+        <li><span>Countries covered</span><span>22</span></li>
+        <li><span>Average years on-ground</span><span>14</span></li>
+      </ul>
+    </div>
+    <div class="phil-panel" data-panel="craft">
+      <h4>One-of-a-kind, every time.</h4>
+      <p>In an industry that often prioritises volume, we choose craft. Every itinerary is designed from scratch, every experience personally vetted, and every guest receives the undivided attention of a dedicated specialist.</p>
+      <ul>
+        <li><span>Itineraries built from scratch</span><span>100%</span></li>
+        <li><span>Average design time per trip</span><span>22 hours</span></li>
+        <li><span>Repeat guest rate</span><span>68%</span></li>
+      </ul>
+    </div>
+    <div class="phil-panel" data-panel="impact">
+      <h4>Travel that gives back.</h4>
+      <p>Travel should enrich both the traveller and the destination. We actively invest in local communities, support conservation initiatives, and design experiences that create economic value where it's needed most.</p>
+      <ul>
+        <li><span>Conservation partners</span><span>32</span></li>
+        <li><span>Community suppliers</span><span>480+</span></li>
+        <li><span>% spend retained locally</span><span>~84%</span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="phil-image photo"><div class="photo-img"></div></div>
+</section>
+
+<!-- ————————————— CONTACT ————————————— -->
+<section class="contact" id="contact" data-screen-label="Contact">
+  <div class="section-eyebrow">Begin Your Journey</div>
+  <h2 class="section-title">Let's <em>design</em><br/>something unforgettable.</h2>
+
+  <div class="contact-grid">
+    <div class="contact-info">
+      <p>Share a few details and we'll pair you with the specialist who knows your destination best. Expect a personal response within 24 hours — no call centres, no form letters.</p>
+      <dl>
+        <dt>Response</dt><dd>Within 24 hours</dd>
+        <dt>Minimum</dt><dd>No minimum party size</dd>
+        <dt>Planning fee</dt><dd>Waived on confirmed bookings</dd>
+        <dt>Speak now</dt><dd>+44 20 7946 0100</dd>
+      </dl>
+    </div>
+
+    <form class="form" onsubmit="event.preventDefault(); this.querySelector('.confirm').style.display='block'; this.querySelector('.form-submit').style.display='none';">
+      <div class="field"><label>First name</label><input type="text" required></div>
+      <div class="field"><label>Last name</label><input type="text" required></div>
+      <div class="field"><label>Email</label><input type="email" required></div>
+      <div class="field"><label>Phone</label><input type="tel"></div>
+      <div class="field">
+        <label>Destination of interest</label>
+        <select>
+          <option>Undecided — guide me</option>
+          <option>Morocco</option><option>Italy</option><option>France</option>
+          <option>Spain & Portugal</option><option>Greece</option><option>United Kingdom</option>
+          <option>Türkiye</option><option>Japan</option><option>Thailand</option>
+          <option>Indonesia</option><option>Australia</option><option>UAE</option>
+          <option>East Africa</option><option>Mexico</option><option>Colombia</option><option>Peru</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Approx. travel window</label>
+        <select>
+          <option>Flexible</option>
+          <option>Next 3 months</option>
+          <option>3–6 months</option>
+          <option>6–12 months</option>
+          <option>12+ months</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Party size</label>
+        <select><option>1–2</option><option>3–4</option><option>5–8</option><option>9+</option></select>
+      </div>
+      <div class="field">
+        <label>Budget per person (USD)</label>
+        <select>
+          <option>Open to guidance</option>
+          <option>$5k – $10k</option>
+          <option>$10k – $25k</option>
+          <option>$25k – $50k</option>
+          <option>$50k+</option>
+        </select>
+      </div>
+      <div class="field full"><label>Tell us what you're dreaming about</label><textarea rows="3" placeholder="A honeymoon in Kyoto, a family reunion in Tuscany, a group trip for our wine club..."></textarea></div>
+      <div class="form-submit">
+        <p class="note">We'll never share your details. A specialist will be in touch within one business day.</p>
+        <button type="submit" class="btn btn-light">Send Enquiry →</button>
+      </div>
+      <div class="confirm full" style="display:none; padding: 24px; border: 1px solid oklch(0.4 0.02 50); font-family: var(--serif); font-style: italic; font-size: 20px;">Thank you — a specialist will be in touch within 24 hours.</div>
+    </form>
+  </div>
+</section>
+
+<!-- ————————————— FOOTER ————————————— -->
+<footer>
+  <div class="foot-grid">
+    <div>
+      <div class="foot-brand"><img src="https://cdn.prod.website-files.com/645dce8d3cf060ba152e3ed6/645dd0fb59b28a589dc86dba_TCL%20White%20Logo%20200.png" alt="Travel Collection" /></div>
+      <p style="font-size: 14px; max-width: 34ch; line-height: 1.6;">A family of 16 destination management companies across 22 countries, each led by local experts, delivering a single standard of excellence.</p>
+    </div>
+    <div class="foot-col">
+      <h5>Explore</h5>
+      <a href="#destinations">Destinations</a>
+      <a href="#services">Services</a>
+      <a href="#philosophy">Philosophy</a>
+      <a href="#testimonials">Journal</a>
+    </div>
+    <div class="foot-col">
+      <h5>Company</h5>
+      <a href="#">About</a>
+      <a href="#">Sustainability</a>
+      <a href="#">Press</a>
+      <a href="#">Careers</a>
+    </div>
+    <div class="foot-col">
+      <h5>Trade</h5>
+      <a href="#">Advisor Portal</a>
+      <a href="#">Become a Partner</a>
+      <a href="#">Press Kit</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </div>
+  <div class="foot-bottom">
+    <div>© 2026 Travel Collection. All rights reserved.</div>
+    <div style="display:flex; gap: 24px;"><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Cookies</a></div>
+  </div>
+</footer>
+
+<!-- ————————————— TWEAKS PANEL ————————————— -->
+<div class="tweaks" id="tweaks">
+  <h6>Tweaks</h6>
+  <p class="tweaks-sub">Try variations without re-building.</p>
+
+  <div class="tweak-row">
+    <label>Hero layout</label>
+    <div class="seg" data-key="heroLayout">
+      <button data-val="split" class="on">Split</button>
+      <button data-val="fullbleed">Full-bleed</button>
+      <button data-val="centered">Centered</button>
+    </div>
+  </div>
+
+  <div class="tweak-row">
+    <label>Photo filter</label>
+    <div class="seg" data-key="photo">
+      <button data-val="warm" class="on">Warm</button>
+      <button data-val="matte">Matte</button>
+      <button data-val="duotone">Duotone</button>
+      <button data-val="none">None</button>
+    </div>
+  </div>
+
+  <div class="tweak-row">
+    <label>Accent color</label>
+    <div class="accent-swatches" data-key="accent">
+      <button data-val="brand" class="on" style="background: #304256;" title="Brand navy (#304256)"></button>
+      <button data-val="mist" style="background: #5b86a0;" title="Brand mist (#5b86a0)"></button>
+      <button data-val="terracotta" style="background: oklch(0.48 0.09 45);" title="Terracotta"></button>
+      <button data-val="olive" style="background: oklch(0.48 0.07 120);" title="Olive"></button>
+      <button data-val="ink" style="background: oklch(0.22 0.01 60);" title="Ink"></button>
+    </div>
+  </div>
+
+  <div class="tweak-row">
+    <label>Display typeface</label>
+    <div class="seg" data-key="displayFont">
+      <button data-val="cormorant" class="on">Cormorant</button>
+      <button data-val="playfair">Playfair</button>
+      <button data-val="sectra">Sectra</button>
+    </div>
+  </div>
+
+  <div class="tweak-row">
+    <label>Destinations layout</label>
+    <div class="seg" data-key="destLayout">
+      <button data-val="regional" class="on">Regional</button>
+      <button data-val="grid">Flat grid</button>
+    </div>
+  </div>
+
+  <div class="tweak-row">
+    <label class="tweak-toggle">Show nav on load <span class="switch on" data-toggle="showNav"></span></label>
+  </div>
+</div>
+
+<script type="application/json" id="tweak-defaults">
+/*EDITMODE-BEGIN*/{
+  "heroLayout": "split",
+  "accent": "mist",
+  "displayFont": "cormorant",
+  "destLayout": "grid",
+  "showNav": true,
+  "photo": "matte"
+}/*EDITMODE-END*/
+</script>
+
+<script>
+// ————————————— DATA —————————————
+const DESTINATIONS = [
+  { country: "Morocco", dmc: "Experience Morocco", region: "africa", img: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?w=800&q=80" },
+  { country: "East Africa", dmc: "Truly Swahili", region: "africa", img: "https://images.unsplash.com/photo-1516426122078-c23e76319801?w=800&q=80" },
+  { country: "UAE", dmc: "Majlis Retreats", region: "africa", img: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=800&q=80" },
+  { country: "Türkiye", dmc: "Sar Türkiye", region: "africa", img: "https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=800&q=80" },
+
+  { country: "Italy", dmc: "Authenticus Italy", region: "europe", img: "https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=800&q=80" },
+  { country: "Spain & Portugal", dmc: "Unbox Spain & Portugal", region: "europe", img: "https://images.unsplash.com/photo-1543783207-ec64e4d95325?w=800&q=80" },
+  { country: "France", dmc: "Essentially French", region: "europe", img: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=800&q=80" },
+  { country: "Greece", dmc: "Nostos Greece", region: "europe", img: "https://images.unsplash.com/photo-1533105079780-92b9be482077?w=800&q=80" },
+  { country: "United Kingdom", dmc: "Crown Journey", region: "europe", img: "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=800&q=80" },
+
+  { country: "Japan", dmc: "Oshinobi Travel", region: "asia", img: "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=800&q=80" },
+  { country: "Thailand", dmc: "Nira Thailand", region: "asia", img: "https://images.unsplash.com/photo-1528181304800-259b08848526?w=800&q=80" },
+  { country: "Indonesia", dmc: "Kembali Asia", region: "asia", img: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=800&q=80" },
+  { country: "Australia", dmc: "Elura Australia", region: "asia", img: "https://images.unsplash.com/photo-1523482580672-f109ba8cb9be?w=800&q=80" },
+
+  { country: "Mexico", dmc: "Across Mexico", region: "americas", img: "https://images.unsplash.com/photo-1518638150340-f706e86654de?w=800&q=80" },
+  { country: "Colombia", dmc: "Vista Colombia", region: "americas", img: "https://images.unsplash.com/photo-1533282960533-51328aa49826?w=800&q=80" },
+  { country: "Peru", dmc: "Awaken Peru", region: "americas", img: "https://images.unsplash.com/photo-1526392060635-9d6019884377?w=800&q=80" },
+];
+
+const REGIONS = {
+  europe: "Europe",
+  asia: "Asia-Pacific",
+  africa: "Africa & Middle East",
+  americas: "Americas",
+};
+
+// ————————————— RENDER DESTINATIONS —————————————
+function renderDestinations(filter = "all", layout = "regional") {
+  const host = document.getElementById("regionList");
+  host.innerHTML = "";
+
+  if (layout === "grid" || filter !== "all") {
+    const items = filter === "all" ? DESTINATIONS : DESTINATIONS.filter(d => d.region === filter);
+    const grid = document.createElement("div");
+    grid.className = "region-grid";
+    grid.innerHTML = items.map(d => card(d)).join("");
+    host.appendChild(grid);
+    return;
+  }
+
+  // regional grouping
+  Object.keys(REGIONS).forEach(key => {
+    const items = DESTINATIONS.filter(d => d.region === key);
+    const wrap = document.createElement("div");
+    wrap.className = "region";
+    wrap.innerHTML = `
+      <div class="region-header">
+        <div class="region-name">${REGIONS[key]}</div>
+        <div class="region-count">${items.length} destinations</div>
+      </div>
+      <div class="region-grid">${items.map(d => card(d)).join("")}</div>
+    `;
+    host.appendChild(wrap);
+  });
+}
+function card(d) {
+  return `<a href="#" class="dest-card">
+    <div class="dest-card-imgwrap photo">
+      <div class="dest-card-img photo-img" style="background-image:url('${d.img}')"></div>
+      <div class="dest-card-overlay">${REGIONS[d.region]}</div>
+    </div>
+    <div class="dest-card-country">${d.country}</div>
+    <div class="dest-card-dmc">${d.dmc}</div>
+  </a>`;
+}
+
+// ————————————— NAV —————————————
+const nav = document.getElementById("nav");
+window.addEventListener("scroll", () => {
+  nav.classList.toggle("scrolled", window.scrollY > 40);
+});
+
+// ————————————— HERO CAROUSEL —————————————
+const heroImgs = document.querySelectorAll(".hero-img");
+const heroDotsEl = document.getElementById("heroDots");
+const heroLocEl = document.getElementById("heroLoc");
+heroImgs.forEach((_, i) => {
+  const b = document.createElement("button");
+  b.className = "hero-dot" + (i === 0 ? " active" : "");
+  b.addEventListener("click", () => setHero(i));
+  heroDotsEl.appendChild(b);
+});
+let heroIdx = 0;
+function setHero(i) {
+  heroImgs.forEach((el, j) => el.classList.toggle("active", j === i));
+  document.querySelectorAll(".hero-dot").forEach((el, j) => el.classList.toggle("active", j === i));
+  heroLocEl.textContent = heroImgs[i].dataset.loc;
+  heroIdx = i;
+}
+setInterval(() => setHero((heroIdx + 1) % heroImgs.length), 5500);
+
+// ————————————— DEST FILTERS —————————————
+document.getElementById("destFilters").addEventListener("click", e => {
+  if (e.target.tagName !== "BUTTON") return;
+  document.querySelectorAll(".dest-filter").forEach(b => b.classList.remove("active"));
+  e.target.classList.add("active");
+  renderDestinations(e.target.dataset.region, state.destLayout);
+});
+
+// ————————————— PHILOSOPHY TABS —————————————
+document.getElementById("philTabs").addEventListener("click", e => {
+  if (e.target.tagName !== "BUTTON") return;
+  const tab = e.target.dataset.tab;
+  document.querySelectorAll(".phil-tab").forEach(b => b.classList.toggle("active", b.dataset.tab === tab));
+  document.querySelectorAll(".phil-panel").forEach(p => p.classList.toggle("active", p.dataset.panel === tab));
+});
+
+// ————————————— TWEAKS —————————————
+const defaultsJson = document.getElementById("tweak-defaults").textContent;
+const match = defaultsJson.match(/\{[\s\S]*\}/);
+const state = JSON.parse(match[0]);
+
+const ACCENTS = {
+  brand:      { accent: "#304256",              soft: "oklch(0.93 0.018 250)", light: "oklch(0.72 0.06 230)" },
+  mist:       { accent: "#5b86a0",              soft: "oklch(0.94 0.02 230)",  light: "oklch(0.78 0.06 230)" },
+  terracotta: { accent: "oklch(0.48 0.09 45)",  soft: "oklch(0.92 0.025 50)", light: "oklch(0.72 0.08 50)" },
+  olive:      { accent: "oklch(0.48 0.07 120)", soft: "oklch(0.93 0.02 120)", light: "oklch(0.72 0.06 120)" },
+  ink:        { accent: "oklch(0.22 0.01 60)",  soft: "oklch(0.92 0.008 70)", light: "oklch(0.7 0.01 70)"   },
+};
+
+const FONTS = {
+  cormorant: '"Cormorant Garamond", Georgia, serif',
+  playfair:  '"Playfair Display", Georgia, serif',
+  sectra:    '"Spectral", "GT Sectra", Georgia, serif',
+};
+
+function loadFont(key) {
+  if (document.getElementById("dyn-font-" + key)) return;
+  const map = {
+    playfair: "https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap",
+    sectra:   "https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,500;1,400&display=swap",
+  };
+  if (!map[key]) return;
+  const l = document.createElement("link");
+  l.id = "dyn-font-" + key; l.rel = "stylesheet"; l.href = map[key];
+  document.head.appendChild(l);
+}
+
+function applyState() {
+  const a = ACCENTS[state.accent] || ACCENTS.brand;
+  document.documentElement.style.setProperty("--accent", a.accent);
+  document.documentElement.style.setProperty("--accent-soft", a.soft);
+  document.documentElement.style.setProperty("--accent-light", a.light);
+
+  // photo filter
+  document.documentElement.setAttribute("data-photo", state.photo || "warm");
+
+  loadFont(state.displayFont);
+  document.documentElement.style.setProperty("--serif", FONTS[state.displayFont]);
+
+  // Hero layout
+  const hero = document.querySelector(".hero");
+  if (state.heroLayout === "fullbleed") {
+    hero.style.gridTemplateColumns = "1fr";
+    hero.querySelector(".hero-right").style.display = "block";
+    hero.querySelector(".hero-right").style.position = "absolute";
+    hero.querySelector(".hero-right").style.inset = "0";
+    hero.querySelector(".hero-left").style.position = "relative";
+    hero.querySelector(".hero-left").style.zIndex = "2";
+    hero.querySelector(".hero-left").style.color = "white";
+    hero.querySelector(".hero-left").style.background = "linear-gradient(90deg, rgba(0,0,0,0.6), rgba(0,0,0,0.2) 70%, transparent)";
+  } else if (state.heroLayout === "centered") {
+    hero.style.gridTemplateColumns = "1fr";
+    hero.querySelector(".hero-right").style.display = "none";
+    hero.querySelector(".hero-left").style.textAlign = "center";
+    hero.querySelector(".hero-left").style.alignItems = "center";
+    hero.querySelector(".hero-left").style.paddingTop = "180px";
+  } else {
+    // reset inline styles for split
+    hero.removeAttribute("style");
+    hero.querySelector(".hero-right").removeAttribute("style");
+    hero.querySelector(".hero-left").removeAttribute("style");
+  }
+
+  // Nav visibility
+  nav.style.display = state.showNav ? "" : "none";
+
+  // Destinations layout
+  renderDestinations(
+    document.querySelector(".dest-filter.active").dataset.region,
+    state.destLayout
+  );
+}
+
+function wireTweaks() {
+  // seg buttons
+  document.querySelectorAll(".tweaks .seg, .tweaks .accent-swatches").forEach(grp => {
+    const key = grp.dataset.key;
+    grp.addEventListener("click", e => {
+      if (e.target.tagName !== "BUTTON") return;
+      grp.querySelectorAll("button").forEach(b => b.classList.remove("on"));
+      e.target.classList.add("on");
+      state[key] = e.target.dataset.val;
+      applyState();
+      persist();
+    });
+    // init active
+    grp.querySelectorAll("button").forEach(b => b.classList.toggle("on", b.dataset.val === state[key]));
+  });
+
+  // toggle switch
+  document.querySelectorAll(".tweaks [data-toggle]").forEach(sw => {
+    const key = sw.dataset.toggle;
+    sw.classList.toggle("on", !!state[key]);
+    sw.addEventListener("click", () => {
+      state[key] = !state[key];
+      sw.classList.toggle("on", state[key]);
+      applyState();
+      persist();
+    });
+  });
+}
+
+function persist() {
+  window.parent.postMessage({ type: "__edit_mode_set_keys", edits: state }, "*");
+}
+
+window.addEventListener("message", e => {
+  const d = e.data;
+  if (!d || typeof d !== "object") return;
+  if (d.type === "__activate_edit_mode") document.getElementById("tweaks").classList.add("on");
+  if (d.type === "__deactivate_edit_mode") document.getElementById("tweaks").classList.remove("on");
+});
+// announce AFTER listener is registered
+window.parent.postMessage({ type: "__edit_mode_available" }, "*");
+
+// ————————————— INIT —————————————
+renderDestinations("all", state.destLayout);
+wireTweaks();
+applyState();
+</script>
+
+</body>
+</html>
