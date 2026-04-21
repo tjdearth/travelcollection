@@ -15,8 +15,6 @@
  * and give nav links matching `data-nav-page` attributes.
  */
 (function () {
-  const placeholders = document.querySelectorAll("[data-include]");
-
   function markActive() {
     const page = document.body.dataset.page;
     if (!page) return;
@@ -25,32 +23,48 @@
     });
   }
 
-  if (!placeholders.length) {
-    window.includesReady = Promise.resolve();
-    markActive();
-    document.dispatchEvent(new CustomEvent("includes:ready"));
-    return;
+  function run() {
+    const placeholders = document.querySelectorAll("[data-include]");
+    if (!placeholders.length) {
+      markActive();
+      document.dispatchEvent(new CustomEvent("includes:ready"));
+      return;
+    }
+
+    const loadAll = Promise.all(
+      Array.from(placeholders).map(async (el) => {
+        const path = el.getAttribute("data-include");
+        try {
+          const res = await fetch(path, { cache: "no-cache" });
+          if (!res.ok) throw new Error(res.status + " " + res.statusText);
+          const html = await res.text();
+          // Replace the placeholder with the fetched markup so no wrapper div remains.
+          const tmp = document.createElement("div");
+          tmp.innerHTML = html;
+          const frag = document.createDocumentFragment();
+          while (tmp.firstChild) frag.appendChild(tmp.firstChild);
+          el.replaceWith(frag);
+        } catch (err) {
+          console.error("[include] failed to load", path, err);
+        }
+      })
+    ).then(() => {
+      markActive();
+      document.dispatchEvent(new CustomEvent("includes:ready"));
+    });
+
+    window.includesReady = loadAll;
   }
 
-  window.includesReady = Promise.all(
-    Array.from(placeholders).map(async (el) => {
-      const path = el.getAttribute("data-include");
-      try {
-        const res = await fetch(path, { cache: "no-cache" });
-        if (!res.ok) throw new Error(res.status + " " + res.statusText);
-        const html = await res.text();
-        // Replace the placeholder with the fetched markup so no wrapper div remains.
-        const tmp = document.createElement("div");
-        tmp.innerHTML = html;
-        const frag = document.createDocumentFragment();
-        while (tmp.firstChild) frag.appendChild(tmp.firstChild);
-        el.replaceWith(frag);
-      } catch (err) {
-        console.error("[include] failed to load", path, err);
-      }
-    })
-  ).then(() => {
-    markActive();
-    document.dispatchEvent(new CustomEvent("includes:ready"));
-  });
+  // Wait for the full document to be parsed so placeholders lower on the page
+  // (e.g. the footer) are in the DOM before we scan for them.
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", run, { once: true });
+    // Pre-resolve a ready promise that actually tracks the real work once it starts.
+    window.includesReady = new Promise((resolve) => {
+      document.addEventListener("includes:ready", resolve, { once: true });
+    });
+  } else {
+    run();
+  }
 })();
