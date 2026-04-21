@@ -2450,8 +2450,21 @@ footer {
   flex-direction: column;
   z-index: 110;
 }
+/* Invisible bridge across the visual gap so the cursor can travel
+   from the trigger to the panel without breaking the hover chain. */
+.portal-menu-panel::before {
+  content: "";
+  position: absolute;
+  top: -18px;
+  left: 0;
+  right: 0;
+  height: 18px;
+}
 .portal-menu-group:hover .portal-menu-panel,
-.portal-menu-trigger[aria-expanded="true"] + .portal-menu-panel {
+.portal-menu-trigger:focus-visible + .portal-menu-panel,
+.portal-menu-trigger[aria-expanded="true"] + .portal-menu-panel,
+.portal-menu-panel:hover,
+.portal-menu-panel:focus-within {
   display: flex;
 }
 .portal-menu-panel a {
