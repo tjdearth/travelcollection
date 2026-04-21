@@ -908,30 +908,29 @@ footer {
   margin-bottom: 64px;
 }
 .foot-socials {
-  display: flex; gap: 12px;
+  display: flex; gap: 14px;
   margin-top: 20px;
 }
 .foot-socials a {
   display: inline-flex; align-items: center; justify-content: center;
-  width: 44px; height: 44px;
-  border: 1px solid oklch(0.38 0.015 50);
+  width: 48px; height: 48px;
+  border: 1px solid oklch(0.42 0.015 50);
   border-radius: 50%;
-  color: oklch(0.82 0.01 70);
+  color: oklch(0.85 0.01 70);
   transition: color .2s, border-color .2s, background .2s, transform .2s;
   padding: 0;
   line-height: 0;
 }
 .foot-socials a:hover {
-  color: var(--bg);
+  color: var(--bg-deep);
   border-color: var(--bg);
   background: var(--bg);
   transform: translateY(-1px);
 }
-.foot-socials a:hover svg { fill: var(--bg-deep); }
 .foot-socials svg {
-  width: 18px; height: 18px; display: block;
-  fill: currentColor;
-  transition: fill .2s;
+  width: 22px; height: 22px; display: block;
+  stroke: currentColor;
+  fill: none;
 }
 .foot-brand {
   margin-bottom: 20px;
