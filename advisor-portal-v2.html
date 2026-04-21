@@ -1,0 +1,4114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Advisor Portal — Travel Collection (v2)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Work+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+
+<!-- HubSpot Tracking Code (Phase 2) -->
+<!-- <script type="text/javascript" id="hs-script-loader" async defer src="//js.hs-scripts.com/YOUR_PORTAL_ID.js"></script> -->
+
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  /* v1 token names kept as aliases so existing rules still work,
+     but the values now track the v2 palette. */
+  --navy: #304256;
+  --slate: #5b86a0;
+  --light: oklch(0.93 0.008 70);
+  --base: oklch(0.98 0.005 80);    /* warm off-white — v2 bg */
+  --white: oklch(0.98 0.005 80);
+  --text: oklch(0.18 0.01 60);     /* v2 ink */
+  --text-sec: oklch(0.55 0.01 70); /* v2 muted */
+  --dark-deep: oklch(0.22 0.015 50); /* v2 bg-deep */
+  --charcoal: oklch(0.22 0.015 50);
+  --font-display: "Cormorant Garamond", "GT Sectra", Georgia, serif;
+  --font-body: "Work Sans", "Söhne", -apple-system, BlinkMacSystemFont, sans-serif;
+  --shadow: 0 20px 80px rgba(48, 66, 86, 0.06);
+
+  /* v2 canonical tokens (for new rules below) */
+  --bg: oklch(0.98 0.005 80);
+  --bg-warm: oklch(0.95 0.012 70);
+  --bg-deep: oklch(0.22 0.015 50);
+  --ink: oklch(0.18 0.01 60);
+  --ink-soft: oklch(0.35 0.01 60);
+  --muted: oklch(0.55 0.01 70);
+  --line: oklch(0.88 0.008 70);
+  --accent: #304256;
+  --accent-soft: oklch(0.93 0.018 250);
+  --accent-light: oklch(0.72 0.06 230);
+  --serif: var(--font-display);
+  --sans: var(--font-body);
+  --mono: "JetBrains Mono", ui-monospace, monospace;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  color: var(--text);
+  background: var(--base);
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+/* ============ NAVIGATION ============ */
+.nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  padding: 0 3rem;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: all 0.4s ease;
+}
+.nav.scrolled {
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+.nav-logo { display: flex; align-items: center; text-decoration: none; }
+.nav-logo img {
+  height: 55px;
+  width: auto;
+  transition: filter 0.4s ease;
+  filter: brightness(0) invert(1);
+}
+.nav.scrolled .nav-logo img { filter: brightness(1); }
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  list-style: none;
+}
+.nav-links > li { position: relative; }
+.nav-links > li > a {
+  color: rgba(255,255,255,0.9);
+  text-decoration: none;
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: color 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.5rem 0;
+}
+.nav.scrolled .nav-links > li > a { color: var(--navy); }
+.nav-links > li > a:hover { color: var(--slate); }
+
+.nav-arrow {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 4px solid currentColor;
+  transition: transform 0.3s;
+}
+
+.nav-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--white);
+  min-width: 220px;
+  padding: 1rem 0;
+  box-shadow: var(--shadow);
+  border-radius: 0;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s, visibility 0.25s;
+  z-index: 1001;
+}
+.nav-dropdown.wide {
+  min-width: 500px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding: 1.5rem;
+  gap: 0;
+}
+.nav-dropdown .dropdown-group-title {
+  font-family: var(--font-body);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--slate);
+  padding: 0.5rem 1.5rem 0.3rem;
+  pointer-events: none;
+}
+.nav-dropdown.wide .dropdown-group-title {
+  padding: 0.5rem 0.75rem 0.3rem;
+}
+.nav-dropdown a {
+  display: block;
+  padding: 0.4rem 1.5rem;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: var(--text);
+  text-decoration: none;
+  transition: color 0.2s;
+  white-space: nowrap;
+}
+.nav-dropdown.wide a {
+  padding: 0.4rem 0.75rem;
+}
+.nav-dropdown a:hover { color: var(--slate); }
+
+.nav-links > li:hover .nav-dropdown,
+.nav-links > li.dropdown-open .nav-dropdown {
+  opacity: 1;
+  visibility: visible;
+}
+
+.nav-links > li > a.nav-cta {
+  background: var(--slate);
+  border: none;
+  color: #fff !important;
+  padding: 0.6rem 1.8rem !important;
+  border-radius: 0;
+  font-family: var(--font-body);
+  font-size: 0.75rem !important;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-decoration: none;
+  display: inline-block;
+}
+.nav.scrolled .nav-links > li > a.nav-cta { background: var(--slate); color: #fff !important; }
+.nav-links > li > a.nav-cta:hover { background: var(--navy); color: #fff !important; }
+
+.nav-toggle {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 30px;
+  height: 24px;
+  position: relative;
+}
+.nav-toggle span {
+  display: block;
+  width: 100%;
+  height: 2px;
+  background: #fff;
+  position: absolute;
+  left: 0;
+  transition: all 0.3s;
+}
+.nav.scrolled .nav-toggle span { background: var(--navy); }
+.nav-toggle span:nth-child(1) { top: 0; }
+.nav-toggle span:nth-child(2) { top: 11px; }
+.nav-toggle span:nth-child(3) { top: 22px; }
+.nav-toggle.active span { background: var(--navy); }
+.nav-toggle.active span:nth-child(1) { top: 11px; transform: rotate(45deg); }
+.nav-toggle.active span:nth-child(2) { opacity: 0; }
+.nav-toggle.active span:nth-child(3) { top: 11px; transform: rotate(-45deg); }
+
+/* Mobile drawer */
+.mobile-drawer {
+  position: fixed;
+  top: 0; right: -100%; width: 100%;
+  height: 100vh;
+  background: var(--white);
+  z-index: 999;
+  padding: 100px 2rem 2rem;
+  transition: right 0.4s ease;
+  overflow-y: auto;
+}
+.mobile-drawer.open { right: 0; }
+.mobile-drawer .mobile-link {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--navy);
+  text-decoration: none;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--light);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.mobile-drawer .mobile-link:hover { color: var(--slate); }
+.mobile-drawer .mobile-sub { padding-left: 1.2rem; }
+.mobile-drawer .mobile-sub a {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  font-weight: 400;
+  color: var(--text-sec);
+  text-decoration: none;
+  padding: 0.7rem 0;
+  text-transform: none;
+  letter-spacing: 0;
+}
+.mobile-drawer .mobile-sub a:hover { color: var(--slate); }
+.mobile-drawer .mobile-sub-title {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--slate);
+  padding: 0.5rem 0 0.2rem;
+}
+.mobile-drawer .mobile-cta {
+  display: block;
+  text-align: center;
+  margin-top: 1.5rem;
+  background: var(--navy);
+  color: #fff;
+  text-decoration: none;
+  padding: 1rem 1.5rem;
+  border-radius: 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.mobile-expandable { cursor: pointer; display: flex; align-items: center; justify-content: space-between; }
+.mobile-expandable .mobile-expand-icon { font-size: 1.2rem; transition: transform 0.3s; }
+.mobile-expandable.expanded .mobile-expand-icon { transform: rotate(45deg); }
+.mobile-drawer .mobile-sub { display: none; }
+.mobile-drawer .mobile-sub.open { display: block; }
+
+/* ============ HERO ============ */
+.hero {
+  position: relative;
+  height: 85vh;
+  min-height: 620px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  clip-path: inset(0);
+  background: url('Photos/3.jpg') center/cover no-repeat;
+  animation: kenBurnsHero 20s ease-in-out infinite alternate;
+}
+@keyframes kenBurnsHero {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.06); }
+}
+.hero-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(48,66,86,0.65) 0%, rgba(31,48,68,0.8) 100%);
+}
+.hero-fade {
+  display: none;
+}
+.hero-content {
+  position: relative;
+  z-index: 3;
+  max-width: 800px;
+  padding: 0 2rem;
+}
+.hero-deco-line {
+  display: none;
+}
+.hero-label {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #eeeeee;
+  margin-bottom: 1rem;
+}
+.hero-title {
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 5vw, 3.8rem);
+  font-weight: 400;
+  color: #fff;
+  line-height: 1.2;
+  margin-bottom: 1rem;
+}
+.hero-subtitle {
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  font-weight: 300;
+  color: rgba(255,255,255,0.85);
+  line-height: 1.6;
+  margin-bottom: 2rem;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.hero-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1.2rem;
+  flex-wrap: wrap;
+}
+/* Live Search */
+.hero-search {
+  margin-top: 1.5rem;
+  position: relative;
+  max-width: 420px;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+.hero-search-box {
+  display: flex;
+  align-items: center;
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 0;
+  overflow: hidden;
+  transition: background 0.3s, border-color 0.3s;
+}
+.hero-search-box:focus-within {
+  background: rgba(255,255,255,0.15);
+  border-color: rgba(255,255,255,0.3);
+}
+.hero-search-icon {
+  width: 18px;
+  height: 18px;
+  margin-left: 1rem;
+  color: rgba(255,255,255,0.6);
+  flex-shrink: 0;
+}
+.hero-search-box input {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 300;
+  padding: 0.7rem 0.8rem;
+}
+.hero-search-box input::placeholder { color: rgba(255,255,255,0.45); }
+.hero-search-clear {
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.5);
+  font-size: 1.4rem;
+  cursor: pointer;
+  padding: 0 1rem;
+  line-height: 1;
+}
+.hero-search-clear:hover { color: #fff; }
+.hero-search-results {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0; right: 0;
+  background: #eeeeee;
+  max-height: 380px;
+  overflow-y: auto;
+  z-index: 100;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.2);
+}
+.search-result-group {
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--light);
+}
+.search-result-group:last-child { border-bottom: none; }
+.search-result-group-label {
+  padding: 0.3rem 1.2rem;
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--slate);
+}
+.search-result-item {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.6rem 1.2rem;
+  cursor: pointer;
+  transition: background 0.2s;
+  text-decoration: none;
+  color: var(--navy);
+}
+.search-result-item:hover { background: var(--light); }
+.search-result-icon {
+  width: 36px;
+  height: 36px;
+  background: var(--light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--slate);
+  text-transform: uppercase;
+  overflow: hidden;
+}
+.search-result-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.search-result-text {
+  min-width: 0;
+}
+.search-result-name {
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.search-result-sub {
+  font-size: 0.75rem;
+  color: var(--text-sec);
+  font-weight: 300;
+}
+.search-no-results {
+  padding: 1.5rem;
+  text-align: center;
+  color: var(--text-sec);
+  font-size: 0.88rem;
+}
+.search-highlight {
+  background: rgba(91, 134, 160, 0.15);
+  border-radius: 2px;
+}
+.btn-outline {
+  display: inline-block;
+  border: 1px solid rgba(255,255,255,0.6);
+  color: #fff;
+  background: rgba(255,255,255,0.06);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  padding: 0.6rem 1.4rem;
+  border-radius: 0;
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-decoration: none;
+  transition: all 0.3s;
+  cursor: pointer;
+}
+.btn-outline:hover { background: rgba(255,255,255,0.18); }
+.btn-solid {
+  display: inline-block;
+  background: var(--slate);
+  color: #fff;
+  border: 1px solid var(--slate);
+  padding: 0.6rem 1.4rem;
+  border-radius: 0;
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-decoration: none;
+  transition: all 0.3s;
+  cursor: pointer;
+}
+.btn-solid:hover { background: #6e9ab3; border-color: #6e9ab3; }
+
+/* ============ TRUSTED BY ============ */
+.trusted {
+  background: var(--white);
+  padding: 40px 5%;
+  text-align: center;
+}
+.trusted-label {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-sec);
+  margin-bottom: 1.5rem;
+}
+.trusted-logos {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 3.5rem;
+  flex-wrap: wrap;
+}
+.trusted-badge {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-sec);
+  opacity: 0.5;
+  letter-spacing: 0.05em;
+}
+
+/* ============ VALUE PROPOSITION ============ */
+.value-prop {
+  background: var(--base);
+  padding: 120px 5%;
+}
+.value-prop-inner {
+  display: grid;
+  grid-template-columns: 55% 45%;
+  gap: 4rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  align-items: start;
+}
+.value-prop-left {}
+.section-label {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--slate);
+  margin-bottom: 0.8rem;
+}
+.section-title {
+  font-family: var(--font-display);
+  font-weight: 400;
+  color: var(--text);
+  line-height: 1.25;
+}
+.value-prop-left .section-title {
+  font-size: 2.2rem;
+  margin-bottom: 3rem;
+}
+.value-blocks {}
+.value-block {
+  padding: 0 0 2.5rem 0;
+  margin-bottom: 2.5rem;
+}
+.value-block:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+.value-number {
+  font-family: var(--font-display);
+  font-size: 3rem;
+  font-weight: 300;
+  color: var(--slate);
+  line-height: 1;
+  margin-bottom: 0.5rem;
+  opacity: 0.7;
+}
+.value-block-title {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 400;
+  color: var(--text);
+  margin-bottom: 0.6rem;
+}
+.value-block-text {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 400;
+  color: var(--text-sec);
+  line-height: 1.7;
+  max-width: 500px;
+}
+.value-prop-image {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 3/4;
+}
+.value-prop-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.8s ease;
+}
+.value-prop-image:hover img {
+  transform: scale(1.04);
+}
+
+/* ============ IMAGE BREAK ============ */
+.image-break {
+  position: relative;
+  width: 100%;
+  height: 50vh;
+  overflow: hidden;
+}
+.image-break-bg {
+  position: absolute;
+  inset: 0;
+  background: url('https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?w=1920&q=80') center/cover no-repeat;
+}
+.image-break-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(48,66,86,0.15);
+}
+
+/* ============ DESTINATION DIRECTORY ============ */
+.destinations {
+  background: var(--light);
+  padding: 100px 5%;
+}
+.destinations-header {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+.dest-filter {
+  display: flex;
+  justify-content: center;
+  gap: 0.3rem;
+  margin-bottom: 3rem;
+  flex-wrap: wrap;
+}
+.dest-filter-btn {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-sec);
+  background: transparent;
+  border: none;
+  padding: 0.6rem 1.3rem;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.3s;
+}
+.dest-filter-btn::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 2px;
+  background: var(--slate);
+  transition: width 0.3s;
+}
+.dest-filter-btn:hover { color: var(--navy); }
+.dest-filter-btn.active {
+  color: var(--navy);
+  font-weight: 600;
+}
+.dest-filter-btn.active::after { width: 60%; }
+.dest-regions {
+  max-width: 1300px;
+  margin: 0 auto;
+}
+.dest-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+.dest-card {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 4/3;
+  display: flex;
+  align-items: flex-end;
+  text-decoration: none;
+  cursor: pointer;
+}
+.dest-card-img {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  transition: transform 0.6s ease;
+}
+.dest-card:hover .dest-card-img { transform: scale(1.05); }
+.dest-card-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(48,66,86,0.82) 0%, rgba(48,66,86,0.15) 55%, transparent 100%);
+  transition: background 0.3s;
+}
+.dest-card:hover .dest-card-overlay {
+  background: linear-gradient(to top, rgba(48,66,86,0.9) 0%, rgba(48,66,86,0.25) 55%, transparent 100%);
+}
+.dest-card-content {
+  position: relative;
+  z-index: 2;
+  padding: 1.5rem;
+  width: 100%;
+}
+.dest-card-brand {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 400;
+  color: #fff;
+  line-height: 1.2;
+  margin-bottom: 0.2rem;
+}
+.dest-card-country {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.65);
+  margin-bottom: 0.4rem;
+}
+.dest-card-tagline {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 300;
+  font-style: italic;
+  color: rgba(255,255,255,0.75);
+  line-height: 1.4;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.3s, transform 0.3s;
+}
+.dest-card:hover .dest-card-tagline {
+  opacity: 1;
+  transform: translateY(0);
+}
+.dest-card[style*="display: none"] {
+  display: none !important;
+}
+
+/* ============ RESOURCE GRID (BENTO) ============ */
+.resources {
+  background: var(--base);
+  padding: 100px 5%;
+}
+.resources-header {
+  text-align: center;
+  margin-bottom: 3.5rem;
+}
+.resource-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: auto auto;
+  gap: 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.resource-card {
+  position: relative;
+  aspect-ratio: 3/2;
+  overflow: hidden;
+  border-radius: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  text-decoration: none;
+  transition: transform 0.4s ease;
+}
+.resource-card:hover {
+  transform: translateY(-4px);
+}
+.resource-card.bento-featured {
+  grid-column: span 2;
+  aspect-ratio: auto;
+}
+.resource-card-bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  transition: transform 0.5s ease;
+}
+.resource-card:hover .resource-card-bg { transform: scale(1.05); }
+.resource-card-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(48,66,86,0.55);
+  transition: background 0.3s;
+}
+.resource-card:hover .resource-card-overlay { background: rgba(48,66,86,0.75); }
+.resource-card-content {
+  position: relative;
+  z-index: 2;
+  padding: 1.5rem;
+}
+.resource-card-title {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 400;
+  color: #fff;
+  margin-bottom: 0.3rem;
+}
+.bento-featured .resource-card-title {
+  font-size: 1.6rem;
+}
+.resource-card-sub {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: rgba(255,255,255,0.7);
+}
+.resource-card-arrow {
+  display: inline-block;
+  opacity: 0;
+  transform: translateX(-8px);
+  transition: opacity 0.3s, transform 0.3s;
+  color: #fff;
+  font-size: 1.1rem;
+  margin-top: 0.6rem;
+}
+.resource-card:hover .resource-card-arrow {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* ============ TESTIMONIAL ============ */
+.testimonial {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--dark-deep) 100%);
+  padding: 100px 5%;
+  text-align: center;
+}
+.testimonial-inner {
+  max-width: 750px;
+  margin: 0 auto;
+}
+.testimonial-stars {
+  color: var(--slate);
+  font-size: 1rem;
+  letter-spacing: 0.2em;
+  margin-bottom: 1.5rem;
+}
+.testimonial-quote {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 400;
+  font-style: italic;
+  color: #eeeeee;
+  line-height: 1.7;
+  margin-bottom: 2rem;
+}
+.testimonial-attribution {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--slate);
+}
+
+/* ============ STATS STRIP ============ */
+.stats {
+  background: var(--navy);
+  padding: 80px 5%;
+}
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  max-width: 900px;
+  margin: 0 auto;
+  text-align: center;
+}
+.stat {
+  position: relative;
+  padding: 0 2rem;
+}
+.stat:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1px;
+  height: 40px;
+  background: rgba(255,255,255,0.08);
+}
+.stat-number {
+  font-family: var(--font-display);
+  font-size: 3rem;
+  font-weight: 400;
+  color: #eeeeee;
+  line-height: 1.1;
+  margin-bottom: 0.3rem;
+}
+.stat-label {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.6);
+}
+
+/* ============ SIGNUP ============ */
+.signup {
+  background: var(--light);
+  padding: 100px 5%;
+}
+.signup-wrapper {
+  display: grid;
+  grid-template-columns: 55% 45%;
+  gap: 3rem;
+  max-width: 1100px;
+  margin: 0 auto;
+  align-items: start;
+}
+.signup-text {
+  padding-right: 2rem;
+  position: relative;
+}
+.signup-text-bg {
+  position: absolute;
+  inset: -2rem;
+  background: url('https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=600&q=60') center/cover no-repeat;
+  opacity: 0.06;
+  pointer-events: none;
+}
+.signup-text .section-title {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  position: relative;
+}
+.signup-text .section-label { position: relative; }
+.signup-subtitle {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 400;
+  color: var(--text-sec);
+  line-height: 1.7;
+  position: relative;
+}
+.signup-form {
+  background: var(--white);
+  padding: 3rem;
+  border-radius: 0;
+  box-shadow: var(--shadow);
+  position: relative;
+}
+.signup-form-deco {
+  width: 40px;
+  height: 2px;
+  background: var(--slate);
+  margin-bottom: 2rem;
+}
+.form-group {
+  margin-bottom: 1.5rem;
+}
+.form-group label {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 0.4rem;
+}
+.form-group input {
+  width: 100%;
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  padding: 0.6rem 0;
+  border: none;
+  border-bottom: 1px solid rgba(48,66,86,0.15);
+  background: transparent;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.3s;
+  border-radius: 0;
+}
+.form-group input:focus { border-bottom-color: var(--navy); }
+.form-group input.error { border-bottom-color: #c44; }
+.form-error {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  color: #c44;
+  margin-top: 0.3rem;
+  display: none;
+}
+.form-group.has-error .form-error { display: block; }
+.form-submit {
+  width: 100%;
+  background: var(--navy);
+  color: #fff;
+  border: none;
+  padding: 0.85rem 1.5rem;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border-radius: 0;
+  cursor: pointer;
+  transition: background 0.3s;
+  margin-top: 0.5rem;
+}
+.form-submit:hover { background: var(--slate); }
+.form-disclaimer {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  color: var(--text-sec);
+  text-align: center;
+  margin-top: 1rem;
+}
+.form-success {
+  display: none;
+  text-align: center;
+  padding: 2rem 0;
+}
+.form-success p {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  color: var(--navy);
+  margin-bottom: 0.5rem;
+}
+.form-success span {
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  color: var(--text-sec);
+}
+
+/* ============ MULTI-COUNTRY WIZARD ============ */
+.wizard-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 10000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+.wizard-overlay.open { display: flex; }
+.wizard-modal {
+  background: #fff;
+  width: 100%;
+  max-width: 720px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 2.5rem;
+  position: relative;
+}
+.wizard-close {
+  position: absolute;
+  top: 1rem;
+  right: 1.2rem;
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  color: var(--text-sec);
+  cursor: pointer;
+  line-height: 1;
+}
+.wizard-close:hover { color: var(--navy); }
+.wizard-progress {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  margin-bottom: 2rem;
+}
+.wizard-step-dot {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-sec);
+  background: var(--light);
+  transition: all 0.3s;
+}
+.wizard-step-dot.active {
+  background: var(--slate);
+  color: #fff;
+}
+.wizard-step-line {
+  width: 60px;
+  height: 2px;
+  background: var(--light);
+}
+.wizard-title {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 500;
+  color: var(--navy);
+  margin-bottom: 0.4rem;
+}
+.wizard-desc {
+  font-size: 0.9rem;
+  color: var(--text-sec);
+  font-weight: 300;
+  margin-bottom: 1.5rem;
+}
+.wizard-country-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.8rem;
+  margin-bottom: 1.5rem;
+}
+.wizard-country-card {
+  cursor: pointer;
+  text-align: center;
+  padding: 0.6rem;
+  border: 2px solid transparent;
+  transition: all 0.2s;
+  background: var(--base);
+}
+.wizard-country-card:hover { border-color: #ddd; }
+.wizard-country-card.selected {
+  border-color: var(--slate);
+  background: rgba(91, 134, 160, 0.08);
+}
+.wizard-country-img {
+  width: 100%;
+  aspect-ratio: 3/2;
+  background-size: cover;
+  background-position: center;
+  margin-bottom: 0.4rem;
+}
+.wizard-country-name {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--navy);
+}
+.wizard-country-region {
+  font-size: 0.65rem;
+  color: var(--text-sec);
+  font-weight: 400;
+}
+.wizard-selected {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.8rem 1rem;
+  background: var(--base);
+  margin-bottom: 1.5rem;
+  font-size: 0.88rem;
+}
+.wizard-selected-label {
+  font-weight: 600;
+  color: var(--navy);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.wizard-selected-list {
+  color: var(--slate);
+  font-weight: 500;
+}
+.wizard-next-btn {
+  display: inline-block;
+  padding: 0.8rem 2rem;
+  background: var(--slate);
+  color: #fff;
+  border: none;
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.3s;
+  border-radius: 0;
+}
+.wizard-next-btn:hover { background: #6e9ab3; }
+.wizard-next-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.wizard-back-btn {
+  background: none;
+  border: 1px solid #ddd;
+  color: var(--text-sec);
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  padding: 0.8rem 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  border-radius: 0;
+}
+.wizard-back-btn:hover { border-color: var(--navy); color: var(--navy); }
+.wizard-nav-btns {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1.5rem;
+}
+.wizard-route-stops {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+.wizard-route-stop {
+  text-align: center;
+}
+.wizard-route-dot {
+  width: 14px;
+  height: 14px;
+  background: var(--slate);
+  border-radius: 50%;
+  margin: 0 auto 0.4rem;
+}
+.wizard-route-name {
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--navy);
+}
+.wizard-route-arrow {
+  font-size: 1.2rem;
+  color: var(--text-sec);
+  margin-top: -0.8rem;
+}
+.wizard-route-title {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: var(--navy);
+  margin-bottom: 0.5rem;
+}
+.wizard-route-meta {
+  display: flex;
+  gap: 1.5rem;
+  font-size: 0.85rem;
+  color: var(--text-sec);
+  font-weight: 300;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+.wizard-route-highlights {
+  font-size: 0.88rem;
+  line-height: 1.7;
+}
+.wizard-route-highlights strong {
+  font-weight: 600;
+  color: var(--navy);
+}
+.wizard-route-highlights ul {
+  list-style: none;
+  padding: 0;
+  margin: 0.5rem 0 0;
+}
+.wizard-route-highlights li {
+  padding: 0.25rem 0;
+  padding-left: 1.2rem;
+  position: relative;
+  color: var(--text-sec);
+}
+.wizard-route-highlights li::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  color: var(--slate);
+  font-weight: bold;
+}
+.wizard-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.wizard-form-group {
+  margin-bottom: 0.8rem;
+}
+.wizard-form-group label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--navy);
+  margin-bottom: 0.3rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.wizard-form-group input,
+.wizard-form-group textarea {
+  width: 100%;
+  padding: 0.65rem 0.8rem;
+  border: 1px solid #ddd;
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  color: var(--navy);
+  background: #fff;
+  border-radius: 0;
+}
+.wizard-form-group input:focus,
+.wizard-form-group textarea:focus { border-color: var(--slate); outline: none; }
+.wizard-success {
+  text-align: center;
+  padding: 2rem 0;
+  color: var(--navy);
+}
+.wizard-success h3 {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  margin-bottom: 0.5rem;
+}
+.wizard-success p {
+  font-size: 0.9rem;
+  color: var(--text-sec);
+  font-weight: 300;
+}
+
+@media (max-width: 600px) {
+  .wizard-country-grid { grid-template-columns: repeat(3, 1fr); }
+  .wizard-form-row { grid-template-columns: 1fr; }
+  .wizard-modal { padding: 1.5rem; }
+}
+@media (max-width: 420px) {
+  .wizard-country-grid { grid-template-columns: repeat(2, 1fr); }
+  .wizard-step-line { width: 30px; }
+}
+
+/* ============ COMPARISON TOOL ============ */
+.compare-section {
+  padding: 100px 5%;
+  background: var(--white);
+}
+.compare-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  text-align: center;
+}
+.compare-subtitle {
+  font-size: 1rem;
+  color: var(--text-sec);
+  font-weight: 300;
+  margin-bottom: 2.5rem;
+  max-width: 560px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.compare-selectors {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+.compare-select-wrap { flex: 0 1 240px; }
+.compare-select {
+  width: 100%;
+  padding: 0.75rem 2.5rem 0.75rem 1rem;
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  border: 1px solid #ddd;
+  background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23304256' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 1rem center;
+  color: var(--navy);
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  border-radius: 0;
+}
+.compare-select:focus { border-color: var(--slate); outline: none; }
+.compare-vs {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  color: var(--text-sec);
+  font-weight: 400;
+}
+.compare-add-btn {
+  background: none;
+  border: 1px dashed #ccc;
+  color: var(--slate);
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 500;
+  padding: 0.6rem 1.2rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  border-radius: 0;
+}
+.compare-add-btn:hover { border-color: var(--slate); background: var(--light); }
+.compare-go-btn {
+  display: inline-block;
+  padding: 0.8rem 2.5rem;
+  background: var(--slate);
+  color: #fff;
+  border: none;
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.3s;
+  border-radius: 0;
+  margin-bottom: 2rem;
+}
+.compare-go-btn:hover { background: #6e9ab3; }
+.compare-table-wrap {
+  overflow-x: auto;
+  margin-top: 1rem;
+}
+.compare-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+.compare-table th {
+  padding: 1rem 1.2rem;
+  background: var(--navy);
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 500;
+  border: none;
+  min-width: 180px;
+}
+.compare-table th:first-child {
+  background: transparent;
+  color: var(--text-sec);
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  min-width: 140px;
+}
+.compare-table td {
+  padding: 0.9rem 1.2rem;
+  font-size: 0.88rem;
+  font-weight: 300;
+  border-bottom: 1px solid var(--light);
+  vertical-align: top;
+}
+.compare-table td:first-child {
+  font-weight: 500;
+  color: var(--navy);
+  font-size: 0.82rem;
+}
+.compare-table tr:last-child td { border-bottom: none; }
+.compare-table .compare-row-highlight td {
+  background: rgba(91, 134, 160, 0.05);
+}
+
+/* ============ FOOTER ============ */
+/* Footer styles loaded from components/footer.css */
+
+/* ============ ANIMATIONS & MICRO-ANIMATIONS ============ */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+/* Staggered children reveal */
+.reveal-stagger > * {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.reveal-stagger.visible > * {
+  opacity: 1;
+  transform: translateY(0);
+}
+.reveal-stagger.visible > *:nth-child(1) { transition-delay: 0s; }
+.reveal-stagger.visible > *:nth-child(2) { transition-delay: 0.08s; }
+.reveal-stagger.visible > *:nth-child(3) { transition-delay: 0.16s; }
+.reveal-stagger.visible > *:nth-child(4) { transition-delay: 0.24s; }
+.reveal-stagger.visible > *:nth-child(5) { transition-delay: 0.32s; }
+.reveal-stagger.visible > *:nth-child(6) { transition-delay: 0.40s; }
+.reveal-stagger.visible > *:nth-child(7) { transition-delay: 0.48s; }
+.reveal-stagger.visible > *:nth-child(8) { transition-delay: 0.56s; }
+/* Hero content entrance */
+.hero-title, .hero-subtitle {
+  animation: fadeSlideUp 1s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.hero-subtitle { animation-delay: 0.2s; }
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+/* Destination card hover lift */
+.dest-card {
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+.dest-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 48px rgba(0,0,0,0.12);
+}
+/* Destination card image zoom on hover */
+.dest-card-img {
+  transition: transform 0.6s ease;
+}
+.dest-card:hover .dest-card-img {
+  transform: scale(1.05);
+}
+/* GM card hover */
+.gm-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.gm-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.1);
+}
+/* Resource card hover */
+.resource-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.resource-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 36px rgba(0,0,0,0.1);
+}
+/* Stats counter animation */
+.stat-number {
+  display: inline-block;
+  transition: transform 0.3s ease;
+}
+
+/* ============ RESPONSIVE ============ */
+@media (max-width: 1024px) {
+  .value-prop-inner { grid-template-columns: 1fr 1fr; gap: 2.5rem; }
+  .value-prop-image { aspect-ratio: 3/4; }
+  .dest-cards { grid-template-columns: repeat(2, 1fr); }
+  .resource-grid { grid-template-columns: repeat(2, 1fr); }
+  .resource-card.bento-featured { grid-column: span 2; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 2rem 0; }
+  .stat:nth-child(2)::after { display: none; }
+  .stat:nth-child(even)::after { display: none; }
+}
+
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .nav-toggle { display: block; }
+  .nav { padding: 0 1.5rem; }
+
+  .hero { height: auto; min-height: 0; padding: 100px 0 2rem; }
+  .hero-title { font-size: clamp(1.4rem, 5vw, 2rem); margin-bottom: 0.5rem; }
+  .hero-subtitle { font-size: 0.88rem; margin-bottom: 1rem; }
+  .hero-label { font-size: 0.65rem; margin-bottom: 0.4rem; }
+
+  .value-prop { padding: 80px 5%; }
+  .value-prop-inner { grid-template-columns: 1fr; }
+  .value-prop-image { aspect-ratio: 16/9; max-height: 300px; }
+
+  .image-break { height: 35vh; }
+
+  .destinations { padding: 60px 5%; }
+  .dest-cards { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+
+  .resources { padding: 60px 5%; }
+  .resource-grid { grid-template-columns: 1fr; max-width: 500px; }
+  .resource-card.bento-featured { grid-column: span 1; }
+
+  .testimonial { padding: 60px 5%; }
+  .testimonial-quote { font-size: 1.15rem; }
+
+  .stats { padding: 50px 5%; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 1.5rem 0; }
+  .stat::after { display: none !important; }
+
+  .signup { padding: 60px 5%; }
+  .signup-wrapper { grid-template-columns: 1fr; }
+  .signup-text { padding-right: 0; margin-bottom: 1rem; }
+
+  .footer-grid { grid-template-columns: 1fr 1fr; gap: 2rem; }
+  .footer-bottom { flex-direction: column; gap: 0.8rem; text-align: center; }
+  .footer-bottom a { margin-left: 0; margin-right: 1rem; }
+}
+
+@media (max-width: 768px) {
+  .dest-card-actions { opacity: 1; transform: translateY(0); }
+  .compare-select-wrap { flex: 0 1 100%; }
+  .compare-vs { margin: 0.3rem 0; }
+}
+
+@media (max-width: 480px) {
+  .hero-content { padding: 0 1.2rem; }
+  .hero-buttons { flex-direction: column; align-items: center; gap: 0.5rem; }
+  .hero-buttons .btn-outline, .hero-buttons .btn-solid { padding: 0.65rem 1.5rem; font-size: 0.75rem; }
+  .hero-search { margin-top: 0.8rem; }
+  .hero-subtitle { font-size: 0.95rem; }
+  .section-title { font-size: 1.6rem !important; }
+  .stat-number { font-size: 2.2rem; }
+  .dest-cards { grid-template-columns: 1fr; max-width: 400px; margin: 0 auto; }
+  .signup-form { padding: 1.5rem; }
+  .footer-grid { grid-template-columns: 1fr; }
+  .trusted-logos { gap: 2rem; }
+  .value-number { font-size: 2.4rem; }
+  .gm-grid { grid-template-columns: 1fr; }
+  .value-prop { padding: 60px 5%; }
+  .compare-section { padding: 60px 5%; }
+  .gm-section { padding: 60px 5%; }
+  .destinations { padding: 40px 5%; }
+  .resources { padding: 40px 5%; }
+  .testimonial { padding: 40px 5%; }
+  .signup { padding: 40px 5%; }
+  .stats { padding: 40px 5%; }
+  .stat { padding: 0 0.5rem; }
+}
+
+/* ============ WHAT'S NEW FEED ============ */
+.whats-new {
+  background: var(--white);
+  padding: 60px 5%;
+  overflow: hidden;
+}
+.whats-new-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.whats-new-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2.5rem;
+}
+.whats-new-header .section-label { margin-bottom: 0; }
+.whats-new-header a {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--slate);
+  text-decoration: none;
+  transition: color 0.3s;
+}
+.whats-new-header a:hover { color: var(--navy); }
+.whats-new-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+.news-card {
+  background: var(--white);
+  transition: box-shadow 0.3s, transform 0.3s;
+}
+.news-card:hover {
+  box-shadow: var(--shadow);
+  transform: translateY(-3px);
+}
+.news-card-img {
+  width: 100%;
+  aspect-ratio: 16/9;
+  object-fit: cover;
+  display: block;
+  border-radius: 0;
+}
+.news-card-body {
+  padding: 1.2rem 0.2rem;
+}
+.news-card-date {
+  font-family: var(--font-body);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-sec);
+  margin-bottom: 0.5rem;
+}
+.news-card-title {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 400;
+  color: var(--text);
+  line-height: 1.3;
+  margin-bottom: 0.5rem;
+}
+.news-card-desc {
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  font-weight: 400;
+  color: var(--text-sec);
+  line-height: 1.6;
+  margin-bottom: 0.8rem;
+}
+.news-card-link {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--slate);
+  text-decoration: none;
+  transition: color 0.3s;
+}
+.news-card-link:hover { color: var(--navy); }
+
+@media (max-width: 768px) {
+  .whats-new-grid {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    gap: 1rem;
+    padding-bottom: 1rem;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .whats-new-grid::-webkit-scrollbar { display: none; }
+  .news-card {
+    min-width: 280px;
+    flex-shrink: 0;
+    scroll-snap-align: start;
+  }
+}
+@media (max-width: 480px) {
+  .news-card {
+    min-width: calc(100vw - 3rem);
+  }
+  .whats-new { padding: 40px 5%; }
+}
+
+/* ============ QUOTE REQUEST MODAL ============ */
+.quote-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 2000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+.quote-modal-overlay.active { display: flex; }
+.quote-modal {
+  background: var(--white);
+  border-radius: 0;
+  max-width: 720px;
+  width: 100%;
+  max-height: 95vh;
+  overflow-y: auto;
+  padding: 2rem 2.5rem;
+  position: relative;
+  box-shadow: var(--shadow);
+}
+.quote-modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1.2rem;
+  background: none;
+  border: none;
+  font-size: 1.6rem;
+  color: var(--text-sec);
+  cursor: pointer;
+  line-height: 1;
+  transition: color 0.3s;
+}
+.quote-modal-close:hover { color: var(--text); }
+.quote-modal-title {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 400;
+  color: var(--text);
+  margin-bottom: 0.2rem;
+}
+.quote-modal-subtitle {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: var(--text-sec);
+  margin-bottom: 1.2rem;
+}
+.quote-form .qf-group {
+  margin-bottom: 0.8rem;
+}
+.quote-form .qf-group label {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 0.2rem;
+  letter-spacing: 0.02em;
+}
+.quote-form .qf-group input,
+.quote-form .qf-group select,
+.quote-form .qf-group textarea {
+  width: 100%;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  padding: 0.4rem 0;
+  border: none;
+  border-bottom: 1px solid rgba(48,66,86,0.15);
+  background: transparent;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.3s;
+  border-radius: 0;
+}
+.quote-form .qf-group input:focus,
+.quote-form .qf-group select:focus,
+.quote-form .qf-group textarea:focus {
+  border-bottom-color: var(--navy);
+}
+.quote-form .qf-group textarea {
+  resize: vertical;
+}
+.quote-form .qf-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+.quote-form .qf-checkboxes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  margin-top: 0.3rem;
+}
+.quote-form .qf-checkboxes label {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  cursor: pointer;
+  margin-bottom: 0;
+}
+.quote-form .qf-checkboxes input[type="checkbox"] {
+  width: auto;
+  border: none;
+  border-bottom: none;
+  padding: 0;
+}
+.qf-dest-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.25rem;
+  margin-top: 0.3rem;
+}
+.qf-dest-check {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  cursor: pointer;
+  padding: 0.3rem 0.4rem;
+  background: var(--base);
+  transition: background 0.2s;
+  margin-bottom: 0;
+}
+.qf-dest-check:hover { background: var(--light); }
+.qf-dest-check input[type="checkbox"] {
+  width: auto;
+  border: none;
+  border-bottom: none;
+  padding: 0;
+  accent-color: var(--navy);
+}
+.qf-dest-check input[type="checkbox"]:checked + span {
+  font-weight: 600;
+  color: var(--navy);
+}
+@media (max-width: 600px) {
+  .quote-form .qf-row { grid-template-columns: 1fr !important; }
+  .quote-modal { padding: 1.5rem; }
+}
+@media (max-width: 480px) {
+  .qf-dest-grid { grid-template-columns: repeat(2, 1fr); }
+}
+.quote-form .qf-submit {
+  width: 100%;
+  background: var(--navy);
+  color: #fff;
+  border: none;
+  padding: 0.85rem 1.5rem;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border-radius: 0;
+  cursor: pointer;
+  transition: background 0.3s;
+  margin-top: 0.5rem;
+}
+.quote-form .qf-submit:hover { background: var(--slate); }
+.quote-form-success {
+  display: none;
+  text-align: center;
+  padding: 2rem 0;
+}
+.quote-form-success p {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  color: var(--navy);
+  margin-bottom: 0.5rem;
+}
+.quote-form-success span {
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  color: var(--text-sec);
+}
+
+/* ============ DEST CARD HOVER BUTTONS ============ */
+.dest-card-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.6rem;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.3s, transform 0.3s;
+  position: relative;
+}
+.dest-card:hover .dest-card-actions {
+  opacity: 1;
+  transform: translateY(0);
+}
+.dest-card-btn {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: #fff;
+  background: transparent;
+  border: 1px solid #fff;
+  border-radius: 0;
+  padding: 0.35rem 0.7rem;
+  cursor: pointer;
+  transition: background 0.3s;
+  white-space: nowrap;
+  text-decoration: none;
+  display: inline-block;
+}
+.dest-card-btn:hover {
+  background: rgba(255,255,255,0.18);
+}
+
+/* ============ DOWNLOAD KIT POPOVER ============ */
+.dk-popover {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  margin-bottom: 0.4rem;
+  background: var(--white);
+  border-radius: 0;
+  box-shadow: var(--shadow);
+  padding: 0.8rem;
+  z-index: 10;
+  display: none;
+  min-width: 160px;
+}
+.dk-popover.active { display: block; }
+.dk-popover a {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 400;
+  color: var(--text);
+  text-decoration: none;
+  padding: 0.3rem 0;
+  transition: color 0.2s;
+}
+.dk-popover a:hover { color: var(--slate); }
+
+/* ============ GM DIRECT CONTACT ============ */
+.gm-section {
+  background: var(--light);
+  padding: 100px 5%;
+}
+.gm-section-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  text-align: center;
+}
+.gm-section-subtitle {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 400;
+  color: var(--text-sec);
+  line-height: 1.7;
+  max-width: 600px;
+  margin: 0 auto 3rem;
+}
+.gm-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+.gm-card {
+  background: var(--white);
+  border-radius: 0;
+  padding: 0 0 1.2rem;
+  text-align: center;
+  transition: transform 0.3s, box-shadow 0.3s;
+  overflow: hidden;
+}
+.gm-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow);
+}
+.gm-card-photo {
+  width: 100%;
+  aspect-ratio: 1/1;
+  object-fit: cover;
+  object-position: top center;
+  display: block;
+  border-radius: 0;
+}
+.gm-card-body {
+  padding: 1rem 1rem 0;
+}
+.gm-card-name {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 400;
+  color: var(--navy);
+  margin-bottom: 0.15rem;
+}
+.gm-card-role {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--slate);
+  margin-bottom: 0.3rem;
+}
+.gm-card-dest {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: var(--text-sec);
+  margin-bottom: 0.4rem;
+}
+.gm-card-countries {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  justify-content: center;
+  margin-bottom: 0.6rem;
+}
+.gm-country-pill {
+  display: inline-block;
+  background: var(--light);
+  color: var(--navy);
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  text-transform: uppercase;
+}
+.gm-card-actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.2rem;
+  padding-top: 0.8rem;
+  margin-top: 0.8rem;
+}
+.gm-card-actions a {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--slate);
+  text-decoration: none;
+  transition: color 0.25s, background 0.25s;
+  background: var(--base);
+}
+.gm-card-actions a:hover { color: var(--navy); background: var(--light); }
+.gm-card-actions a svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+.gm-view-all {
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--slate);
+  text-decoration: underline;
+  transition: color 0.3s;
+}
+.gm-view-all:hover { color: var(--navy); }
+
+@media (max-width: 1024px) {
+  .gm-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 768px) {
+  .gm-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* ================================================================
+   V2 SKIN OVERRIDES
+   Re-defines the shared header/footer/button classes with the v2
+   design language. Placed last so these rules win against the
+   v1 portal styles above for any overlapping selectors.
+   ================================================================ */
+
+body {
+  font-family: var(--sans);
+  font-weight: 300;
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.55;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Nav (injected from components/header.html) */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  z-index: 100;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  padding: 18px 40px;
+  height: auto;
+  background: color-mix(in oklch, var(--bg) 85%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid transparent;
+  transition: border-color .3s, padding .3s, background .3s;
+}
+.nav.scrolled {
+  background: color-mix(in oklch, var(--bg) 94%, transparent);
+  border-bottom-color: var(--line);
+  padding: 14px 40px;
+}
+.nav-brand { display: flex; align-items: center; height: 56px; }
+.nav-brand img {
+  height: 52px; width: auto;
+  filter: brightness(0) saturate(100%) invert(22%) sepia(22%) saturate(900%) hue-rotate(178deg) brightness(95%) contrast(90%);
+  transition: filter .3s, height .3s;
+}
+.nav.scrolled .nav-brand img { height: 44px; }
+.nav-links {
+  display: flex; gap: 34px;
+  list-style: none;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+.nav-links a {
+  color: var(--ink);
+  position: relative;
+  padding: 4px 0;
+  transition: color .2s;
+  text-decoration: none;
+}
+.nav-links a:hover, .nav-links a.active { color: var(--accent); }
+.nav-links a.active::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: -2px;
+  height: 1px; background: var(--accent);
+}
+.nav-cta {
+  justify-self: end;
+  display: flex; align-items: center; gap: 20px;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.nav-cta .advisor { color: var(--muted); text-decoration: none; }
+.nav-cta .advisor:hover { color: var(--ink); }
+
+/* Button (v2) */
+.btn {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 12px 22px;
+  background: var(--bg-deep);
+  color: var(--bg);
+  font-family: var(--sans);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background .2s;
+}
+.btn:hover { background: var(--accent); }
+.btn-ghost { background: transparent; color: var(--ink); border: 1px solid var(--ink); }
+.btn-ghost:hover { background: var(--ink); color: var(--bg); }
+.btn-light { background: var(--bg); color: var(--ink); }
+.btn-light:hover { background: var(--accent); color: var(--bg); }
+
+/* Mobile menu button + overlay menu */
+.menu-btn {
+  display: none;
+  background: transparent;
+  border: 1px solid var(--line);
+  padding: 10px 11px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+.menu-btn span {
+  display: block; width: 20px; height: 1.5px;
+  background: var(--ink); margin: 5px 0;
+  transition: transform .25s, opacity .2s;
+  transform-origin: center;
+}
+body.menu-open .menu-btn span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+body.menu-open .menu-btn span:nth-child(2) { opacity: 0; }
+body.menu-open .menu-btn span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+.mobile-menu {
+  position: fixed; inset: 0;
+  z-index: 99;
+  background: var(--bg);
+  padding: 96px 32px 40px;
+  flex-direction: column;
+  gap: 2px;
+  overflow-y: auto;
+  display: none;
+}
+body.menu-open .mobile-menu { display: flex; }
+.mobile-menu a {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 30px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line);
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  text-decoration: none;
+}
+.mobile-menu .menu-cta {
+  align-self: flex-start;
+  margin-top: 12px;
+}
+
+/* Footer (injected from components/footer.html) */
+footer {
+  background: var(--bg-deep);
+  color: oklch(0.78 0.01 70);
+  padding: 80px 80px 40px;
+  border-top: 1px solid oklch(0.28 0.015 50);
+  overflow: hidden;
+}
+.foot-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1.4fr;
+  gap: 56px;
+  margin-bottom: 64px;
+}
+.foot-brand { margin-bottom: 20px; height: 68px; }
+.foot-brand img { height: 64px; width: auto; }
+.foot-col { min-width: 0; }
+.foot-col h5 {
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--bg);
+  margin-bottom: 20px;
+  font-weight: 500;
+}
+.foot-col a {
+  display: block;
+  font-size: 14px;
+  padding: 6px 0;
+  color: oklch(0.72 0.01 70);
+  transition: color .2s;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+.foot-col a:hover { color: var(--bg); }
+.foot-socials { display: flex; gap: 14px; margin-top: 20px; }
+.foot-socials a {
+  position: relative;
+  flex: 0 0 48px;
+  width: 48px; height: 48px;
+  box-sizing: border-box;
+  border: 1px solid oklch(0.42 0.015 50);
+  border-radius: 50%;
+  color: oklch(0.85 0.01 70);
+  transition: color .2s, border-color .2s;
+  padding: 0;
+}
+.foot-socials a:hover { color: var(--bg); border-color: var(--bg); }
+.foot-socials svg {
+  position: absolute; inset: 0; margin: auto;
+  width: 22px; height: 22px; display: block;
+}
+.foot-news {
+  font-size: 14px;
+  color: oklch(0.78 0.01 70);
+  line-height: 1.55;
+  margin-bottom: 20px;
+  max-width: 34ch;
+}
+.foot-subscribe {
+  display: flex;
+  max-width: 340px;
+  border: 1px solid oklch(0.42 0.015 50);
+  transition: border-color .2s;
+}
+.foot-subscribe:focus-within { border-color: var(--bg); }
+.foot-subscribe input {
+  flex: 1; min-width: 0;
+  background: transparent;
+  border: none;
+  padding: 12px 14px;
+  color: var(--bg);
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 300;
+}
+.foot-subscribe input::placeholder { color: oklch(0.72 0.01 70); opacity: 1; }
+.foot-subscribe input:focus { outline: none; }
+.foot-subscribe button {
+  background: var(--accent);
+  color: var(--bg);
+  border: none;
+  padding: 0 20px;
+  font-family: var(--sans);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background .2s;
+}
+.foot-subscribe button:hover { background: color-mix(in oklch, var(--accent) 80%, white); }
+.foot-subscribe.sent input { display: none; }
+.foot-subscribe.sent button { flex: 1; background: transparent; color: oklch(0.85 0.01 70); cursor: default; }
+.foot-bottom {
+  padding-top: 32px;
+  border-top: 1px solid oklch(0.28 0.015 50);
+  display: flex; justify-content: space-between;
+  font-size: 12px;
+  color: oklch(0.6 0.01 70);
+}
+.foot-bottom a { color: inherit; text-decoration: none; }
+.foot-bottom a:hover { color: var(--bg); }
+
+/* Section headings — push the portal's own section titles toward v2 voice */
+.hero h1,
+.whats-new h2,
+.value-prop h2,
+.destinations h2,
+.resources h2,
+.compare-section h2,
+.gm-section h2,
+.testimonial blockquote,
+.signup h2 {
+  font-family: var(--serif);
+  font-weight: 400;
+  letter-spacing: -0.015em;
+}
+
+/* Responsive: hamburger appears, desktop nav hides */
+@media (max-width: 1100px) {
+  .nav-links { display: none; }
+  .nav-cta .advisor { display: none; }
+  .foot-grid { grid-template-columns: 1fr 1fr; gap: 40px; }
+}
+@media (max-width: 780px) {
+  .nav { grid-template-columns: auto 1fr auto; padding: 14px 20px; }
+  .nav.scrolled { padding: 12px 20px; }
+  .nav-brand img { height: 42px; }
+  .nav.scrolled .nav-brand img { height: 38px; }
+  .nav-cta { gap: 10px; }
+  .nav-cta .btn { display: none; }
+  .menu-btn { display: block; }
+
+  footer { padding: 56px 24px 32px; }
+  .foot-grid { grid-template-columns: 1fr 1fr; gap: 32px; margin-bottom: 40px; }
+  .foot-grid > div:first-child { grid-column: 1 / -1; }
+  .foot-grid > .foot-col-news { grid-column: 1 / -1; }
+  .foot-brand img { height: 52px; }
+  .foot-subscribe { max-width: 100%; }
+  .foot-bottom { flex-direction: column; gap: 16px; align-items: flex-start; }
+}
+@media (max-width: 400px) {
+  .foot-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body data-page="advisor-portal">
+
+<!-- ====== NAVIGATION (v2 shared component) ====== -->
+<div data-include="components/header.html"></div>
+<script src="components/include.js?v=2"></script>
+<script>
+// After the shared header injects, retarget the "Plan a Journey" CTA
+// (and its mobile twin) to open the advisor quote modal instead.
+document.addEventListener("includes:ready", () => {
+  const rewire = (el) => {
+    if (!el) return;
+    el.setAttribute("href", "#");
+    el.addEventListener("click", (e) => {
+      e.preventDefault();
+      if (typeof openQuoteModal === "function") openQuoteModal();
+    });
+  };
+  rewire(document.querySelector(".nav-cta .btn"));
+  rewire(document.querySelector(".mobile-menu .menu-cta"));
+});
+</script>
+
+<!-- ====== HERO ====== -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-fade"></div>
+  <div class="hero-content">
+    <div class="hero-deco-line"></div>
+    <div class="hero-label">ADVISOR TOOLKIT</div>
+    <h1 class="hero-title">Welcome to Your Travel Collection Toolkit</h1>
+    <p class="hero-subtitle">Everything you need to sell, market, and grow with our 16 DMC brands across 22+ destinations</p>
+    <div class="hero-buttons">
+      <a href="#destinations" class="btn-outline">Explore Destinations</a>
+      <a href="#resources" class="btn-solid">Access Marketing Hub</a>
+      <a href="#" class="btn-outline" onclick="event.preventDefault();openWizard();" style="border-color:rgba(255,255,255,0.5)">Build Multi-Country Trip</a>
+    </div>
+    <div class="hero-search">
+      <div class="hero-search-box">
+        <svg class="hero-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        <input type="text" id="portalSearch" placeholder="Search destinations, GMs, resources..." autocomplete="off">
+        <button class="hero-search-clear" id="searchClear" style="display:none">&times;</button>
+      </div>
+      <div class="hero-search-results" id="searchResults" style="display:none"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== WHAT'S NEW ====== -->
+<section class="whats-new">
+  <div class="whats-new-inner">
+    <div class="whats-new-header reveal">
+      <div class="section-label">WHAT'S NEW</div>
+      <a href="#">View All &rarr;</a>
+    </div>
+    <div class="whats-new-grid">
+      <div class="news-card reveal">
+        <img class="news-card-img" src="https://images.unsplash.com/photo-1533105079780-92b9be482077?w=400&q=80" alt="Nostos Greece">
+        <div class="news-card-body">
+          <div class="news-card-date">Jun 2025</div>
+          <div class="news-card-title">New Destination: Nostos Greece Now Live</div>
+          <p class="news-card-desc">Our newest DMC brand brings the magic of Athens, the islands, and mainland Greece to your portfolio.</p>
+          <a href="#" class="news-card-link">Read More &rarr;</a>
+        </div>
+      </div>
+      <div class="news-card reveal">
+        <img class="news-card-img" src="https://images.unsplash.com/photo-1489749798305-4fea3ae63d43?w=400&q=80" alt="Summer Itineraries">
+        <div class="news-card-body">
+          <div class="news-card-date">May 2025</div>
+          <div class="news-card-title">Summer 2025 Itineraries Available</div>
+          <p class="news-card-desc">Fresh multi-country itineraries across Europe, perfect for the summer travel season.</p>
+          <a href="#" class="news-card-link">Read More &rarr;</a>
+        </div>
+      </div>
+      <div class="news-card reveal">
+        <img class="news-card-img" src="https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=400&q=80" alt="Hazan Sucu">
+        <div class="news-card-body">
+          <div class="news-card-date">Apr 2025</div>
+          <div class="news-card-title">Meet Our New GM: Hazan Sucu</div>
+          <p class="news-card-desc">SAR Turkiye welcomes Hazan, bringing Harvard MBA expertise and deep local roots.</p>
+          <a href="#" class="news-card-link">Read More &rarr;</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== VALUE PROPOSITION ====== -->
+<section class="value-prop" id="value">
+  <div class="value-prop-inner">
+    <div class="value-prop-left">
+      <div class="reveal">
+        <div class="section-label">WHY PARTNER WITH US</div>
+        <h2 class="section-title" style="font-size:2.2rem;">Built for Advisors Who Demand the Best</h2>
+      </div>
+      <div class="value-blocks">
+        <div class="value-block reveal">
+          <div class="value-number">01</div>
+          <div class="value-block-title">Local Expertise, Global Reach</div>
+          <p class="value-block-text">16 company-owned DMCs across 22+ destinations, all under one umbrella. One point of contact, one standard of excellence, seamless multi-country itineraries.</p>
+        </div>
+        <div class="value-block reveal">
+          <div class="value-number">02</div>
+          <div class="value-block-title">Your Dedicated Support</div>
+          <p class="value-block-text">Every advisor gets a named contact. Our regional GMs live in-country and know their destinations inside out. Plus 24/7 in-destination support for your clients.</p>
+        </div>
+        <div class="value-block reveal">
+          <div class="value-number">03</div>
+          <div class="value-block-title">Marketing That Sells</div>
+          <p class="value-block-text">Ready-made brochures, high-resolution photos, social media content, and co-brandable materials. Everything you need to inspire your clients and close the booking.</p>
+        </div>
+      </div>
+    </div>
+    <div class="value-prop-image reveal">
+      <img src="https://images.unsplash.com/photo-1452421822248-d4c2b47f0c81?w=800&q=80" alt="Travel planning">
+    </div>
+  </div>
+</section>
+
+<!-- ====== IMAGE BREAK ====== -->
+<section class="image-break">
+  <div class="image-break-bg"></div>
+</section>
+
+<!-- ====== DESTINATION DIRECTORY ====== -->
+<section class="destinations" id="destinations">
+  <div class="destinations-header reveal">
+    <div class="section-label">OUR DESTINATIONS</div>
+    <h2 class="section-title" style="font-size:2.5rem;">16 DMC Brands, 22+ Destinations</h2>
+  </div>
+  <div class="dest-filter">
+    <button class="dest-filter-btn active" data-filter="all">All</button>
+    <button class="dest-filter-btn" data-filter="europe">Europe</button>
+    <button class="dest-filter-btn" data-filter="africa-mideast">Africa &amp; Middle East</button>
+    <button class="dest-filter-btn" data-filter="asia-pacific">Asia &amp; Pacific</button>
+    <button class="dest-filter-btn" data-filter="americas">Americas</button>
+  </div>
+  <div class="dest-regions">
+    <div class="dest-cards reveal-stagger" id="destCards">
+      <!-- Europe -->
+      <div class="dest-card reveal" data-region="europe" data-brand="Authenticus Italy">
+        <div class="dest-card-img" style="background-image:url('https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=600&q=80')"></div>
+        <div class="dest-card-overlay"></div>
+        <div class="dest-card-content">
+          <div class="dest-card-country">Italy</div>
+          <div class="dest-card-brand">Authenticus Italy</div>
+          <div class="dest-card-tagline">La dolce vita, crafted by insiders</div>
+          <div class="dest-card-actions">
+            <button class="dest-card-btn" onclick="openQuoteModal('Authenticus Italy')">Request a Quote</button>
+            <button class="dest-card-btn dk-toggle" onclick="toggleDownloadKit(event, this)">Download Kit &darr;</button>
+            <div class="dk-popover">
+              <a href="#" data-hs-download="one_pager">One-Pager PDF</a>
+              <a href="#" data-hs-download="hero_images">Hero Images</a>
+              <a href="itineraries.html" data-hs-download="itinerary">Sample Itinerary</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="dest-card reveal" data-region="europe" data-brand="Unbox Spain &amp; Portugal">
+        <div class="dest-card-img" style="background-image:url('https://images.unsplash.com/photo-1543783207-ec64e4d95325?w=600&q=80')"></div>
+        <div class="dest-card-overlay"></div>
+        <div class="dest-card-content">
+          <div class="dest-card-country">Spain &amp; Portugal</div>
+          <div class="dest-card-brand">Unbox Spain &amp; Portugal</div>
+          <div class="dest-card-tagline">Sun-drenched coasts and cobbled streets</div>
+          <div class="dest-card-actions">
+            <button class="dest-card-btn" onclick="openQuoteModal('Unbox Spain &amp; Portugal')">Request a Quote</button>
+            <button class="dest-card-btn dk-toggle" onclick="toggleDownloadKit(event, this)">Download Kit &darr;</button>
+            <div class="dk-popover">
+              <a href="#" data-hs-download="one_pager">One-Pager PDF</a>
+              <a href="#" data-hs-download="hero_images">Hero Images</a>
+              <a href="itineraries.html" data-hs-download="itinerary">Sample Itinerary</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="dest-card reveal" data-region="europe" data-brand="Essentially French">
+        <div class="dest-card-img" style="background-image:url('https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=600&q=80')"></div>
+        <div class="dest-card-overlay"></div>
+        <div class="dest-card-content">
+          <div class="dest-card-country">France</div>
+          <div class="dest-card-brand">Essentially French</div>
+          <div class="dest-card-tagline">Beyond Paris, a thousand villages</div>
+          <div class="dest-card-actions">
+            <button class="dest-card-btn" onclick="openQuoteModal('Essentially French')">Request a Quote</button>
+            <button class="dest-card-btn dk-toggle" onclick="toggleDownloadKit(event, this)">Download Kit &darr;</button>
+            <div class="dk-popover">
+              <a href="#" data-hs-download="one_pager">One-Pager PDF</a>
+              <a href="#" data-hs-download="hero_images">Hero Images</a>
+              <a href="itineraries.html" data-hs-download="itinerary">Sample Itinerary</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="dest-card reveal" data-region="europe" data-brand="Crown Journey">
+        <div class="dest-card-img" style="background-image:url('https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=600&q=80')"></div>
+        <div class="dest-card-overlay"></div>
+        <div class="dest-card-content">
+          <div class="dest-card-country">United Kingdom</div>
+          <div class="dest-card-brand">Crown Journey</div>
+          <div class="dest-card-tagline">Storied castles and rolling countryside</div>
+          <div class="dest-card-actions">
+            <button class="dest-card-btn" onclick="openQuoteModal('Crown Journey')">Request a Quote</button>
+            <button class="dest-card-btn dk-toggle" onclick="toggleDownloadKit(event, this)">Download Kit &darr;</button>
+            <div class="dk-popover">
+              <a href="#" data-hs-download="one_pager">One-Pager PDF</a>
+              <a href="#" data-hs-download="hero_images">Hero Images</a>
+              <a href="itineraries.html" data-hs-download="itinerary">Sample Itinerary</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="dest-card reveal" data-region="europe" data-brand="Sar T&uuml;rkiye">
+        <div class="dest-card-img" style="background-image:url('https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=600&q=80')"></div>
+        <div class="dest-card-overlay"></div>
+        <div class="dest-card-content">
+          <div class="dest-card-country">T&uuml;rkiye</div>
+          <div class="dest-card-brand">Sar T&uuml;rkiye</div>
+          <div class="dest-card-tagline">Crossroads of empires and hospitality</div>
+          <div class="dest-card-actions">
+            <button class="dest-card-btn" onclick="openQuoteModal('Sar T\u00fcrkiye')">Request a Quote</button>
+            <button class="dest-card-btn dk-toggle" onclick="toggleDownloadKit(event, this)">Download Kit &darr;</button>
+            <div class="dk-popover">
+              <a href="#" data-hs-download="one_pager">One-Pager PDF</a>
+              <a href="#" data-hs-download="hero_images">Hero Images</a>
+              <a href="itineraries.html" data-hs-download="itinerary">Sample Itinerary</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="dest-card reveal" data-region="europe" data-brand="Nostos Greece">
+        <div class="dest-card-img" style="background-image:url('https://images.unsplash.com/photo-1533105079780-92b9be482077?w=600&q=80')"></div>
+        <div class="dest-card-overlay"></div>
+        <div class="dest-card-content">
+          <div class="dest-card-country">Greece</div>
+          <div class="dest-card-brand">Nostos Greece</div>
+          <div class="dest-card-tagline">Where myth meets the Mediterranean</div>
+          <div class="dest-card-actions">
+            <button class="dest-card-btn" onclick="openQuoteModal('Nostos Greece')">Request a Quote</button>
+            <button class="dest-card-btn dk-toggle" onclick="toggleDownloadKit(event, this)">Download Kit &darr;</button>
+            <div class="dk-popover">
+              <a href="#" data-hs-download="one_pager">One-Pager PDF</a>
+              <a href="#" data-hs-download="hero_images">Hero Images</a>
+              <a href="itineraries.html" data-hs-download="itinerary">Sample Itinerary</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Africa & Middle East -->
+      <div class="dest-card reveal" data-region="africa-mideast" data-brand="Experience Morocco">
+        <div class="dest-card-img" style="background-image:url('https://images.unsplash.com/photo-1539020140153-e479b8c22e70?w=600&q=80')"></div>
+        <div class="dest-card-overlay"></div>
+        <div class="dest-card-content">
+          <div class="dest-card-country">Morocco</div>
+          <div class="dest-card-brand">Experience Morocco</div>
+          <div class="dest-card-tagline">Ancient medinas and Saharan silence</div>
+          <div class="dest-card-actions">
+            <button class="dest-card-btn" onclick="openQuoteModal('Experience Morocco')">Request a Quote</button>
+            <button class="dest-card-btn dk-toggle" onclick="toggleDownloadKit(event, this)">Download Kit &darr;</button>
+            <div class="dk-popover">
+              <a href="#" data-hs-download="one_pager">One-Pager PDF</a>
+              <a href="#" data-hs-download="hero_images">Hero Images</a>
+              <a href="itineraries.html" data-hs-download="itinerary">Sample Itinerary</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="dest-card reveal" data-region="africa-mideast" data-brand="Truly Swahili">
+        <div class="dest-card-img" style="background-image:url('https://images.unsplash.com/photo-1516426122078-c23e76319801?w=600&q=80')"></div>
+        <div class="dest-card-overlay"></div>
+        <div class="dest-card-content">
+          <div class="dest-card-country">Kenya, Tanzania, Uganda, Rwanda</div>
+          <div class="dest-card-brand">Truly Swahili</div>
+          <div class="dest-card-tagline">The great migration and vast savannahs</div>
+          <div class="dest-card-actions">
+            <button class="dest-card-btn" onclick="openQuoteModal('Truly Swahili')">Request a Quote</button>
+            <button class="dest-card-btn dk-toggle" onclick="toggleDownloadKit(event, this)">Download Kit &darr;</button>
+            <div class="dk-popover">
+              <a href="#" data-hs-download="one_pager">One-Pager PDF</a>
+              <a href="#" data-hs-download="hero_images">Hero Images</a>
+              <a href="itineraries.html" data-hs-download="itinerary">Sample Itinerary</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="dest-card reveal" data-region="africa-mideast" data-brand="Majlis Retreats">
+        <div class="dest-card-img" style="background-image:url('https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=600&q=80')"></div>
+        <div class="dest-card-overlay"></div>
+        <div class="dest-card-content">
+          <div class="dest-card-country">UAE</div>
+          <div class="dest-card-brand">Majlis Retreats</div>
+          <div class="dest-card-tagline">Desert grandeur on the Arabian Gulf</div>
+          <div class="dest-card-actions">
+            <button class="dest-card-btn" onclick="openQuoteModal('Majlis Retreats')">Request a Quote</button>
+            <button class="dest-card-btn dk-toggle" onclick="toggleDownloadKit(event, this)">Download Kit &darr;</button>
+            <div class="dk-popover">
+              <a href="#" data-hs-download="one_pager">One-Pager PDF</a>
+              <a href="#" data-hs-download="hero_images">Hero Images</a>
+              <a href="itineraries.html" data-hs-download="itinerary">Sample Itinerary</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Asia & Pacific -->
+      <div class="dest-card reveal" data-region="asia-pacific" data-brand="Oshinobi Travel">
+        <div class="dest-card-img" style="background-image:url('https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=600&q=80')"></div>
+        <div class="dest-card-overlay"></div>
+        <div class="dest-card-content">
+          <div class="dest-card-country">Japan</div>
+          <div class="dest-card-brand">Oshinobi Travel</div>
+          <div class="dest-card-tagline">Tradition and wonder at every turn</div>
+          <div class="dest-card-actions">
+            <button class="dest-card-btn" onclick="openQuoteModal('Oshinobi Travel')">Request a Quote</button>
+            <button class="dest-card-btn dk-toggle" onclick="toggleDownloadKit(event, this)">Download Kit &darr;</button>
+            <div class="dk-popover">
+              <a href="#" data-hs-download="one_pager">One-Pager PDF</a>
+              <a href="#" data-hs-download="hero_images">Hero Images</a>
+              <a href="itineraries.html" data-hs-download="itinerary">Sample Itinerary</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="dest-card reveal" data-region="asia-pacific" data-brand="Kembali Asia">
+        <div class="dest-card-img" style="background-image:url('https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=600&q=80')"></div>
+        <div class="dest-card-overlay"></div>
+        <div class="dest-card-content">
+          <div class="dest-card-country">Indonesia, Singapore, Malaysia</div>
+          <div class="dest-card-brand">Kembali Asia</div>
+          <div class="dest-card-tagline">Emerald rice terraces and sacred temples</div>
+          <div class="dest-card-actions">
+            <button class="dest-card-btn" onclick="openQuoteModal('Kembali Asia')">Request a Quote</button>
+            <button class="dest-card-btn dk-toggle" onclick="toggleDownloadKit(event, this)">Download Kit &darr;</button>
+            <div class="dk-popover">
+              <a href="#" data-hs-download="one_pager">One-Pager PDF</a>
+              <a href="#" data-hs-download="hero_images">Hero Images</a>
+              <a href="itineraries.html" data-hs-download="itinerary">Sample Itinerary</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="dest-card reveal" data-region="asia-pacific" data-brand="Elura Australia">
+        <div class="dest-card-img" style="background-image:url('https://images.unsplash.com/photo-1523482580672-f109ba8cb9be?w=600&q=80')"></div>
+        <div class="dest-card-overlay"></div>
+        <div class="dest-card-content">
+          <div class="dest-card-country">Australia</div>
+          <div class="dest-card-brand">Elura Australia</div>
+          <div class="dest-card-tagline">Red earth, reef blues, wide-open spaces</div>
+          <div class="dest-card-actions">
+            <button class="dest-card-btn" onclick="openQuoteModal('Elura Australia')">Request a Quote</button>
+            <button class="dest-card-btn dk-toggle" onclick="toggleDownloadKit(event, this)">Download Kit &darr;</button>
+            <div class="dk-popover">
+              <a href="#" data-hs-download="one_pager">One-Pager PDF</a>
+              <a href="#" data-hs-download="hero_images">Hero Images</a>
+              <a href="itineraries.html" data-hs-download="itinerary">Sample Itinerary</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="dest-card reveal" data-region="asia-pacific" data-brand="Nira Thailand">
+        <div class="dest-card-img" style="background-image:url('https://images.unsplash.com/photo-1528181304800-259b08848526?w=600&q=80')"></div>
+        <div class="dest-card-overlay"></div>
+        <div class="dest-card-content">
+          <div class="dest-card-country">Thailand</div>
+          <div class="dest-card-brand">Nira Thailand</div>
+          <div class="dest-card-tagline">Golden temples and warm hospitality</div>
+          <div class="dest-card-actions">
+            <button class="dest-card-btn" onclick="openQuoteModal('Nira Thailand')">Request a Quote</button>
+            <button class="dest-card-btn dk-toggle" onclick="toggleDownloadKit(event, this)">Download Kit &darr;</button>
+            <div class="dk-popover">
+              <a href="#" data-hs-download="one_pager">One-Pager PDF</a>
+              <a href="#" data-hs-download="hero_images">Hero Images</a>
+              <a href="itineraries.html" data-hs-download="itinerary">Sample Itinerary</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Americas -->
+      <div class="dest-card reveal" data-region="americas" data-brand="Across Mexico">
+        <div class="dest-card-img" style="background-image:url('https://images.unsplash.com/photo-1518638150340-f706e86654de?w=600&q=80')"></div>
+        <div class="dest-card-overlay"></div>
+        <div class="dest-card-content">
+          <div class="dest-card-country">Mexico</div>
+          <div class="dest-card-brand">Across Mexico</div>
+          <div class="dest-card-tagline">Color, spirit, and centuries of culture</div>
+          <div class="dest-card-actions">
+            <button class="dest-card-btn" onclick="openQuoteModal('Across Mexico')">Request a Quote</button>
+            <button class="dest-card-btn dk-toggle" onclick="toggleDownloadKit(event, this)">Download Kit &darr;</button>
+            <div class="dk-popover">
+              <a href="#" data-hs-download="one_pager">One-Pager PDF</a>
+              <a href="#" data-hs-download="hero_images">Hero Images</a>
+              <a href="itineraries.html" data-hs-download="itinerary">Sample Itinerary</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="dest-card reveal" data-region="americas" data-brand="Vista Colombia">
+        <div class="dest-card-img" style="background-image:url('https://images.unsplash.com/photo-1533282960533-51328aa49826?w=600&q=80')"></div>
+        <div class="dest-card-overlay"></div>
+        <div class="dest-card-content">
+          <div class="dest-card-country">Colombia</div>
+          <div class="dest-card-brand">Vista Colombia</div>
+          <div class="dest-card-tagline">Raw beauty and bold rhythms</div>
+          <div class="dest-card-actions">
+            <button class="dest-card-btn" onclick="openQuoteModal('Vista Colombia')">Request a Quote</button>
+            <button class="dest-card-btn dk-toggle" onclick="toggleDownloadKit(event, this)">Download Kit &darr;</button>
+            <div class="dk-popover">
+              <a href="#" data-hs-download="one_pager">One-Pager PDF</a>
+              <a href="#" data-hs-download="hero_images">Hero Images</a>
+              <a href="itineraries.html" data-hs-download="itinerary">Sample Itinerary</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="dest-card reveal" data-region="americas" data-brand="Awaken Peru">
+        <div class="dest-card-img" style="background-image:url('https://images.unsplash.com/photo-1526392060635-9d6019884377?w=600&q=80')"></div>
+        <div class="dest-card-overlay"></div>
+        <div class="dest-card-content">
+          <div class="dest-card-country">Peru</div>
+          <div class="dest-card-brand">Awaken Peru</div>
+          <div class="dest-card-tagline">From Machu Picchu to Lima's ceviche bars</div>
+          <div class="dest-card-actions">
+            <button class="dest-card-btn" onclick="openQuoteModal('Awaken Peru')">Request a Quote</button>
+            <button class="dest-card-btn dk-toggle" onclick="toggleDownloadKit(event, this)">Download Kit &darr;</button>
+            <div class="dk-popover">
+              <a href="#" data-hs-download="one_pager">One-Pager PDF</a>
+              <a href="#" data-hs-download="hero_images">Hero Images</a>
+              <a href="itineraries.html" data-hs-download="itinerary">Sample Itinerary</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== RESOURCE GRID (BENTO) ====== -->
+<section class="resources" id="resources">
+  <div class="resources-header reveal">
+    <div class="section-label">YOUR TOOLKIT</div>
+    <h2 class="section-title" style="font-size:2.5rem;">Everything You Need, In One Place</h2>
+  </div>
+  <div class="resource-grid reveal-stagger">
+    <a href="#" class="resource-card reveal-stagger bento-featured" data-hs-click="resource_card_click" data-hs-resource="training_webinars">
+      <div class="resource-card-bg" style="background-image:url('https://images.unsplash.com/photo-1517760444937-f6397edcbbcd?w=600&q=80')"></div>
+      <div class="resource-card-overlay"></div>
+      <div class="resource-card-content">
+        <div class="resource-card-title">Training &amp; Webinars</div>
+        <div class="resource-card-sub">Get certified on our destinations</div>
+        <div class="resource-card-arrow">&rarr;</div>
+      </div>
+    </a>
+    <a href="itineraries.html" class="resource-card reveal-stagger" data-hs-click="resource_card_click" data-hs-resource="sample_itineraries">
+      <div class="resource-card-bg" style="background-image:url('https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=600&q=80')"></div>
+      <div class="resource-card-overlay"></div>
+      <div class="resource-card-content">
+        <div class="resource-card-title">Sample Itineraries</div>
+        <div class="resource-card-sub">Ready-to-share trip ideas for your clients</div>
+        <div class="resource-card-arrow">&rarr;</div>
+      </div>
+    </a>
+    <a href="#" class="resource-card reveal-stagger" data-hs-click="resource_card_click" data-hs-resource="marketing_assets">
+      <div class="resource-card-bg" style="background-image:url('https://images.unsplash.com/photo-1506929562872-bb421503ef21?w=600&q=80')"></div>
+      <div class="resource-card-overlay"></div>
+      <div class="resource-card-content">
+        <div class="resource-card-title">Marketing Assets</div>
+        <div class="resource-card-sub">Photos, videos, brochures &amp; logos</div>
+        <div class="resource-card-arrow">&rarr;</div>
+      </div>
+    </a>
+    <a href="#" class="resource-card reveal-stagger" data-hs-click="resource_card_click" data-hs-resource="booking_requests">
+      <div class="resource-card-bg" style="background-image:url('https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?w=600&q=80')"></div>
+      <div class="resource-card-overlay"></div>
+      <div class="resource-card-content">
+        <div class="resource-card-title">Booking &amp; Requests</div>
+        <div class="resource-card-sub">Submit trip requests and get quotes</div>
+        <div class="resource-card-arrow">&rarr;</div>
+      </div>
+    </a>
+    <a href="culinary-guides.html" class="resource-card reveal-stagger" data-hs-click="resource_card_click" data-hs-resource="culinary_guides">
+      <div class="resource-card-bg" style="background-image:url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&q=80')"></div>
+      <div class="resource-card-overlay"></div>
+      <div class="resource-card-content">
+        <div class="resource-card-title">Culinary Guides</div>
+        <div class="resource-card-sub">Curated dining recommendations by destination</div>
+        <div class="resource-card-arrow">&rarr;</div>
+      </div>
+    </a>
+    <a href="#team" class="resource-card reveal-stagger" data-hs-click="resource_card_click" data-hs-resource="meet_our_team">
+      <div class="resource-card-bg" style="background-image:url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=600&q=80')"></div>
+      <div class="resource-card-overlay"></div>
+      <div class="resource-card-content">
+        <div class="resource-card-title">Meet Our Team</div>
+        <div class="resource-card-sub">Connect with your regional GM</div>
+        <div class="resource-card-arrow">&rarr;</div>
+      </div>
+    </a>
+  </div>
+</section>
+
+<!-- ====== DESTINATION COMPARISON TOOL ====== -->
+<section class="compare-section" id="compare">
+  <div class="compare-inner reveal">
+    <div class="section-label">COMPARISON TOOL</div>
+    <h2 class="section-title" style="font-size:2.2rem;">Compare Destinations Side by Side</h2>
+    <p class="compare-subtitle">Select 2 or 3 destinations to see how they stack up — perfect for helping clients choose.</p>
+    <div class="compare-selectors">
+      <div class="compare-select-wrap">
+        <select class="compare-select" id="compareSel1"><option value="">Select destination...</option></select>
+      </div>
+      <div class="compare-vs">vs</div>
+      <div class="compare-select-wrap">
+        <select class="compare-select" id="compareSel2"><option value="">Select destination...</option></select>
+      </div>
+      <div class="compare-vs compare-vs-3" style="display:none">vs</div>
+      <div class="compare-select-wrap compare-sel-3" style="display:none">
+        <select class="compare-select" id="compareSel3"><option value="">Select destination...</option></select>
+      </div>
+      <button class="compare-add-btn" id="compareAddThird">+ Add Third</button>
+    </div>
+    <button class="compare-go-btn" id="compareGoBtn">Compare Now</button>
+    <div class="compare-table-wrap" id="compareTableWrap" style="display:none">
+      <table class="compare-table" id="compareTable"></table>
+    </div>
+  </div>
+</section>
+
+<!-- ====== GM DIRECT CONTACT ====== -->
+<section class="gm-section" id="team">
+  <div class="gm-section-inner">
+    <div class="reveal">
+      <div class="section-label">YOUR REGIONAL CONTACTS</div>
+      <h2 class="section-title" style="font-size:2.2rem;">Speak Directly with Our GMs</h2>
+      <p class="gm-section-subtitle">Every destination has a dedicated GM who lives in-country. Reach out directly.</p>
+    </div>
+    <div class="gm-grid reveal-stagger">
+      <div class="gm-card reveal">
+        <img class="gm-card-photo" src="https://cdn.prod.website-files.com/645dce8d3cf060ba152e3ed6/646c70e86e5bc7de46bc76e0_Maryama.jpg" alt="Maryama El Adama">
+        <div class="gm-card-body">
+          <div class="gm-card-name">Maryama El Adama</div>
+          <div class="gm-card-role">General Manager</div>
+          <div class="gm-card-dest">Experience Morocco</div>
+          <div class="gm-card-countries"><span class="gm-country-pill">Morocco</span></div>
+          <div class="gm-card-actions">
+            <a href="mailto:maryama@travelcollection.com" title="Email"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></a>
+            <a href="https://wa.me/0000000000" title="WhatsApp"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12.05 21.785c-1.804 0-3.573-.484-5.112-1.399l-.366-.217-3.797 1.001 1.015-3.713-.239-.379A9.864 9.864 0 012.05 12c0-5.495 4.475-9.97 9.97-9.97 2.665 0 5.17 1.04 7.052 2.924A9.898 9.898 0 0122.02 12c-.004 5.495-4.48 9.97-9.97 9.97V21.785zm8.457-18.24A11.945 11.945 0 0012.05 0C5.495 0 .08 5.414.075 12.07c0 2.122.553 4.193 1.607 6.025L0 24l6.076-1.594A11.98 11.98 0 0012.05 24.07c6.555 0 11.97-5.414 11.975-11.97a11.9 11.9 0 00-3.518-8.555z"/></svg></a>
+            <a href="#" title="Book a Call"><svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM9 10H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2z"/></svg></a>
+          </div>
+        </div>
+      </div>
+      <div class="gm-card reveal">
+        <img class="gm-card-photo" src="https://cdn.prod.website-files.com/645dce8d3cf060ba152e3ed6/646c706285a2b93646e0a2fb_Alberto.png" alt="Alberto Buzzanca">
+        <div class="gm-card-body">
+          <div class="gm-card-name">Alberto Buzzanca</div>
+          <div class="gm-card-role">General Manager</div>
+          <div class="gm-card-dest">Authenticus Italy</div>
+          <div class="gm-card-countries"><span class="gm-country-pill">Italy</span></div>
+          <div class="gm-card-actions">
+            <a href="mailto:alberto@travelcollection.com" title="Email"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></a>
+            <a href="https://wa.me/0000000000" title="WhatsApp"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12.05 21.785c-1.804 0-3.573-.484-5.112-1.399l-.366-.217-3.797 1.001 1.015-3.713-.239-.379A9.864 9.864 0 012.05 12c0-5.495 4.475-9.97 9.97-9.97 2.665 0 5.17 1.04 7.052 2.924A9.898 9.898 0 0122.02 12c-.004 5.495-4.48 9.97-9.97 9.97V21.785zm8.457-18.24A11.945 11.945 0 0012.05 0C5.495 0 .08 5.414.075 12.07c0 2.122.553 4.193 1.607 6.025L0 24l6.076-1.594A11.98 11.98 0 0012.05 24.07c6.555 0 11.97-5.414 11.975-11.97a11.9 11.9 0 00-3.518-8.555z"/></svg></a>
+            <a href="#" title="Book a Call"><svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM9 10H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2z"/></svg></a>
+          </div>
+        </div>
+      </div>
+      <div class="gm-card reveal">
+        <img class="gm-card-photo" src="https://cdn.prod.website-files.com/645dce8d3cf060ba152e3ed6/67f39e7df2b4535ec159f02c_Livy%20C.jpg" alt="Livy Leroy">
+        <div class="gm-card-body">
+          <div class="gm-card-name">Livy Leroy</div>
+          <div class="gm-card-role">General Manager</div>
+          <div class="gm-card-dest">Essentially French</div>
+          <div class="gm-card-countries"><span class="gm-country-pill">France</span></div>
+          <div class="gm-card-actions">
+            <a href="mailto:livy@travelcollection.com" title="Email"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></a>
+            <a href="https://wa.me/0000000000" title="WhatsApp"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12.05 21.785c-1.804 0-3.573-.484-5.112-1.399l-.366-.217-3.797 1.001 1.015-3.713-.239-.379A9.864 9.864 0 012.05 12c0-5.495 4.475-9.97 9.97-9.97 2.665 0 5.17 1.04 7.052 2.924A9.898 9.898 0 0122.02 12c-.004 5.495-4.48 9.97-9.97 9.97V21.785zm8.457-18.24A11.945 11.945 0 0012.05 0C5.495 0 .08 5.414.075 12.07c0 2.122.553 4.193 1.607 6.025L0 24l6.076-1.594A11.98 11.98 0 0012.05 24.07c6.555 0 11.97-5.414 11.975-11.97a11.9 11.9 0 00-3.518-8.555z"/></svg></a>
+            <a href="#" title="Book a Call"><svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM9 10H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2z"/></svg></a>
+          </div>
+        </div>
+      </div>
+      <div class="gm-card reveal">
+        <img class="gm-card-photo" src="https://cdn.prod.website-files.com/645dce8d3cf060ba152e3ed6/657701860295fc5759c44ff6_Gonzalez%2C%20Juan%5B1943%5D.JPG" alt="Juan Gonzalez">
+        <div class="gm-card-body">
+          <div class="gm-card-name">Juan Gonzalez</div>
+          <div class="gm-card-role">General Manager</div>
+          <div class="gm-card-dest">Unbox Spain &amp; Portugal</div>
+          <div class="gm-card-countries"><span class="gm-country-pill">Spain</span><span class="gm-country-pill">Portugal</span></div>
+          <div class="gm-card-actions">
+            <a href="mailto:juan@travelcollection.com" title="Email"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></a>
+            <a href="https://wa.me/0000000000" title="WhatsApp"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12.05 21.785c-1.804 0-3.573-.484-5.112-1.399l-.366-.217-3.797 1.001 1.015-3.713-.239-.379A9.864 9.864 0 012.05 12c0-5.495 4.475-9.97 9.97-9.97 2.665 0 5.17 1.04 7.052 2.924A9.898 9.898 0 0122.02 12c-.004 5.495-4.48 9.97-9.97 9.97V21.785zm8.457-18.24A11.945 11.945 0 0012.05 0C5.495 0 .08 5.414.075 12.07c0 2.122.553 4.193 1.607 6.025L0 24l6.076-1.594A11.98 11.98 0 0012.05 24.07c6.555 0 11.97-5.414 11.975-11.97a11.9 11.9 0 00-3.518-8.555z"/></svg></a>
+            <a href="#" title="Book a Call"><svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM9 10H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2z"/></svg></a>
+          </div>
+        </div>
+      </div>
+      <div class="gm-card reveal">
+        <img class="gm-card-photo" src="https://cdn.prod.website-files.com/645dce8d3cf060ba152e3ed6/66750db5f55bb4247fd97349_HT.jpg" alt="Hiroshi Tsuji">
+        <div class="gm-card-body">
+          <div class="gm-card-name">Hiroshi Tsuji</div>
+          <div class="gm-card-role">General Manager</div>
+          <div class="gm-card-dest">Oshinobi Travel</div>
+          <div class="gm-card-countries"><span class="gm-country-pill">Japan</span></div>
+          <div class="gm-card-actions">
+            <a href="mailto:hiroshi@travelcollection.com" title="Email"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></a>
+            <a href="https://wa.me/0000000000" title="WhatsApp"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12.05 21.785c-1.804 0-3.573-.484-5.112-1.399l-.366-.217-3.797 1.001 1.015-3.713-.239-.379A9.864 9.864 0 012.05 12c0-5.495 4.475-9.97 9.97-9.97 2.665 0 5.17 1.04 7.052 2.924A9.898 9.898 0 0122.02 12c-.004 5.495-4.48 9.97-9.97 9.97V21.785zm8.457-18.24A11.945 11.945 0 0012.05 0C5.495 0 .08 5.414.075 12.07c0 2.122.553 4.193 1.607 6.025L0 24l6.076-1.594A11.98 11.98 0 0012.05 24.07c6.555 0 11.97-5.414 11.975-11.97a11.9 11.9 0 00-3.518-8.555z"/></svg></a>
+            <a href="#" title="Book a Call"><svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM9 10H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2z"/></svg></a>
+          </div>
+        </div>
+      </div>
+      <div class="gm-card reveal">
+        <img class="gm-card-photo" src="https://cdn.prod.website-files.com/645dce8d3cf060ba152e3ed6/66750cd1387dbedb91c02696_CCR.jpeg" alt="Cintli Chacon Ramos">
+        <div class="gm-card-body">
+          <div class="gm-card-name">Cintli Chac&oacute;n Ramos</div>
+          <div class="gm-card-role">General Manager</div>
+          <div class="gm-card-dest">Across Mexico</div>
+          <div class="gm-card-countries"><span class="gm-country-pill">Mexico</span></div>
+          <div class="gm-card-actions">
+            <a href="mailto:cintli@travelcollection.com" title="Email"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></a>
+            <a href="https://wa.me/0000000000" title="WhatsApp"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12.05 21.785c-1.804 0-3.573-.484-5.112-1.399l-.366-.217-3.797 1.001 1.015-3.713-.239-.379A9.864 9.864 0 012.05 12c0-5.495 4.475-9.97 9.97-9.97 2.665 0 5.17 1.04 7.052 2.924A9.898 9.898 0 0122.02 12c-.004 5.495-4.48 9.97-9.97 9.97V21.785zm8.457-18.24A11.945 11.945 0 0012.05 0C5.495 0 .08 5.414.075 12.07c0 2.122.553 4.193 1.607 6.025L0 24l6.076-1.594A11.98 11.98 0 0012.05 24.07c6.555 0 11.97-5.414 11.975-11.97a11.9 11.9 0 00-3.518-8.555z"/></svg></a>
+            <a href="#" title="Book a Call"><svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM9 10H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2z"/></svg></a>
+          </div>
+        </div>
+      </div>
+      <div class="gm-card reveal">
+        <img class="gm-card-photo" src="https://cdn.prod.website-files.com/645dce8d3cf060ba152e3ed6/657720b079cf8f0fbd91a1e0_MM2.png" alt="Melvin Mapetla">
+        <div class="gm-card-body">
+          <div class="gm-card-name">Melvin Mapetla</div>
+          <div class="gm-card-role">General Manager</div>
+          <div class="gm-card-dest">Truly Swahili</div>
+          <div class="gm-card-countries"><span class="gm-country-pill">Kenya</span><span class="gm-country-pill">Tanzania</span><span class="gm-country-pill">Uganda</span><span class="gm-country-pill">Rwanda</span></div>
+          <div class="gm-card-actions">
+            <a href="mailto:melvin@travelcollection.com" title="Email"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></a>
+            <a href="https://wa.me/0000000000" title="WhatsApp"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12.05 21.785c-1.804 0-3.573-.484-5.112-1.399l-.366-.217-3.797 1.001 1.015-3.713-.239-.379A9.864 9.864 0 012.05 12c0-5.495 4.475-9.97 9.97-9.97 2.665 0 5.17 1.04 7.052 2.924A9.898 9.898 0 0122.02 12c-.004 5.495-4.48 9.97-9.97 9.97V21.785zm8.457-18.24A11.945 11.945 0 0012.05 0C5.495 0 .08 5.414.075 12.07c0 2.122.553 4.193 1.607 6.025L0 24l6.076-1.594A11.98 11.98 0 0012.05 24.07c6.555 0 11.97-5.414 11.975-11.97a11.9 11.9 0 00-3.518-8.555z"/></svg></a>
+            <a href="#" title="Book a Call"><svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM9 10H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2z"/></svg></a>
+          </div>
+        </div>
+      </div>
+      <div class="gm-card reveal">
+        <img class="gm-card-photo" src="https://cdn.prod.website-files.com/645dce8d3cf060ba152e3ed6/695382f4ce7fea9340be2974_Hazan3.jpg" alt="Hazan Sucu">
+        <div class="gm-card-body">
+          <div class="gm-card-name">Hazan Sucu</div>
+          <div class="gm-card-role">General Manager</div>
+          <div class="gm-card-dest">SAR T&uuml;rkiye</div>
+          <div class="gm-card-countries"><span class="gm-country-pill">T&uuml;rkiye</span></div>
+          <div class="gm-card-actions">
+            <a href="mailto:hazan@travelcollection.com" title="Email"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></a>
+            <a href="https://wa.me/0000000000" title="WhatsApp"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12.05 21.785c-1.804 0-3.573-.484-5.112-1.399l-.366-.217-3.797 1.001 1.015-3.713-.239-.379A9.864 9.864 0 012.05 12c0-5.495 4.475-9.97 9.97-9.97 2.665 0 5.17 1.04 7.052 2.924A9.898 9.898 0 0122.02 12c-.004 5.495-4.48 9.97-9.97 9.97V21.785zm8.457-18.24A11.945 11.945 0 0012.05 0C5.495 0 .08 5.414.075 12.07c0 2.122.553 4.193 1.607 6.025L0 24l6.076-1.594A11.98 11.98 0 0012.05 24.07c6.555 0 11.97-5.414 11.975-11.97a11.9 11.9 0 00-3.518-8.555z"/></svg></a>
+            <a href="#" title="Book a Call"><svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM9 10H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2z"/></svg></a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="gm-grid gm-extra" id="gmExtra" style="display:none;margin-top:1.5rem">
+      <div class="gm-card reveal">
+        <img class="gm-card-photo" src="https://cdn.prod.website-files.com/645dce8d3cf060ba152e3ed6/66750d79058d39433a5a8acb_KG.jpg" alt="Karen Gee">
+        <div class="gm-card-body">
+          <div class="gm-card-name">Karen Gee</div>
+          <div class="gm-card-role">General Manager</div>
+          <div class="gm-card-dest">Crown Journey</div>
+          <div class="gm-card-countries"><span class="gm-country-pill">United Kingdom</span></div>
+          <div class="gm-card-actions">
+            <a href="mailto:karen@travelcollection.com" title="Email"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></a>
+            <a href="https://wa.me/0000000000" title="WhatsApp"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12.05 21.785c-1.804 0-3.573-.484-5.112-1.399l-.366-.217-3.797 1.001 1.015-3.713-.239-.379c-.961-1.516-1.469-3.264-1.469-5.067 0-5.495 4.475-9.97 9.97-9.97 2.665 0 5.17 1.04 7.052 2.924A9.898 9.898 0 0122.02 12c-.004 5.495-4.48 9.97-9.97 9.97z"/></svg></a>
+            <a href="#" title="Book a Call"><svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM9 10H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2z"/></svg></a>
+          </div>
+        </div>
+      </div>
+      <div class="gm-card reveal">
+        <img class="gm-card-photo" src="https://cdn.prod.website-files.com/645dce8d3cf060ba152e3ed6/695383d83652d900b2522f6a_Aris4.jpg" alt="Aris Mitropoulos">
+        <div class="gm-card-body">
+          <div class="gm-card-name">Aris Mitropoulos</div>
+          <div class="gm-card-role">General Manager</div>
+          <div class="gm-card-dest">Nostos Greece</div>
+          <div class="gm-card-countries"><span class="gm-country-pill">Greece</span></div>
+          <div class="gm-card-actions">
+            <a href="mailto:aris@travelcollection.com" title="Email"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></a>
+            <a href="https://wa.me/0000000000" title="WhatsApp"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12.05 21.785c-1.804 0-3.573-.484-5.112-1.399l-.366-.217-3.797 1.001 1.015-3.713-.239-.379c-.961-1.516-1.469-3.264-1.469-5.067 0-5.495 4.475-9.97 9.97-9.97 2.665 0 5.17 1.04 7.052 2.924A9.898 9.898 0 0122.02 12c-.004 5.495-4.48 9.97-9.97 9.97z"/></svg></a>
+            <a href="#" title="Book a Call"><svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM9 10H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2z"/></svg></a>
+          </div>
+        </div>
+      </div>
+      <div class="gm-card reveal">
+        <img class="gm-card-photo" src="https://cdn.prod.website-files.com/645dce8d3cf060ba152e3ed6/66757901e4adb34c4d24ec62_CO3.JPG" alt="Chloe Ong">
+        <div class="gm-card-body">
+          <div class="gm-card-name">Chloe Ong</div>
+          <div class="gm-card-role">General Manager</div>
+          <div class="gm-card-dest">Kembali Asia</div>
+          <div class="gm-card-countries"><span class="gm-country-pill">Indonesia</span><span class="gm-country-pill">Singapore</span><span class="gm-country-pill">Malaysia</span></div>
+          <div class="gm-card-actions">
+            <a href="mailto:chloe@travelcollection.com" title="Email"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></a>
+            <a href="https://wa.me/0000000000" title="WhatsApp"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12.05 21.785c-1.804 0-3.573-.484-5.112-1.399l-.366-.217-3.797 1.001 1.015-3.713-.239-.379c-.961-1.516-1.469-3.264-1.469-5.067 0-5.495 4.475-9.97 9.97-9.97 2.665 0 5.17 1.04 7.052 2.924A9.898 9.898 0 0122.02 12c-.004 5.495-4.48 9.97-9.97 9.97z"/></svg></a>
+            <a href="#" title="Book a Call"><svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM9 10H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2z"/></svg></a>
+          </div>
+        </div>
+      </div>
+      <div class="gm-card reveal">
+        <img class="gm-card-photo" src="https://cdn.prod.website-files.com/645dce8d3cf060ba152e3ed6/69538303d8e7404f6a7004c4_Aaron2.jpg" alt="Aaron Hocking">
+        <div class="gm-card-body">
+          <div class="gm-card-name">Aaron Hocking</div>
+          <div class="gm-card-role">General Manager</div>
+          <div class="gm-card-dest">Elura Australia</div>
+          <div class="gm-card-countries"><span class="gm-country-pill">Australia</span></div>
+          <div class="gm-card-actions">
+            <a href="mailto:aaron@travelcollection.com" title="Email"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></a>
+            <a href="https://wa.me/0000000000" title="WhatsApp"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12.05 21.785c-1.804 0-3.573-.484-5.112-1.399l-.366-.217-3.797 1.001 1.015-3.713-.239-.379c-.961-1.516-1.469-3.264-1.469-5.067 0-5.495 4.475-9.97 9.97-9.97 2.665 0 5.17 1.04 7.052 2.924A9.898 9.898 0 0122.02 12c-.004 5.495-4.48 9.97-9.97 9.97z"/></svg></a>
+            <a href="#" title="Book a Call"><svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM9 10H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2z"/></svg></a>
+          </div>
+        </div>
+      </div>
+      <div class="gm-card reveal">
+        <img class="gm-card-photo" src="https://cdn.prod.website-files.com/645dce8d3cf060ba152e3ed6/69538234c9481d60eaaa53c2_Nick.jpg" alt="Nick Sakunworaratana">
+        <div class="gm-card-body">
+          <div class="gm-card-name">Nick Sakunworaratana</div>
+          <div class="gm-card-role">General Manager</div>
+          <div class="gm-card-dest">Nira Thailand</div>
+          <div class="gm-card-countries"><span class="gm-country-pill">Thailand</span></div>
+          <div class="gm-card-actions">
+            <a href="mailto:nick@travelcollection.com" title="Email"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></a>
+            <a href="https://wa.me/0000000000" title="WhatsApp"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12.05 21.785c-1.804 0-3.573-.484-5.112-1.399l-.366-.217-3.797 1.001 1.015-3.713-.239-.379c-.961-1.516-1.469-3.264-1.469-5.067 0-5.495 4.475-9.97 9.97-9.97 2.665 0 5.17 1.04 7.052 2.924A9.898 9.898 0 0122.02 12c-.004 5.495-4.48 9.97-9.97 9.97z"/></svg></a>
+            <a href="#" title="Book a Call"><svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM9 10H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2z"/></svg></a>
+          </div>
+        </div>
+      </div>
+      <div class="gm-card reveal">
+        <img class="gm-card-photo" src="https://cdn.prod.website-files.com/645dce8d3cf060ba152e3ed6/66750e43eed4c1f1d21f1c99_RT2.jpg" alt="Radia Tehitahe">
+        <div class="gm-card-body">
+          <div class="gm-card-name">Radia Tehitahe</div>
+          <div class="gm-card-role">General Manager</div>
+          <div class="gm-card-dest">Majlis Retreats</div>
+          <div class="gm-card-countries"><span class="gm-country-pill">UAE</span></div>
+          <div class="gm-card-actions">
+            <a href="mailto:radia@travelcollection.com" title="Email"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></a>
+            <a href="https://wa.me/0000000000" title="WhatsApp"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12.05 21.785c-1.804 0-3.573-.484-5.112-1.399l-.366-.217-3.797 1.001 1.015-3.713-.239-.379c-.961-1.516-1.469-3.264-1.469-5.067 0-5.495 4.475-9.97 9.97-9.97 2.665 0 5.17 1.04 7.052 2.924A9.898 9.898 0 0122.02 12c-.004 5.495-4.48 9.97-9.97 9.97z"/></svg></a>
+            <a href="#" title="Book a Call"><svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM9 10H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2z"/></svg></a>
+          </div>
+        </div>
+      </div>
+      <div class="gm-card reveal">
+        <img class="gm-card-photo" src="https://cdn.prod.website-files.com/645dce8d3cf060ba152e3ed6/6953842d688e50587d853b03_Santi.png" alt="Santiago Sabogal">
+        <div class="gm-card-body">
+          <div class="gm-card-name">Santiago Sabogal</div>
+          <div class="gm-card-role">General Manager</div>
+          <div class="gm-card-dest">Vista Colombia</div>
+          <div class="gm-card-countries"><span class="gm-country-pill">Colombia</span></div>
+          <div class="gm-card-actions">
+            <a href="mailto:santiago@travelcollection.com" title="Email"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></a>
+            <a href="https://wa.me/0000000000" title="WhatsApp"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12.05 21.785c-1.804 0-3.573-.484-5.112-1.399l-.366-.217-3.797 1.001 1.015-3.713-.239-.379c-.961-1.516-1.469-3.264-1.469-5.067 0-5.495 4.475-9.97 9.97-9.97 2.665 0 5.17 1.04 7.052 2.924A9.898 9.898 0 0122.02 12c-.004 5.495-4.48 9.97-9.97 9.97z"/></svg></a>
+            <a href="#" title="Book a Call"><svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM9 10H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2z"/></svg></a>
+          </div>
+        </div>
+      </div>
+      <div class="gm-card reveal">
+        <img class="gm-card-photo" src="https://cdn.prod.website-files.com/645dce8d3cf060ba152e3ed6/6953847b135f9da97d15d11f_Diego.jpg" alt="Diego Nieto">
+        <div class="gm-card-body">
+          <div class="gm-card-name">Diego Nieto</div>
+          <div class="gm-card-role">General Manager</div>
+          <div class="gm-card-dest">Awaken Peru</div>
+          <div class="gm-card-countries"><span class="gm-country-pill">Peru</span></div>
+          <div class="gm-card-actions">
+            <a href="mailto:diego@travelcollection.com" title="Email"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></a>
+            <a href="https://wa.me/0000000000" title="WhatsApp"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12.05 21.785c-1.804 0-3.573-.484-5.112-1.399l-.366-.217-3.797 1.001 1.015-3.713-.239-.379c-.961-1.516-1.469-3.264-1.469-5.067 0-5.495 4.475-9.97 9.97-9.97 2.665 0 5.17 1.04 7.052 2.924A9.898 9.898 0 0122.02 12c-.004 5.495-4.48 9.97-9.97 9.97z"/></svg></a>
+            <a href="#" title="Book a Call"><svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM9 10H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2z"/></svg></a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <a href="#" class="gm-view-all" id="gmToggle" onclick="event.preventDefault();toggleGMs()">View Full Team &darr;</a>
+  </div>
+</section>
+
+<!-- ====== TESTIMONIAL ====== -->
+<section class="testimonial">
+  <div class="testimonial-inner reveal">
+    <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+    <blockquote class="testimonial-quote">
+      Travel Collection has transformed how we sell multi-destination itineraries. One contact, one standard, incredible local knowledge. Our clients have never been happier.
+    </blockquote>
+    <div class="testimonial-attribution">&mdash; Sarah Mitchell, Senior Travel Advisor</div>
+  </div>
+</section>
+
+<!-- ====== STATS STRIP ====== -->
+<section class="stats" id="statsSection">
+  <div class="stats-grid reveal">
+    <div class="stat">
+      <div class="stat-number" data-target="16">0</div>
+      <div class="stat-label">DMC Brands</div>
+    </div>
+    <div class="stat">
+      <div class="stat-number" data-target="22" data-suffix="+">0</div>
+      <div class="stat-label">Destinations</div>
+    </div>
+    <div class="stat">
+      <div class="stat-number" data-target="19">0</div>
+      <div class="stat-label">Global Offices</div>
+    </div>
+    <div class="stat">
+      <div class="stat-number" data-special="24/7">0</div>
+      <div class="stat-label">In-Destination Support</div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== EMAIL SIGNUP ====== -->
+<section class="signup" id="signup">
+  <div class="signup-wrapper">
+    <div class="signup-text reveal">
+      <div class="signup-text-bg"></div>
+      <div class="section-label">STAY CONNECTED</div>
+      <h2 class="section-title">Get Advisor Updates &amp; Insider Access</h2>
+      <p class="signup-subtitle">Receive destination updates, new itinerary ideas, training opportunities, and exclusive offers &mdash; straight to your inbox.</p>
+    </div>
+    <div class="signup-form reveal">
+      <div class="signup-form-deco"></div>
+      <!-- HubSpot form embed: Replace this form with HubSpot JS embed. Portal ID: TBD, Form ID: TBD -->
+      <form id="advisorForm" novalidate>
+        <div class="form-group">
+          <label for="firstname">First Name</label>
+          <input type="text" id="firstname" name="firstname" autocomplete="given-name">
+        </div>
+        <div class="form-group">
+          <label for="lastname">Last Name</label>
+          <input type="text" id="lastname" name="lastname" autocomplete="family-name">
+        </div>
+        <div class="form-group">
+          <label for="email">Email *</label>
+          <input type="email" id="email" name="email" required autocomplete="email">
+          <div class="form-error">Please enter a valid email address.</div>
+        </div>
+        <div class="form-group">
+          <label for="company">Company / Agency Name</label>
+          <input type="text" id="company" name="company" autocomplete="organization">
+        </div>
+        <button type="submit" class="form-submit">Subscribe</button>
+        <div class="form-disclaimer">No spam. Unsubscribe anytime.</div>
+      </form>
+      <div class="form-success" id="formSuccess">
+        <p>Thank you for subscribing!</p>
+        <span>We'll be in touch with the latest advisor resources.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== FOOTER (v2 shared component) ====== -->
+<div data-include="components/footer.html"></div>
+
+<!-- ====== QUOTE REQUEST MODAL ====== -->
+<!-- Replace with HubSpot form embed -->
+<div class="quote-modal-overlay" id="quoteModalOverlay">
+  <div class="quote-modal">
+    <button class="quote-modal-close" id="quoteModalClose">&times;</button>
+    <div class="quote-modal-title">Request a Quote</div>
+    <div class="quote-modal-subtitle" id="quoteModalSubtitle"></div>
+    <form class="quote-form" id="quoteForm">
+      <div class="qf-group">
+        <label>Destinations <span style="font-weight:400;color:var(--text-sec);font-size:0.78rem">(select one or more)</span></label>
+        <div class="qf-dest-grid" id="qfDestGrid">
+          <label class="qf-dest-check"><input type="checkbox" name="destinations" value="Morocco"> <span>Morocco</span></label>
+          <label class="qf-dest-check"><input type="checkbox" name="destinations" value="Italy"> <span>Italy</span></label>
+          <label class="qf-dest-check"><input type="checkbox" name="destinations" value="Spain"> <span>Spain</span></label>
+          <label class="qf-dest-check"><input type="checkbox" name="destinations" value="Portugal"> <span>Portugal</span></label>
+          <label class="qf-dest-check"><input type="checkbox" name="destinations" value="Kenya"> <span>Kenya</span></label>
+          <label class="qf-dest-check"><input type="checkbox" name="destinations" value="Tanzania"> <span>Tanzania</span></label>
+          <label class="qf-dest-check"><input type="checkbox" name="destinations" value="Uganda"> <span>Uganda</span></label>
+          <label class="qf-dest-check"><input type="checkbox" name="destinations" value="Rwanda"> <span>Rwanda</span></label>
+          <label class="qf-dest-check"><input type="checkbox" name="destinations" value="Mexico"> <span>Mexico</span></label>
+          <label class="qf-dest-check"><input type="checkbox" name="destinations" value="Indonesia"> <span>Indonesia</span></label>
+          <label class="qf-dest-check"><input type="checkbox" name="destinations" value="Singapore"> <span>Singapore</span></label>
+          <label class="qf-dest-check"><input type="checkbox" name="destinations" value="Malaysia"> <span>Malaysia</span></label>
+          <label class="qf-dest-check"><input type="checkbox" name="destinations" value="UAE"> <span>UAE</span></label>
+          <label class="qf-dest-check"><input type="checkbox" name="destinations" value="United Kingdom"> <span>United Kingdom</span></label>
+          <label class="qf-dest-check"><input type="checkbox" name="destinations" value="Japan"> <span>Japan</span></label>
+          <label class="qf-dest-check"><input type="checkbox" name="destinations" value="France"> <span>France</span></label>
+          <label class="qf-dest-check"><input type="checkbox" name="destinations" value="Australia"> <span>Australia</span></label>
+          <label class="qf-dest-check"><input type="checkbox" name="destinations" value="Thailand"> <span>Thailand</span></label>
+          <label class="qf-dest-check"><input type="checkbox" name="destinations" value="Türkiye"> <span>T&uuml;rkiye</span></label>
+          <label class="qf-dest-check"><input type="checkbox" name="destinations" value="Greece"> <span>Greece</span></label>
+          <label class="qf-dest-check"><input type="checkbox" name="destinations" value="Colombia"> <span>Colombia</span></label>
+          <label class="qf-dest-check"><input type="checkbox" name="destinations" value="Peru"> <span>Peru</span></label>
+        </div>
+      </div>
+      <div class="qf-row" style="grid-template-columns:1fr 1fr 1fr 1fr">
+        <div class="qf-group">
+          <label for="qf-date-from">Dates From</label>
+          <input type="date" id="qf-date-from" name="travel_date_from">
+        </div>
+        <div class="qf-group">
+          <label for="qf-date-to">Dates To</label>
+          <input type="date" id="qf-date-to" name="travel_date_to">
+        </div>
+        <div class="qf-group">
+          <label for="qf-travelers">Travelers</label>
+          <input type="number" id="qf-travelers" name="number_of_travelers" min="1" placeholder="2">
+        </div>
+        <div class="qf-group">
+          <label for="qf-hotel-tier">Hotel Tier</label>
+          <select id="qf-hotel-tier" name="hotel_tier">
+            <option value="">Select</option>
+            <option value="Luxury">Luxury</option>
+            <option value="Premium">Premium</option>
+            <option value="Boutique">Boutique</option>
+          </select>
+        </div>
+      </div>
+      <div class="qf-group">
+        <label>Interests</label>
+        <div class="qf-checkboxes">
+          <label><input type="checkbox" name="interests" value="Culture"> Culture</label>
+          <label><input type="checkbox" name="interests" value="Food & Wine"> Food &amp; Wine</label>
+          <label><input type="checkbox" name="interests" value="Adventure"> Adventure</label>
+          <label><input type="checkbox" name="interests" value="Wellness"> Wellness</label>
+          <label><input type="checkbox" name="interests" value="Family"> Family</label>
+        </div>
+      </div>
+      <div class="qf-group">
+        <label for="qf-requests">Special Requests</label>
+        <textarea id="qf-requests" name="special_requests" rows="2" placeholder="Any special requirements or preferences..."></textarea>
+      </div>
+      <div class="qf-row" style="grid-template-columns:1fr 1fr 1fr">
+        <div class="qf-group">
+          <label for="qf-advisor-name">Your Name *</label>
+          <input type="text" id="qf-advisor-name" name="advisor_name" required>
+        </div>
+        <div class="qf-group">
+          <label for="qf-advisor-email">Your Email *</label>
+          <input type="email" id="qf-advisor-email" name="advisor_email" required>
+        </div>
+        <div class="qf-group">
+          <label for="qf-agency">Agency</label>
+          <input type="text" id="qf-agency" name="agency_name">
+        </div>
+      </div>
+      <button type="submit" class="qf-submit">Submit Request</button>
+    </form>
+    <div class="quote-form-success" id="quoteFormSuccess">
+      <p>Quote Request Submitted</p>
+      <span>Our team will be in touch within 24 hours.</span>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  // Nav scroll, mobile nav, and dropdown touch support handled by components/nav-portal.js
+
+  // ====== DESTINATION FILTER ======
+  var filterBtns = document.querySelectorAll('.dest-filter-btn');
+  var destCards = document.querySelectorAll('.dest-card');
+  filterBtns.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      filterBtns.forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      var filter = btn.getAttribute('data-filter');
+      destCards.forEach(function(card, i) {
+        var match = filter === 'all' || card.getAttribute('data-region') === filter;
+        card.style.display = match ? '' : 'none';
+        if (match) {
+          card.classList.remove('visible');
+          setTimeout(function() { card.classList.add('visible'); }, i * 60);
+        }
+      });
+    });
+  });
+
+  // ====== GM TOGGLE ======
+  window.toggleGMs = function() {
+    var extra = document.getElementById('gmExtra');
+    var btn = document.getElementById('gmToggle');
+    if (extra.style.display === 'none') {
+      extra.style.display = '';
+      btn.innerHTML = 'Show Fewer &uarr;';
+      // Trigger reveal animations
+      extra.querySelectorAll('.reveal').forEach(function(el, i) {
+        setTimeout(function() { el.classList.add('visible'); }, i * 80);
+      });
+    } else {
+      extra.style.display = 'none';
+      btn.innerHTML = 'View Full Team &darr;';
+    }
+  };
+
+  // ====== SCROLL REVEAL ======
+  var reveals = document.querySelectorAll('.reveal, .reveal-stagger');
+  var revealObserver = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+  reveals.forEach(function(el) { revealObserver.observe(el); });
+
+  // ====== STAGGERED REVEAL FOR RESOURCE CARDS ======
+  var staggerCards = document.querySelectorAll('.reveal-stagger');
+  var staggerObserver = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        var allCards = Array.from(staggerCards);
+        var idx = allCards.indexOf(entry.target);
+        entry.target.style.transitionDelay = (idx * 100) + 'ms';
+        entry.target.classList.add('visible');
+        staggerObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
+  staggerCards.forEach(function(el) { staggerObserver.observe(el); });
+
+  // ====== COUNTER ANIMATION FOR STATS ======
+  var statsAnimated = false;
+  var statNumbers = document.querySelectorAll('.stat-number[data-target], .stat-number[data-special]');
+
+  function animateCounters() {
+    if (statsAnimated) return;
+    statsAnimated = true;
+
+    statNumbers.forEach(function(el) {
+      var special = el.getAttribute('data-special');
+      if (special) {
+        // For "24/7" style values, just reveal after a delay
+        var duration = 1500;
+        var start = performance.now();
+        function tickSpecial(now) {
+          var progress = Math.min((now - start) / duration, 1);
+          var current = Math.floor(progress * 24);
+          el.textContent = current + '/7';
+          if (progress < 1) {
+            requestAnimationFrame(tickSpecial);
+          } else {
+            el.textContent = special;
+          }
+        }
+        requestAnimationFrame(tickSpecial);
+        return;
+      }
+
+      var target = parseInt(el.getAttribute('data-target'));
+      var suffix = el.getAttribute('data-suffix') || '';
+      var duration = 1500;
+      var start = performance.now();
+
+      function tick(now) {
+        var progress = Math.min((now - start) / duration, 1);
+        // Ease out cubic
+        var eased = 1 - Math.pow(1 - progress, 3);
+        var current = Math.round(eased * target);
+        el.textContent = current + suffix;
+        if (progress < 1) {
+          requestAnimationFrame(tick);
+        }
+      }
+      requestAnimationFrame(tick);
+    });
+  }
+
+  var statsSection = document.getElementById('statsSection');
+  var statsObserver = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        animateCounters();
+        statsObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.3 });
+  statsObserver.observe(statsSection);
+
+  // ====== FORM VALIDATION ======
+  var form = document.getElementById('advisorForm');
+  var emailInput = document.getElementById('email');
+  var success = document.getElementById('formSuccess');
+
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    var emailGroup = emailInput.closest('.form-group');
+    var value = emailInput.value.trim();
+    var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!value || !emailRegex.test(value)) {
+      emailGroup.classList.add('has-error');
+      emailInput.classList.add('error');
+      return;
+    }
+
+    emailGroup.classList.remove('has-error');
+    emailInput.classList.remove('error');
+
+    // Show success (in production, replace with HubSpot form submission)
+    form.style.display = 'none';
+    success.style.display = 'block';
+  });
+
+  emailInput.addEventListener('input', function() {
+    var emailGroup = emailInput.closest('.form-group');
+    emailGroup.classList.remove('has-error');
+    emailInput.classList.remove('error');
+  });
+
+  // ====== QUOTE MODAL ======
+  var quoteOverlay = document.getElementById('quoteModalOverlay');
+  var quoteClose = document.getElementById('quoteModalClose');
+  var quoteSubtitle = document.getElementById('quoteModalSubtitle');
+  var destChecks = document.querySelectorAll('#qfDestGrid input[type="checkbox"]');
+  var quoteFormEl = document.getElementById('quoteForm');
+  var quoteSuccess = document.getElementById('quoteFormSuccess');
+
+  // Brand-to-countries mapping
+  var brandCountries = {
+    'Experience Morocco': ['Morocco'],
+    'Authenticus Italy': ['Italy'],
+    'Essentially French': ['France'],
+    'Unbox Spain & Portugal': ['Spain', 'Portugal'],
+    'Truly Swahili': ['Kenya', 'Tanzania', 'Uganda', 'Rwanda'],
+    'Across Mexico': ['Mexico'],
+    'Kembali Asia': ['Indonesia', 'Singapore', 'Malaysia'],
+    'Kembali Asia': ['Indonesia', 'Singapore', 'Malaysia'],
+    'Majlis Retreats': ['UAE'],
+    'Crown Journey': ['United Kingdom'],
+    'Oshinobi Travel': ['Japan'],
+    'Elura Australia': ['Australia'],
+    'Nira Thailand': ['Thailand'],
+    'Sar Türkiye': ['Türkiye'],
+    'SAR Türkiye': ['Türkiye'],
+    'Nostos Greece': ['Greece'],
+    'Vista Colombia': ['Colombia'],
+    'Awaken Peru': ['Peru']
+  };
+
+  window.openQuoteModal = function(brand) {
+    // Clear all destination checkboxes first
+    destChecks.forEach(function(cb) { cb.checked = false; });
+
+    if (brand) {
+      var countries = brandCountries[brand] || [];
+      // Pre-check the matching countries for this brand
+      destChecks.forEach(function(cb) {
+        if (countries.indexOf(cb.value) !== -1) cb.checked = true;
+      });
+      quoteSubtitle.textContent = 'for ' + brand;
+    } else {
+      quoteSubtitle.textContent = 'Select one or more destinations for a multi-country itinerary';
+    }
+    quoteFormEl.style.display = '';
+    quoteSuccess.style.display = 'none';
+    quoteOverlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  };
+
+  function closeQuoteModal() {
+    quoteOverlay.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  quoteClose.addEventListener('click', closeQuoteModal);
+  quoteOverlay.addEventListener('click', function(e) {
+    if (e.target === quoteOverlay) closeQuoteModal();
+  });
+
+  quoteFormEl.addEventListener('submit', function(e) {
+    e.preventDefault();
+    var advisorEmail = document.getElementById('qf-advisor-email');
+    var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!advisorEmail.value.trim() || !emailRegex.test(advisorEmail.value.trim())) {
+      advisorEmail.style.borderBottomColor = '#c44';
+      return;
+    }
+    advisorEmail.style.borderBottomColor = '';
+    quoteFormEl.style.display = 'none';
+    quoteSuccess.style.display = 'block';
+  });
+
+  // ====== DOWNLOAD KIT POPOVER ======
+  window.toggleDownloadKit = function(e, btn) {
+    e.stopPropagation();
+    var popover = btn.parentElement.querySelector('.dk-popover');
+    var wasActive = popover.classList.contains('active');
+    // Close all popovers first
+    document.querySelectorAll('.dk-popover.active').forEach(function(p) { p.classList.remove('active'); });
+    if (!wasActive) popover.classList.add('active');
+  };
+
+  // Close popovers on click outside
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.dk-toggle') && !e.target.closest('.dk-popover')) {
+      document.querySelectorAll('.dk-popover.active').forEach(function(p) { p.classList.remove('active'); });
+    }
+  });
+
+  // ====== DESTINATION COMPARISON TOOL ======
+  var compareData = {
+    'Italy': { region: 'Europe', bestTime: 'Apr–Jun, Sep–Oct', tripLength: '7–14 days', hotels: 'Luxury, Boutique, Heritage', priceRange: '$$$–$$$$', topExperiences: 'Cooking classes, wine tours, private Vatican access, Amalfi Coast sailing, truffle hunts', climate: 'Mediterranean — warm summers, mild winters', gm: 'Alberto Buzzanca' },
+    'Spain & Portugal': { region: 'Europe', bestTime: 'Mar–Jun, Sep–Nov', tripLength: '8–14 days', hotels: 'Boutique, Paradores, Luxury', priceRange: '$$–$$$$', topExperiences: 'Flamenco evenings, tapas crawls, port wine cellars, Alhambra tours, surf lessons', climate: 'Mediterranean to Atlantic — hot summers, mild winters', gm: 'Juan Gonzalez' },
+    'France': { region: 'Europe', bestTime: 'May–Oct', tripLength: '7–12 days', hotels: 'Châteaux, Boutique, Luxury', priceRange: '$$$–$$$$', topExperiences: 'Champagne tastings, lavender fields, private Louvre tours, Riviera yacht days', climate: 'Temperate — warm summers, cool winters', gm: 'Livy Leroy' },
+    'United Kingdom': { region: 'Europe', bestTime: 'May–Sep', tripLength: '5–10 days', hotels: 'Country Estates, Boutique, Luxury', priceRange: '$$$–$$$$', topExperiences: 'Castle stays, afternoon tea, Scottish Highlands drives, West End theatre', climate: 'Maritime — cool, changeable year-round', gm: 'Crown Journey Team' },
+    'Türkiye': { region: 'Europe', bestTime: 'Apr–Jun, Sep–Nov', tripLength: '7–12 days', hotels: 'Cave Hotels, Boutique, Luxury', priceRange: '$$–$$$', topExperiences: 'Hot air balloons, hammam rituals, Bosphorus cruises, bazaar tours', climate: 'Continental to Mediterranean — warm summers', gm: 'Hazan Sucu' },
+    'Greece': { region: 'Europe', bestTime: 'May–Oct', tripLength: '7–14 days', hotels: 'Cliff-side Boutique, Luxury Resorts', priceRange: '$$–$$$$', topExperiences: 'Island-hopping, sunset in Santorini, ancient ruins, olive oil tastings', climate: 'Mediterranean — hot dry summers', gm: 'Nostos Greece Team' },
+    'Morocco': { region: 'Africa & ME', bestTime: 'Mar–May, Sep–Nov', tripLength: '7–12 days', hotels: 'Luxury Riads, Desert Camps, Boutique', priceRange: '$$–$$$', topExperiences: 'Sahara overnights, medina tours, hammam, cooking classes, Atlas treks', climate: 'Desert to Mediterranean — hot summers, mild winters', gm: 'Maryama El Adama' },
+    'East Africa': { region: 'Africa & ME', bestTime: 'Jun–Oct (migration), Jan–Feb', tripLength: '8–14 days', hotels: 'Safari Lodges, Tented Camps, Luxury', priceRange: '$$$–$$$$', topExperiences: 'Great Migration, gorilla trekking, Zanzibar beaches, Maasai visits', climate: 'Tropical highland — warm days, cool nights', gm: 'Melvin Mapetla' },
+    'UAE': { region: 'Africa & ME', bestTime: 'Oct–Apr', tripLength: '4–7 days', hotels: 'Ultra-Luxury, Desert Resorts', priceRange: '$$$$', topExperiences: 'Desert safaris, souks, yacht charters, fine dining, dune experiences', climate: 'Desert — very hot summers, warm winters', gm: 'Majlis Retreats Team' },
+    'Japan': { region: 'Asia & Pacific', bestTime: 'Mar–May (cherry blossom), Oct–Nov', tripLength: '10–14 days', hotels: 'Ryokans, Luxury, Design Hotels', priceRange: '$$$–$$$$', topExperiences: 'Tea ceremonies, temple stays, sushi masterclass, bullet train, geisha district', climate: 'Temperate — four distinct seasons', gm: 'Hiroshi Tsuji' },
+    'Indonesia': { region: 'Asia & Pacific', bestTime: 'Apr–Oct', tripLength: '7–14 days', hotels: 'Jungle Villas, Beach Resorts, Boutique', priceRange: '$$–$$$$', topExperiences: 'Rice terrace treks, temple visits, surf, diving, Komodo expeditions', climate: 'Tropical — warm year-round, dry season Apr–Oct', gm: 'Kembali Asia Team' },
+    'Australia': { region: 'Asia & Pacific', bestTime: 'Sep–Nov, Mar–May', tripLength: '10–21 days', hotels: 'Luxury Lodges, Outback Camps, Boutique', priceRange: '$$$–$$$$', topExperiences: 'Great Barrier Reef, Uluru, wine regions, wildlife encounters, coastal drives', climate: 'Varied — temperate south, tropical north', gm: 'Elura Australia Team' },
+    'Thailand': { region: 'Asia & Pacific', bestTime: 'Nov–Mar', tripLength: '7–14 days', hotels: 'Beach Resorts, Boutique, Wellness Retreats', priceRange: '$$–$$$', topExperiences: 'Temple tours, street food walks, Muay Thai, island-hopping, wellness retreats', climate: 'Tropical — hot year-round, dry season Nov–Mar', gm: 'Nira Thailand Team' },
+    'Mexico': { region: 'Americas', bestTime: 'Nov–Apr', tripLength: '7–14 days', hotels: 'Haciendas, Boutique, Beach Resorts', priceRange: '$$–$$$', topExperiences: 'Mayan ruins, mezcal tastings, cenote swims, cooking classes, Day of the Dead', climate: 'Tropical to arid — warm year-round', gm: 'Cintli Chacón Ramos' },
+    'Colombia': { region: 'Americas', bestTime: 'Dec–Mar, Jul–Aug', tripLength: '7–10 days', hotels: 'Colonial Boutique, Eco Lodges, Luxury', priceRange: '$$–$$$', topExperiences: 'Cartagena walks, coffee farm visits, salsa lessons, Amazon expeditions', climate: 'Tropical — warm year-round, altitude varies', gm: 'Vista Colombia Team' },
+    'Peru': { region: 'Americas', bestTime: 'May–Sep (dry season)', tripLength: '8–14 days', hotels: 'Luxury Lodges, Boutique, Historic', priceRange: '$$–$$$', topExperiences: 'Machu Picchu, Sacred Valley, Lima gastronomy, Amazon lodge, Lake Titicaca', climate: 'Varied — coastal desert, highland, tropical jungle', gm: 'Awaken Peru Team' }
+  };
+
+  var sel1 = document.getElementById('compareSel1');
+  var sel2 = document.getElementById('compareSel2');
+  var sel3 = document.getElementById('compareSel3');
+  var addThirdBtn = document.getElementById('compareAddThird');
+  var compareGoBtn = document.getElementById('compareGoBtn');
+  var compareTableWrap = document.getElementById('compareTableWrap');
+  var compareTable = document.getElementById('compareTable');
+  var showThird = false;
+
+  // Populate selects
+  var destNames = Object.keys(compareData);
+  [sel1, sel2, sel3].forEach(function(sel) {
+    destNames.forEach(function(name) {
+      var opt = document.createElement('option');
+      opt.value = name;
+      opt.textContent = name;
+      sel.appendChild(opt);
+    });
+  });
+
+  addThirdBtn.addEventListener('click', function() {
+    showThird = !showThird;
+    document.querySelector('.compare-vs-3').style.display = showThird ? '' : 'none';
+    document.querySelector('.compare-sel-3').style.display = showThird ? '' : 'none';
+    addThirdBtn.textContent = showThird ? '− Remove Third' : '+ Add Third';
+  });
+
+  compareGoBtn.addEventListener('click', function() {
+    var selections = [sel1.value, sel2.value];
+    if (showThird && sel3.value) selections.push(sel3.value);
+    selections = selections.filter(function(s) { return s && compareData[s]; });
+    if (selections.length < 2) return;
+
+    var rows = [
+      { label: 'Region', key: 'region' },
+      { label: 'Best Time to Visit', key: 'bestTime', highlight: true },
+      { label: 'Recommended Trip Length', key: 'tripLength' },
+      { label: 'Hotel Tiers', key: 'hotels' },
+      { label: 'Price Range', key: 'priceRange', highlight: true },
+      { label: 'Top Experiences', key: 'topExperiences' },
+      { label: 'Climate', key: 'climate' },
+      { label: 'Your GM Contact', key: 'gm', highlight: true }
+    ];
+
+    var html = '<thead><tr><th></th>';
+    selections.forEach(function(name) {
+      html += '<th>' + name + '</th>';
+    });
+    html += '</tr></thead><tbody>';
+
+    rows.forEach(function(row) {
+      html += '<tr' + (row.highlight ? ' class="compare-row-highlight"' : '') + '>';
+      html += '<td>' + row.label + '</td>';
+      selections.forEach(function(name) {
+        html += '<td>' + (compareData[name][row.key] || '—') + '</td>';
+      });
+      html += '</tr>';
+    });
+
+    // Add action row
+    html += '<tr><td></td>';
+    selections.forEach(function(name) {
+      html += '<td><button class="compare-go-btn" style="font-size:0.72rem;padding:0.5rem 1.2rem;margin:0" onclick="openQuoteModal()">Request Quote</button></td>';
+    });
+    html += '</tr>';
+
+    html += '</tbody>';
+    compareTable.innerHTML = html;
+    compareTableWrap.style.display = 'block';
+    compareTableWrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  });
+
+  // ====== LIVE SEARCH ======
+  var searchInput = document.getElementById('portalSearch');
+  var searchResults = document.getElementById('searchResults');
+  var searchClear = document.getElementById('searchClear');
+
+  // Build search index from page content
+  var searchIndex = [];
+
+  // Index destinations
+  document.querySelectorAll('.dest-card').forEach(function(card) {
+    var country = (card.querySelector('.dest-card-country') || {}).textContent || '';
+    var brand = (card.querySelector('.dest-card-brand') || {}).textContent || '';
+    var tagline = (card.querySelector('.dest-card-tagline') || {}).textContent || '';
+    var img = card.querySelector('.dest-card-img');
+    var bgImg = img ? img.style.backgroundImage.replace(/url\(['"]?|['"]?\)/g, '') : '';
+    searchIndex.push({
+      type: 'destination',
+      text: country + ' ' + brand + ' ' + tagline,
+      name: country,
+      sub: brand,
+      img: bgImg,
+      action: function() { document.getElementById('destinations').scrollIntoView({ behavior: 'smooth' }); }
+    });
+  });
+
+  // Index GMs
+  document.querySelectorAll('.gm-card').forEach(function(card) {
+    var name = (card.querySelector('.gm-card-name') || {}).textContent || '';
+    var dest = (card.querySelector('.gm-card-dest') || {}).textContent || '';
+    var countries = [];
+    card.querySelectorAll('.gm-country-pill').forEach(function(p) { countries.push(p.textContent); });
+    var photo = card.querySelector('.gm-card-photo');
+    searchIndex.push({
+      type: 'contact',
+      text: name + ' ' + dest + ' ' + countries.join(' '),
+      name: name,
+      sub: dest + ' — ' + countries.join(', '),
+      img: photo ? photo.src : '',
+      action: function() { document.getElementById('team').scrollIntoView({ behavior: 'smooth' }); }
+    });
+  });
+
+  // Index resources
+  document.querySelectorAll('.resource-card').forEach(function(card) {
+    var title = (card.querySelector('.resource-card-title') || {}).textContent || '';
+    var sub = (card.querySelector('.resource-card-sub') || {}).textContent || '';
+    var href = card.getAttribute('href') || '#';
+    searchIndex.push({
+      type: 'resource',
+      text: title + ' ' + sub,
+      name: title,
+      sub: sub,
+      img: '',
+      href: href,
+      action: function() {
+        if (href && href !== '#') { window.location.href = href; }
+        else { document.getElementById('resources').scrollIntoView({ behavior: 'smooth' }); }
+      }
+    });
+  });
+
+  // Add static quick links
+  searchIndex.push({
+    type: 'resource', text: 'sample itineraries trips', name: 'Sample Itineraries',
+    sub: 'Browse and share trip ideas', img: '', href: 'itineraries.html',
+    action: function() { window.location.href = 'itineraries.html'; }
+  });
+  searchIndex.push({
+    type: 'resource', text: 'culinary guides food restaurants dining', name: 'Culinary Guides',
+    sub: 'Restaurant picks by destination', img: '', href: 'culinary-guides.html',
+    action: function() { window.location.href = 'culinary-guides.html'; }
+  });
+  searchIndex.push({
+    type: 'resource', text: 'request quote booking submit', name: 'Submit a Quote Request',
+    sub: 'Open the quote request form', img: '',
+    action: function() { openQuoteModal(); }
+  });
+
+  function highlightMatch(text, query) {
+    if (!query) return text;
+    var escaped = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return text.replace(new RegExp('(' + escaped + ')', 'gi'), '<span class="search-highlight">$1</span>');
+  }
+
+  function doSearch(query) {
+    query = query.trim().toLowerCase();
+    if (!query || query.length < 2) {
+      searchResults.style.display = 'none';
+      searchClear.style.display = 'none';
+      return;
+    }
+    searchClear.style.display = '';
+
+    var matches = { destination: [], contact: [], resource: [] };
+    var words = query.split(/\s+/);
+
+    searchIndex.forEach(function(item) {
+      var t = item.text.toLowerCase();
+      var allMatch = words.every(function(w) { return t.indexOf(w) !== -1; });
+      if (allMatch) {
+        matches[item.type].push(item);
+      }
+    });
+
+    var total = matches.destination.length + matches.contact.length + matches.resource.length;
+    if (total === 0) {
+      searchResults.innerHTML = '<div class="search-no-results">No results for "' + query + '"</div>';
+      searchResults.style.display = 'block';
+      return;
+    }
+
+    var html = '';
+    var labels = { destination: 'Destinations', contact: 'Contacts', resource: 'Resources' };
+    var icons = { destination: '🌍', contact: '👤', resource: '📄' };
+
+    ['destination', 'contact', 'resource'].forEach(function(type) {
+      var items = matches[type];
+      if (!items.length) return;
+      html += '<div class="search-result-group">';
+      html += '<div class="search-result-group-label">' + labels[type] + '</div>';
+      items.slice(0, 5).forEach(function(item, idx) {
+        var iconContent = item.img
+          ? '<img src="' + item.img + '" alt="">'
+          : icons[type];
+        html += '<div class="search-result-item" data-type="' + type + '" data-idx="' + idx + '">';
+        html += '<div class="search-result-icon">' + iconContent + '</div>';
+        html += '<div class="search-result-text">';
+        html += '<div class="search-result-name">' + highlightMatch(item.name, query) + '</div>';
+        html += '<div class="search-result-sub">' + highlightMatch(item.sub, query) + '</div>';
+        html += '</div></div>';
+      });
+      html += '</div>';
+    });
+
+    searchResults.innerHTML = html;
+    searchResults.style.display = 'block';
+
+    // Click handlers for results
+    searchResults.querySelectorAll('.search-result-item').forEach(function(el) {
+      el.addEventListener('click', function() {
+        var type = el.getAttribute('data-type');
+        var idx = parseInt(el.getAttribute('data-idx'));
+        var found = matches[type][idx];
+        if (found && found.action) {
+          searchResults.style.display = 'none';
+          searchInput.value = '';
+          searchClear.style.display = 'none';
+          found.action();
+        }
+      });
+    });
+  }
+
+  searchInput.addEventListener('input', function() {
+    doSearch(searchInput.value);
+  });
+
+  searchClear.addEventListener('click', function() {
+    searchInput.value = '';
+    searchResults.style.display = 'none';
+    searchClear.style.display = 'none';
+    searchInput.focus();
+  });
+
+  // Close search results on click outside
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.hero-search')) {
+      searchResults.style.display = 'none';
+    }
+  });
+
+  // Keyboard navigation
+  searchInput.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      searchResults.style.display = 'none';
+      searchInput.blur();
+    }
+  });
+})();
+</script>
+
+<!-- ====== MULTI-COUNTRY WIZARD MODAL ====== -->
+<div class="wizard-overlay" id="wizardOverlay">
+  <div class="wizard-modal">
+    <button class="wizard-close" id="wizardClose">&times;</button>
+    <div class="wizard-progress">
+      <div class="wizard-step-dot active" data-step="1">1</div>
+      <div class="wizard-step-line"></div>
+      <div class="wizard-step-dot" data-step="2">2</div>
+      <div class="wizard-step-line"></div>
+      <div class="wizard-step-dot" data-step="3">3</div>
+    </div>
+
+    <!-- Step 1: Select Countries -->
+    <div class="wizard-panel" id="wizStep1">
+      <h3 class="wizard-title">Choose Your Destinations</h3>
+      <p class="wizard-desc">Select 2–3 countries for a multi-country itinerary.</p>
+      <div class="wizard-country-grid" id="wizCountryGrid"></div>
+      <div class="wizard-selected" id="wizSelected">
+        <span class="wizard-selected-label">Selected:</span>
+        <span class="wizard-selected-list" id="wizSelectedList">None yet</span>
+      </div>
+      <button class="wizard-next-btn" id="wizNext1" disabled>Next: See Suggestions &rarr;</button>
+    </div>
+
+    <!-- Step 2: Suggested Combos -->
+    <div class="wizard-panel" id="wizStep2" style="display:none">
+      <h3 class="wizard-title">Suggested Route</h3>
+      <p class="wizard-desc">Based on your selection, here's how we'd structure this trip.</p>
+      <div class="wizard-route" id="wizRoute"></div>
+      <div class="wizard-route-details" id="wizRouteDetails"></div>
+      <div class="wizard-nav-btns">
+        <button class="wizard-back-btn" id="wizBack2">&larr; Back</button>
+        <button class="wizard-next-btn" id="wizNext2">Submit as Quote Request &rarr;</button>
+      </div>
+    </div>
+
+    <!-- Step 3: Quick Quote -->
+    <div class="wizard-panel" id="wizStep3" style="display:none">
+      <h3 class="wizard-title">Almost There</h3>
+      <p class="wizard-desc">We'll tailor this multi-country itinerary just for your client.</p>
+      <form class="wizard-form" id="wizForm">
+        <div class="wizard-form-row">
+          <div class="wizard-form-group">
+            <label>Travel Dates (approx)</label>
+            <input type="text" id="wizDates" placeholder="e.g., June 2025">
+          </div>
+          <div class="wizard-form-group">
+            <label>Number of Travelers</label>
+            <input type="number" id="wizTravelers" placeholder="2" min="1">
+          </div>
+        </div>
+        <div class="wizard-form-row">
+          <div class="wizard-form-group">
+            <label>Your Name *</label>
+            <input type="text" id="wizName" required>
+          </div>
+          <div class="wizard-form-group">
+            <label>Your Email *</label>
+            <input type="email" id="wizEmail" required>
+          </div>
+        </div>
+        <div class="wizard-form-group">
+          <label>Special Notes</label>
+          <textarea id="wizNotes" rows="2" placeholder="Any preferences, interests, or special requirements..."></textarea>
+        </div>
+        <div class="wizard-nav-btns">
+          <button type="button" class="wizard-back-btn" id="wizBack3">&larr; Back</button>
+          <button type="submit" class="wizard-next-btn">Submit Request</button>
+        </div>
+      </form>
+      <div class="wizard-success" id="wizSuccess" style="display:none">
+        <div style="font-size:2rem;margin-bottom:0.8rem">&#10003;</div>
+        <h3>Multi-Country Request Submitted</h3>
+        <p>Our team will craft a custom itinerary and get back to you within 24 hours.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ====== MULTI-COUNTRY WIZARD ======
+(function() {
+  var overlay = document.getElementById('wizardOverlay');
+  var closeBtn = document.getElementById('wizardClose');
+  var steps = [document.getElementById('wizStep1'), document.getElementById('wizStep2'), document.getElementById('wizStep3')];
+  var dots = document.querySelectorAll('.wizard-step-dot');
+  var selectedCountries = [];
+  var currentStep = 1;
+
+  var countryOptions = [
+    { name: 'Italy', region: 'Europe', img: 'https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=200&q=60' },
+    { name: 'Spain', region: 'Europe', img: 'https://images.unsplash.com/photo-1543783207-ec64e4d95325?w=200&q=60' },
+    { name: 'France', region: 'Europe', img: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=200&q=60' },
+    { name: 'Greece', region: 'Europe', img: 'https://images.unsplash.com/photo-1533105079780-92b9be482077?w=200&q=60' },
+    { name: 'Türkiye', region: 'Europe', img: 'https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=200&q=60' },
+    { name: 'United Kingdom', region: 'Europe', img: 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=200&q=60' },
+    { name: 'Morocco', region: 'Africa & ME', img: 'https://images.unsplash.com/photo-1489749798305-4fea3ae63d43?w=200&q=60' },
+    { name: 'East Africa', region: 'Africa & ME', img: 'https://images.unsplash.com/photo-1516426122078-c23e76319801?w=200&q=60' },
+    { name: 'UAE', region: 'Africa & ME', img: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=200&q=60' },
+    { name: 'Japan', region: 'Asia & Pacific', img: 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=200&q=60' },
+    { name: 'Indonesia', region: 'Asia & Pacific', img: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=200&q=60' },
+    { name: 'Thailand', region: 'Asia & Pacific', img: 'https://images.unsplash.com/photo-1528181304800-259b08848526?w=200&q=60' },
+    { name: 'Australia', region: 'Asia & Pacific', img: 'https://images.unsplash.com/photo-1523482580672-f109ba8cb9be?w=200&q=60' },
+    { name: 'Mexico', region: 'Americas', img: 'https://images.unsplash.com/photo-1518638150340-f706e86654de?w=200&q=60' },
+    { name: 'Colombia', region: 'Americas', img: 'https://images.unsplash.com/photo-1583508915901-b5f84c1dcde1?w=200&q=60' },
+    { name: 'Peru', region: 'Americas', img: 'https://images.unsplash.com/photo-1526392060635-9d6019884377?w=200&q=60' }
+  ];
+
+  // Suggested routes (common multi-country combos)
+  var suggestedRoutes = {
+    'Italy+France': { title: 'Mediterranean Grand Tour', days: '12–16 days', route: 'Rome → Tuscany → French Riviera → Provence → Paris', highlights: ['Colosseum & Vatican', 'Tuscan wine country', 'Côte d\'Azur coast drive', 'Lavender fields of Provence', 'Parisian landmarks & cuisine'] },
+    'Italy+Greece': { title: 'Classical Mediterranean', days: '12–15 days', route: 'Athens → Greek Islands → Ferry to Italy → Amalfi Coast → Rome', highlights: ['Acropolis at sunset', 'Santorini & Mykonos', 'Adriatic ferry crossing', 'Amalfi lemon groves', 'Roman history & gastronomy'] },
+    'Spain+Morocco': { title: 'Strait of Gibraltar Crossing', days: '10–14 days', route: 'Barcelona → Andalusia → Ferry to Morocco → Fez → Marrakech', highlights: ['Gaudí masterworks', 'Alhambra palace', 'Tangier crossing', 'Fez medina', 'Sahara overnight camp'] },
+    'Spain+France': { title: 'Iberian to French Riviera', days: '10–14 days', route: 'Barcelona → Costa Brava → Provence → Nice → Monaco', highlights: ['Sagrada Familia', 'Catalan coastal drives', 'French wine country', 'Promenade des Anglais', 'Monte Carlo glamour'] },
+    'Japan+Thailand': { title: 'East Meets Southeast Asia', days: '14–18 days', route: 'Tokyo → Kyoto → Osaka → Flight → Bangkok → Chiang Mai → Islands', highlights: ['Shibuya & Tsukiji', 'Temple gardens of Kyoto', 'Street food of Osaka', 'Grand Palace & floating markets', 'Thai island paradise'] },
+    'Japan+Indonesia': { title: 'Temples & Islands', days: '14–18 days', route: 'Tokyo → Kyoto → Flight → Bali → Ubud → Komodo', highlights: ['Japanese tradition & tech', 'Kyoto tea ceremonies', 'Bali rice terraces', 'Ubud arts & wellness', 'Komodo dragon encounters'] },
+    'Morocco+East Africa': { title: 'Africa Discovery', days: '14–18 days', route: 'Marrakech → Sahara → Flight → Nairobi → Serengeti → Zanzibar', highlights: ['Medina exploration', 'Desert stargazing', 'Great Migration safari', 'Maasai cultural visit', 'Zanzibar spice island'] },
+    'Mexico+Peru': { title: 'Latin American Heritage', days: '12–16 days', route: 'Mexico City → Oaxaca → Flight → Lima → Cusco → Machu Picchu', highlights: ['Mexico City food scene', 'Oaxacan mezcal & markets', 'Lima\'s world-class cuisine', 'Sacred Valley', 'Inca citadel at dawn'] },
+    'Mexico+Colombia': { title: 'Colors of Latin America', days: '10–14 days', route: 'Mexico City → Oaxaca → Flight → Bogotá → Coffee Region → Cartagena', highlights: ['Mexican murals & markets', 'Oaxacan cuisine', 'Bogotá street art', 'Coffee farm immersion', 'Cartagena colonial magic'] },
+    'Colombia+Peru': { title: 'South American Explorer', days: '12–16 days', route: 'Bogotá → Cartagena → Flight → Lima → Sacred Valley → Machu Picchu', highlights: ['Colombian coffee culture', 'Caribbean coastal charm', 'Peruvian gastronomy', 'Andean landscapes', 'Ancient Inca wonders'] }
+  };
+
+  // Build country grid
+  var grid = document.getElementById('wizCountryGrid');
+  countryOptions.forEach(function(c) {
+    var el = document.createElement('div');
+    el.className = 'wizard-country-card';
+    el.setAttribute('data-country', c.name);
+    el.innerHTML = '<div class="wizard-country-img" style="background-image:url(\'' + c.img + '\')"></div><div class="wizard-country-name">' + c.name + '</div><div class="wizard-country-region">' + c.region + '</div>';
+    el.addEventListener('click', function() {
+      var idx = selectedCountries.indexOf(c.name);
+      if (idx > -1) {
+        selectedCountries.splice(idx, 1);
+        el.classList.remove('selected');
+      } else if (selectedCountries.length < 3) {
+        selectedCountries.push(c.name);
+        el.classList.add('selected');
+      }
+      updateSelected();
+    });
+    grid.appendChild(el);
+  });
+
+  function updateSelected() {
+    var list = document.getElementById('wizSelectedList');
+    var nextBtn = document.getElementById('wizNext1');
+    list.textContent = selectedCountries.length ? selectedCountries.join(' + ') : 'None yet';
+    nextBtn.disabled = selectedCountries.length < 2;
+  }
+
+  function goToStep(step) {
+    currentStep = step;
+    steps.forEach(function(s, i) { s.style.display = i === step - 1 ? '' : 'none'; });
+    dots.forEach(function(d) {
+      var ds = parseInt(d.getAttribute('data-step'));
+      d.classList.toggle('active', ds <= step);
+    });
+    if (step === 2) buildRoute();
+  }
+
+  function buildRoute() {
+    var sorted = selectedCountries.slice().sort();
+    var key = sorted.join('+');
+    var route = suggestedRoutes[key];
+
+    var routeDiv = document.getElementById('wizRoute');
+    var detailsDiv = document.getElementById('wizRouteDetails');
+
+    // Build visual route
+    var routeHtml = '<div class="wizard-route-stops">';
+    selectedCountries.forEach(function(c, i) {
+      routeHtml += '<div class="wizard-route-stop"><div class="wizard-route-dot"></div><div class="wizard-route-name">' + c + '</div></div>';
+      if (i < selectedCountries.length - 1) routeHtml += '<div class="wizard-route-arrow">&#8594;</div>';
+    });
+    routeHtml += '</div>';
+    routeDiv.innerHTML = routeHtml;
+
+    if (route) {
+      detailsDiv.innerHTML =
+        '<div class="wizard-route-title">' + route.title + '</div>' +
+        '<div class="wizard-route-meta"><span>' + route.days + '</span><span>' + route.route + '</span></div>' +
+        '<div class="wizard-route-highlights"><strong>Highlights:</strong><ul>' +
+        route.highlights.map(function(h) { return '<li>' + h + '</li>'; }).join('') +
+        '</ul></div>';
+    } else {
+      detailsDiv.innerHTML =
+        '<div class="wizard-route-title">Custom Multi-Country Itinerary</div>' +
+        '<div class="wizard-route-meta"><span>10–18 days suggested</span></div>' +
+        '<p style="font-size:0.9rem;color:var(--text-sec);margin-top:0.8rem">This is a unique combination! Our team will design a custom route connecting ' +
+        selectedCountries.join(', ') + ' with the best experiences in each destination.</p>';
+    }
+  }
+
+  // Navigation
+  document.getElementById('wizNext1').addEventListener('click', function() { goToStep(2); });
+  document.getElementById('wizNext2').addEventListener('click', function() { goToStep(3); });
+  document.getElementById('wizBack2').addEventListener('click', function() { goToStep(1); });
+  document.getElementById('wizBack3').addEventListener('click', function() { goToStep(2); });
+
+  // Form submit
+  document.getElementById('wizForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    document.getElementById('wizForm').style.display = 'none';
+    document.getElementById('wizSuccess').style.display = 'block';
+  });
+
+  // Open/Close
+  window.openWizard = function() {
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  };
+
+  closeBtn.addEventListener('click', function() {
+    overlay.classList.remove('open');
+    document.body.style.overflow = '';
+  });
+
+  overlay.addEventListener('click', function(e) {
+    if (e.target === overlay) {
+      overlay.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+  });
+})();
+</script>
+
+</body>
+</html>
