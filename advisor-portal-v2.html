@@ -2400,75 +2400,46 @@ footer {
   letter-spacing: -0.015em;
 }
 
-/* Portal sub-nav — sticky below the main header (fixed-position, ~80px) */
-.portal-subnav {
-  position: sticky;
-  top: 72px;
-  z-index: 90;
-  background: color-mix(in oklch, var(--bg) 96%, transparent);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-top: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
-}
-.portal-subnav-inner {
-  max-width: 1600px;
-  margin: 0 auto;
-  padding: 0 40px;
-  display: flex;
-  align-items: center;
-  gap: 32px;
-  min-height: 56px;
-}
-.portal-subnav-label {
+/* Portal-specific nav touches (the nav itself reuses v2's .nav rules above) */
+.portal-nav .nav-brand { gap: 12px; }
+.portal-badge {
+  display: inline-block;
   font-family: var(--serif);
   font-style: italic;
-  font-size: 15px;
+  font-size: 14px;
   color: var(--accent);
-  padding-right: 24px;
-  border-right: 1px solid var(--line);
+  padding-left: 14px;
+  border-left: 1px solid var(--line);
   white-space: nowrap;
+  line-height: 1;
+  align-self: center;
 }
-.portal-subnav-links {
-  display: flex;
-  align-items: center;
-  gap: 28px;
-  flex: 1;
-  font-size: 12px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  font-weight: 500;
-}
-.portal-subnav-links > a {
-  color: var(--ink-soft);
-  text-decoration: none;
-  padding: 18px 0;
-  transition: color .2s;
-}
-.portal-subnav-links > a:hover { color: var(--accent); }
 
-.portal-subnav-group { position: relative; }
-.portal-subnav-trigger {
+/* Dropdowns inside .nav-links */
+.portal-menu-group { position: relative; }
+.portal-menu-trigger {
   background: transparent;
   border: none;
-  color: var(--ink-soft);
-  font: inherit;
-  letter-spacing: inherit;
-  text-transform: inherit;
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   cursor: pointer;
-  padding: 18px 0;
+  padding: 4px 0;
   display: inline-flex;
   align-items: center;
   gap: 6px;
   transition: color .2s;
 }
-.portal-subnav-trigger:hover,
-.portal-subnav-trigger[aria-expanded="true"] { color: var(--accent); }
-.portal-subnav-trigger span { font-size: 9px; opacity: 0.7; }
+.portal-menu-trigger:hover,
+.portal-menu-trigger[aria-expanded="true"] { color: var(--accent); }
+.portal-menu-trigger span { font-size: 9px; opacity: 0.7; }
 
-.portal-subnav-menu {
+.portal-menu-panel {
   position: absolute;
-  top: 100%;
+  top: calc(100% + 18px);
   left: -16px;
   min-width: 240px;
   background: var(--bg);
@@ -2477,12 +2448,13 @@ footer {
   padding: 12px 0;
   display: none;
   flex-direction: column;
+  z-index: 110;
 }
-.portal-subnav-group:hover .portal-subnav-menu,
-.portal-subnav-trigger[aria-expanded="true"] + .portal-subnav-menu {
+.portal-menu-group:hover .portal-menu-panel,
+.portal-menu-trigger[aria-expanded="true"] + .portal-menu-panel {
   display: flex;
 }
-.portal-subnav-menu a {
+.portal-menu-panel a {
   padding: 10px 20px;
   font-family: var(--sans);
   font-size: 13px;
@@ -2493,21 +2465,39 @@ footer {
   text-decoration: none;
   transition: background .15s, color .15s;
 }
-.portal-subnav-menu a:hover { background: var(--bg-warm); color: var(--accent); }
+.portal-menu-panel a:hover { background: var(--bg-warm); color: var(--accent); }
 
-.portal-subnav-cta {
+/* Mobile drawer: resource sub-groups with small label + indented items */
+.mobile-menu-label {
+  font-family: var(--sans);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 24px;
+  margin-bottom: 4px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--line);
+}
+.mobile-menu .mobile-menu-sub {
+  font-family: var(--sans);
+  font-size: 16px;
+  font-weight: 300;
+  padding: 10px 0;
+  border-bottom: none;
+  letter-spacing: 0;
+  color: var(--ink-soft);
+}
+.mobile-menu .mobile-menu-sub:hover { color: var(--accent); }
+.mobile-menu .drawer-advisor {
   font-family: var(--sans);
   font-size: 12px;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  font-weight: 500;
-  color: var(--accent);
-  text-decoration: none;
-  white-space: nowrap;
-  padding: 18px 0;
-  transition: color .2s;
+  color: var(--muted);
+  border-bottom: none;
+  padding: 28px 0 4px;
 }
-.portal-subnav-cta:hover { color: var(--ink); }
 
 /* Responsive: hamburger appears, desktop nav hides */
 @media (max-width: 1100px) {
@@ -2524,22 +2514,9 @@ footer {
   .nav-cta .btn { display: none; }
   .menu-btn { display: block; }
 
-  .portal-subnav-inner {
-    padding: 0 20px;
-    gap: 16px;
-    overflow-x: auto;
-    scrollbar-width: none;
-    min-height: 48px;
-  }
-  .portal-subnav-inner::-webkit-scrollbar { display: none; }
-  .portal-subnav-label { font-size: 13px; padding-right: 16px; }
-  .portal-subnav-links { gap: 20px; }
-  .portal-subnav-links > a,
-  .portal-subnav-trigger { padding: 14px 0; white-space: nowrap; }
-  /* Dropdowns don't have room on phone — flatten to top-level taps
-     that scroll to #resources; hide the dropdown menus entirely. */
-  .portal-subnav-menu { display: none !important; }
-  .portal-subnav-cta { padding: 14px 0; }
+  /* Portal nav: hide the badge on small screens to save room */
+  .portal-badge { display: none; }
+  .nav-cta .advisor { display: none; }
 
   footer { padding: 56px 24px 32px; }
   .foot-grid { grid-template-columns: 1fr 1fr; gap: 32px; margin-bottom: 40px; }
@@ -2556,24 +2533,114 @@ footer {
 </head>
 <body data-page="advisor-portal">
 
-<!-- ====== NAVIGATION (v2 shared component) ====== -->
-<div data-include="components/header.html"></div>
+<!-- ====== PORTAL NAVIGATION ======
+     Replaces the main site header while inside the advisor portal —
+     portal is its own context. A "← Main site" link under Plan-a-
+     Journey lets advisors exit back to travel-collection-v2.html. -->
+<nav class="nav portal-nav" id="nav" aria-label="Advisor portal">
+  <a href="travel-collection-v2.html" class="nav-brand" aria-label="Travel Collection — back to main site">
+    <img src="https://cdn.prod.website-files.com/645dce8d3cf060ba152e3ed6/645dd0fb59b28a589dc86dba_TCL%20White%20Logo%20200.png" alt="Travel Collection" />
+    <span class="portal-badge">Advisors</span>
+  </a>
+  <div class="nav-links">
+    <a href="#destinations">Destinations</a>
+    <div class="portal-menu-group">
+      <button type="button" class="portal-menu-trigger" aria-haspopup="true" aria-expanded="false">
+        Resources <span aria-hidden="true">↓</span>
+      </button>
+      <div class="portal-menu-panel" role="menu">
+        <a href="itineraries.html" role="menuitem">Sample Itineraries</a>
+        <a href="#resources" role="menuitem">Training &amp; Webinars</a>
+        <a href="#resources" role="menuitem">Booking Communications</a>
+        <a href="#resources" role="menuitem">FAQs</a>
+      </div>
+    </div>
+    <div class="portal-menu-group">
+      <button type="button" class="portal-menu-trigger" aria-haspopup="true" aria-expanded="false">
+        Marketing Hub <span aria-hidden="true">↓</span>
+      </button>
+      <div class="portal-menu-panel" role="menu">
+        <a href="culinary-guides.html" role="menuitem">Culinary Guides</a>
+        <a href="destination-playlists.html" role="menuitem">Destination Playlists</a>
+        <a href="#resources" role="menuitem">Social Media Kit</a>
+        <a href="#resources" role="menuitem">Destination One-Pagers</a>
+        <a href="#compare" role="menuitem">Destination Comparison</a>
+      </div>
+    </div>
+    <a href="#team">Meet Our Team</a>
+  </div>
+  <div class="nav-cta">
+    <a href="travel-collection-v2.html" class="advisor">← Main site</a>
+    <a href="#" class="btn" id="portalRequestBtn">Submit a Request</a>
+    <button class="menu-btn" id="menuBtn" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div class="mobile-menu">
+  <a href="#destinations">Destinations</a>
+  <div class="mobile-menu-label">Resources</div>
+  <a href="itineraries.html" class="mobile-menu-sub">Sample Itineraries</a>
+  <a href="#resources" class="mobile-menu-sub">Training &amp; Webinars</a>
+  <a href="#resources" class="mobile-menu-sub">Booking Communications</a>
+  <a href="#resources" class="mobile-menu-sub">FAQs</a>
+  <div class="mobile-menu-label">Marketing Hub</div>
+  <a href="culinary-guides.html" class="mobile-menu-sub">Culinary Guides</a>
+  <a href="destination-playlists.html" class="mobile-menu-sub">Destination Playlists</a>
+  <a href="#resources" class="mobile-menu-sub">Social Media Kit</a>
+  <a href="#compare" class="mobile-menu-sub">Destination Comparison</a>
+  <a href="#team">Meet Our Team</a>
+  <a href="travel-collection-v2.html" class="drawer-advisor">← Main site</a>
+  <a href="#" class="menu-cta" id="portalRequestBtnMobile">Submit a Request</a>
+</div>
+
 <script src="components/include.js?v=2"></script>
 <script>
-// After the shared header injects, retarget the "Plan a Journey" CTA
-// (and its mobile twin) to open the advisor quote modal instead.
-document.addEventListener("includes:ready", () => {
-  const rewire = (el) => {
+  // Portal nav: scroll shrink
+  (function() {
+    const nav = document.getElementById("nav");
+    const onScroll = () => nav.classList.toggle("scrolled", window.scrollY > 40);
+    window.addEventListener("scroll", onScroll);
+    onScroll();
+  })();
+
+  // Portal nav: mobile menu toggle
+  (function() {
+    const menuBtn = document.getElementById("menuBtn");
+    if (!menuBtn) return;
+    menuBtn.addEventListener("click", () => document.body.classList.toggle("menu-open"));
+    document.querySelectorAll(".mobile-menu a").forEach((a) =>
+      a.addEventListener("click", () => document.body.classList.remove("menu-open"))
+    );
+  })();
+
+  // Portal nav: dropdown toggle (click + keyboard + hover via CSS)
+  document.querySelectorAll(".portal-menu-trigger").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      const expanded = btn.getAttribute("aria-expanded") === "true";
+      document.querySelectorAll(".portal-menu-trigger").forEach((b) =>
+        b.setAttribute("aria-expanded", "false")
+      );
+      btn.setAttribute("aria-expanded", expanded ? "false" : "true");
+    });
+  });
+  document.addEventListener("click", (e) => {
+    if (!e.target.closest(".portal-menu-group")) {
+      document.querySelectorAll(".portal-menu-trigger").forEach((b) =>
+        b.setAttribute("aria-expanded", "false")
+      );
+    }
+  });
+
+  // Submit-a-Request buttons open the quote modal
+  ["portalRequestBtn", "portalRequestBtnMobile"].forEach((id) => {
+    const el = document.getElementById(id);
     if (!el) return;
-    el.setAttribute("href", "#");
     el.addEventListener("click", (e) => {
       e.preventDefault();
       if (typeof openQuoteModal === "function") openQuoteModal();
     });
-  };
-  rewire(document.querySelector(".nav-cta .btn"));
-  rewire(document.querySelector(".mobile-menu .menu-cta"));
-});
+  });
 </script>
 
 <!-- ====== HERO ====== -->
@@ -2600,64 +2667,6 @@ document.addEventListener("includes:ready", () => {
     </div>
   </div>
 </section>
-
-<!-- ====== PORTAL SUB-NAV (v2) ======
-     Sticky in-page navigation for the advisor portal sections. Sits
-     below the shared site header once the user scrolls past the hero. -->
-<nav class="portal-subnav" aria-label="Advisor portal sections">
-  <div class="portal-subnav-inner">
-    <span class="portal-subnav-label">Advisor Portal</span>
-    <div class="portal-subnav-links">
-      <a href="#destinations">Destinations</a>
-      <div class="portal-subnav-group">
-        <button type="button" class="portal-subnav-trigger" aria-haspopup="true" aria-expanded="false">
-          Resources <span aria-hidden="true">↓</span>
-        </button>
-        <div class="portal-subnav-menu" role="menu">
-          <a href="itineraries.html" role="menuitem">Sample Itineraries</a>
-          <a href="#resources" role="menuitem">Training &amp; Webinars</a>
-          <a href="#resources" role="menuitem">Booking Communications</a>
-          <a href="#resources" role="menuitem">FAQs</a>
-        </div>
-      </div>
-      <div class="portal-subnav-group">
-        <button type="button" class="portal-subnav-trigger" aria-haspopup="true" aria-expanded="false">
-          Marketing Hub <span aria-hidden="true">↓</span>
-        </button>
-        <div class="portal-subnav-menu" role="menu">
-          <a href="culinary-guides.html" role="menuitem">Culinary Guides</a>
-          <a href="destination-playlists.html" role="menuitem">Destination Playlists</a>
-          <a href="#resources" role="menuitem">Social Media Kit</a>
-          <a href="#resources" role="menuitem">Destination One-Pagers</a>
-          <a href="#compare" role="menuitem">Destination Comparison</a>
-        </div>
-      </div>
-      <a href="#team">Meet Our Team</a>
-    </div>
-    <a href="#signup" class="portal-subnav-cta">Submit a Request →</a>
-  </div>
-</nav>
-<script>
-  // Portal sub-nav dropdowns: hover on desktop (pure CSS); click also
-  // toggles aria-expanded for keyboard + touch users. Click-outside closes.
-  document.querySelectorAll(".portal-subnav-trigger").forEach((btn) => {
-    btn.addEventListener("click", (e) => {
-      e.preventDefault();
-      const expanded = btn.getAttribute("aria-expanded") === "true";
-      document.querySelectorAll(".portal-subnav-trigger").forEach((b) =>
-        b.setAttribute("aria-expanded", "false")
-      );
-      btn.setAttribute("aria-expanded", expanded ? "false" : "true");
-    });
-  });
-  document.addEventListener("click", (e) => {
-    if (!e.target.closest(".portal-subnav-group")) {
-      document.querySelectorAll(".portal-subnav-trigger").forEach((b) =>
-        b.setAttribute("aria-expanded", "false")
-      );
-    }
-  });
-</script>
 
 <!-- ====== WHAT'S NEW ====== -->
 <section class="whats-new">
