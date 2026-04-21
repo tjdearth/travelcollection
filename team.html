@@ -692,20 +692,26 @@ footer {
   margin-top: 20px;
 }
 .foot-socials a {
-  display: inline-flex; align-items: center; justify-content: center;
+  display: grid;
+  place-items: center;
   width: 48px; height: 48px;
+  box-sizing: border-box;
   border: 1px solid rgba(255,255,255,0.28);
   border-radius: 50%;
   color: rgba(255,255,255,0.85);
   transition: color .2s, border-color .2s;
   padding: 0;
+  line-height: 1;
+  font-size: 0;
 }
 .foot-socials a:hover {
   color: white;
   border-color: white;
 }
 .foot-socials svg {
-  width: 24px; height: 24px; display: block;
+  width: 22px; height: 22px;
+  display: block;
+  margin: 0;
 }
 .foot-news {
   font-size: 14px;
