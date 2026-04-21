@@ -854,17 +854,22 @@ section { padding: 140px 80px; }
   font-size: 11px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: oklch(0.65 0.02 70);
+  color: oklch(0.82 0.015 70);
 }
 .field input, .field select, .field textarea {
   background: transparent;
   border: none;
-  border-bottom: 1px solid oklch(0.4 0.015 50);
+  border-bottom: 1px solid oklch(0.45 0.015 50);
   padding: 10px 0;
   font-family: var(--sans);
   font-size: 16px;
   color: var(--bg);
   font-weight: 300;
+}
+.field input::placeholder,
+.field textarea::placeholder {
+  color: oklch(0.78 0.015 70);
+  opacity: 1;
 }
 .field input:focus, .field select:focus, .field textarea:focus {
   outline: none;
@@ -885,7 +890,7 @@ section { padding: 140px 80px; }
 }
 .form-submit .note {
   font-size: 12px;
-  color: oklch(0.65 0.02 70);
+  color: oklch(0.82 0.015 70);
   max-width: 32ch;
 }
 
@@ -1581,12 +1586,12 @@ footer {
 
   <div class="contact-grid">
     <div class="contact-info">
-      <p>Share a few details and we'll pair you with the specialist who knows your destination best. Expect a personal response within 24 hours — no call centres, no form letters.</p>
+      <p>Share a few details and we'll pair you with the specialist who knows your destination best. Expect a personal response within 48 hours — no call centres, no form letters.</p>
       <dl>
-        <dt>Response</dt><dd>Within 24 hours</dd>
+        <dt>Response</dt><dd>Within 48 hours</dd>
         <dt>Minimum</dt><dd>No minimum party size</dd>
         <dt>Planning fee</dt><dd>Waived on confirmed bookings</dd>
-        <dt>Speak now</dt><dd>+44 20 7946 0100</dd>
+        <dt>Speak now</dt><dd>+1 575-552-9345</dd>
       </dl>
     </div>
 
@@ -1621,18 +1626,18 @@ footer {
         <select><option>1–2</option><option>3–4</option><option>5–8</option><option>9+</option></select>
       </div>
       <div class="field">
-        <label>Budget per person (USD)</label>
+        <label>Budget per person per day (USD)</label>
         <select>
           <option>Open to guidance</option>
-          <option>$5k – $10k</option>
-          <option>$10k – $25k</option>
-          <option>$25k – $50k</option>
-          <option>$50k+</option>
+          <option>$200 – $300</option>
+          <option>$400 – $500</option>
+          <option>$500 – $700</option>
+          <option>$700+</option>
         </select>
       </div>
       <div class="field full"><label>Tell us what you're dreaming about</label><textarea rows="3" placeholder="A honeymoon in Kyoto, a family reunion in Tuscany, a group trip for our wine club..."></textarea></div>
       <div class="form-submit">
-        <p class="note">We'll never share your details. A specialist will be in touch within one business day.</p>
+        <p class="note">A travel specialist will be in touch within two business days.</p>
         <button type="submit" class="btn btn-light">Send Enquiry →</button>
       </div>
       <div class="confirm full" style="display:none; padding: 24px; border: 1px solid oklch(0.4 0.02 50); font-family: var(--serif); font-style: italic; font-size: 20px;">Thank you — a specialist will be in touch within 24 hours.</div>
@@ -1713,26 +1718,28 @@ footer {
 
 <script>
 // ————————————— DATA —————————————
+// url: link to the DMC brand website. Leave as "#" for none yet; real URLs
+// open in a new tab automatically.
 const DESTINATIONS = [
-  { country: "Morocco", dmc: "Experience Morocco", region: "africa", img: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?w=800&q=80" },
-  { country: "East Africa", dmc: "Truly Swahili", region: "africa", img: "https://images.unsplash.com/photo-1516426122078-c23e76319801?w=800&q=80" },
-  { country: "UAE", dmc: "Majlis Retreats", region: "africa", img: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=800&q=80" },
-  { country: "Türkiye", dmc: "Sar Türkiye", region: "africa", img: "https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=800&q=80" },
+  { country: "Morocco", dmc: "Experience Morocco", region: "africa", img: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?w=800&q=80", url: "#" },
+  { country: "East Africa", dmc: "Truly Swahili", region: "africa", img: "https://images.unsplash.com/photo-1516426122078-c23e76319801?w=800&q=80", url: "#" },
+  { country: "UAE", dmc: "Majlis Retreats", region: "africa", img: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=800&q=80", url: "#" },
+  { country: "Türkiye", dmc: "Sar Türkiye", region: "africa", img: "https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=800&q=80", url: "#" },
 
-  { country: "Italy", dmc: "Authenticus Italy", region: "europe", img: "https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=800&q=80" },
-  { country: "Spain & Portugal", dmc: "Unbox Spain & Portugal", region: "europe", img: "https://images.unsplash.com/photo-1543783207-ec64e4d95325?w=800&q=80" },
-  { country: "France", dmc: "Essentially French", region: "europe", img: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=800&q=80" },
-  { country: "Greece", dmc: "Nostos Greece", region: "europe", img: "https://images.unsplash.com/photo-1533105079780-92b9be482077?w=800&q=80" },
-  { country: "United Kingdom", dmc: "Crown Journey", region: "europe", img: "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=800&q=80" },
+  { country: "Italy", dmc: "Authenticus Italy", region: "europe", img: "https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=800&q=80", url: "#" },
+  { country: "Spain & Portugal", dmc: "Unbox Spain & Portugal", region: "europe", img: "https://images.unsplash.com/photo-1543783207-ec64e4d95325?w=800&q=80", url: "#" },
+  { country: "France", dmc: "Essentially French", region: "europe", img: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=800&q=80", url: "#" },
+  { country: "Greece", dmc: "Nostos Greece", region: "europe", img: "https://images.unsplash.com/photo-1533105079780-92b9be482077?w=800&q=80", url: "#" },
+  { country: "United Kingdom", dmc: "Crown Journey", region: "europe", img: "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=800&q=80", url: "#" },
 
-  { country: "Japan", dmc: "Oshinobi Travel", region: "asia", img: "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=800&q=80" },
-  { country: "Thailand", dmc: "Nira Thailand", region: "asia", img: "https://images.unsplash.com/photo-1528181304800-259b08848526?w=800&q=80" },
-  { country: "Indonesia", dmc: "Kembali Asia", region: "asia", img: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=800&q=80" },
-  { country: "Australia", dmc: "Elura Australia", region: "asia", img: "https://images.unsplash.com/photo-1523482580672-f109ba8cb9be?w=800&q=80" },
+  { country: "Japan", dmc: "Oshinobi Travel", region: "asia", img: "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=800&q=80", url: "#" },
+  { country: "Thailand", dmc: "Nira Thailand", region: "asia", img: "https://images.unsplash.com/photo-1528181304800-259b08848526?w=800&q=80", url: "#" },
+  { country: "Indonesia", dmc: "Kembali Asia", region: "asia", img: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=800&q=80", url: "#" },
+  { country: "Australia", dmc: "Elura Australia", region: "asia", img: "https://images.unsplash.com/photo-1523482580672-f109ba8cb9be?w=800&q=80", url: "#" },
 
-  { country: "Mexico", dmc: "Across Mexico", region: "americas", img: "https://images.unsplash.com/photo-1518638150340-f706e86654de?w=800&q=80" },
-  { country: "Colombia", dmc: "Vista Colombia", region: "americas", img: "https://images.unsplash.com/photo-1533282960533-51328aa49826?w=800&q=80" },
-  { country: "Peru", dmc: "Awaken Peru", region: "americas", img: "https://images.unsplash.com/photo-1526392060635-9d6019884377?w=800&q=80" },
+  { country: "Mexico", dmc: "Across Mexico", region: "americas", img: "https://images.unsplash.com/photo-1518638150340-f706e86654de?w=800&q=80", url: "#" },
+  { country: "Colombia", dmc: "Vista Colombia", region: "americas", img: "https://images.unsplash.com/photo-1533282960533-51328aa49826?w=800&q=80", url: "#" },
+  { country: "Peru", dmc: "Awaken Peru", region: "americas", img: "https://images.unsplash.com/photo-1526392060635-9d6019884377?w=800&q=80", url: "#" },
 ];
 
 const REGIONS = {
@@ -1772,7 +1779,10 @@ function renderDestinations(filter = "all", layout = "regional") {
   });
 }
 function card(d) {
-  return `<a href="#" class="dest-card">
+  const hasUrl = d.url && d.url !== "#";
+  const href = hasUrl ? d.url : "#";
+  const extAttrs = hasUrl ? ' target="_blank" rel="noopener"' : "";
+  return `<a href="${href}"${extAttrs} class="dest-card">
     <div class="dest-card-imgwrap photo">
       <div class="dest-card-img photo-img" style="background-image:url('${d.img}')"></div>
       <div class="dest-card-overlay">${REGIONS[d.region]}</div>
