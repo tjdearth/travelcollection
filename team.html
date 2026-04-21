@@ -774,11 +774,14 @@ footer h5 {
   font-weight: 500;
   margin-bottom: 18px;
 }
+.foot-col { min-width: 0; }
 .foot-col a {
   display: block;
   font-size: 14px;
   padding: 5px 0;
   transition: color .2s;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 .foot-col a:hover { color: white; }
 .foot-bottom {
@@ -1045,9 +1048,10 @@ footer h5 {
   }
 
   /* FOOTER */
-  footer { padding: 56px 24px 32px; }
+  footer { padding: 56px 24px 32px; overflow: hidden; }
   .foot-grid { grid-template-columns: 1fr; gap: 40px; margin-bottom: 40px; }
   .foot-brand img { height: 52px; }
+  .foot-subscribe { max-width: 100%; }
   .foot-bottom { flex-direction: column; gap: 12px; align-items: flex-start; font-size: 11px; }
 
   /* MODAL */

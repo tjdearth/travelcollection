@@ -989,12 +989,15 @@ footer {
   margin-bottom: 20px;
   font-weight: 500;
 }
+.foot-col { min-width: 0; }
 .foot-col a {
   display: block;
   font-size: 14px;
   padding: 6px 0;
   color: oklch(0.72 0.01 70);
   transition: color .2s;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 .foot-col a:hover { color: var(--bg); }
 .foot-bottom {
@@ -1365,10 +1368,12 @@ footer {
   .form-submit .btn { justify-content: center; }
 
   /* FOOTER */
-  footer { padding: 56px 24px 32px; }
+  footer { padding: 56px 24px 32px; overflow: hidden; }
   .foot-grid { grid-template-columns: 1fr 1fr; gap: 32px; margin-bottom: 40px; }
   .foot-grid > div:first-child { grid-column: 1 / -1; }
+  .foot-grid > .foot-col-news { grid-column: 1 / -1; }
   .foot-brand img { height: 52px; }
+  .foot-subscribe { max-width: 100%; }
   .foot-bottom { flex-direction: column; gap: 16px; align-items: flex-start; }
 
   /* TWEAKS */
